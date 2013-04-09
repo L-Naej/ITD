@@ -15,3 +15,8 @@
 *.exe
 *.out
 *.app
+
+#Sujet du projet
+towerDefense.pdf
+#fichiers temporaires
+*~
