@@ -1,5 +1,8 @@
+#include <stdio.h>
+#include "tower.h"
+
 void TestTypeTower(Tower* tower){
-	switch (tower.type){
+	switch (tower->type){
 		case ROCKET:
 			tower->cadence =3;
 			tower->range = 9;
@@ -19,7 +22,7 @@ void TestTypeTower(Tower* tower){
 		break;
 
 		case HYBRID:
-			tower->cadence 8;
+			tower->cadence = 8;
 			tower->range = 10;
 			tower->power=3;
 		break;

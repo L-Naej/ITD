@@ -27,6 +27,8 @@ Map initMap(){
 	newMap.nodeList.position = 0;
 	newMap.nodeList.type = NODE;
 	
+	newMap.pixelArray = NULL;
+	
 	return newMap;
 }
 void dumpColor3u(Color3u color){
