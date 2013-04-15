@@ -1,27 +1,34 @@
-void TestTypeTower(Tower* tower){
+#include "tower.h"
+#include "union_tower.h"
+#include "enum_tower.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+void TestTypeTower(TowerUnion tower){
 	switch (tower.type){
 		case ROCKET:
-			tower->cadence =3;
-			tower->range = 9;
-			tower->power=10;
+			tower.tower.cadence =3;
+			tower.tower.range = 9;
+			tower.tower.power=10;
 		break;
 
 		case LASER:
-			tower->cadence =10;
-			tower->range = 3;
-			tower->power=5;
+			tower.tower.cadence =10;
+			tower.tower.range = 3;
+			tower.tower.power=5;
 		break;
 
 		case MITRAILLETTE:
-			tower->cadence =10;
-			tower->range = 3;
-			tower->power=3;
+			tower.tower.cadence =10;
+			tower.tower.range = 3;
+			tower.tower.power=3;
 		break;
 
 		case HYBRID:
-			tower->cadence 8;
-			tower->range = 10;
-			tower->power=3;
+			tower.tower.cadence = 8;
+			tower.tower.range = 10;
+			tower.tower.power=3;
 		break;
 
 		

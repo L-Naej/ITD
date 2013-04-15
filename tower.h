@@ -1,16 +1,14 @@
 #ifndef TOWERS
 #define TOWERS
-
-typedef enum {
-	ROCKET, LASER, MITRAILLETTE, HYBRID
-}TowerType; 
+#include "enum_tower.h"
 
 typedef struct {
-	TowerType type;
 	int cadence;
 	int range;
 	int power;
 	float price;
 }Tower;
+
+
 
 #endif
