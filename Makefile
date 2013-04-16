@@ -10,13 +10,11 @@ LIBDIR = ./lib
 LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image
 
 #MAC
-LIBS_MAC  = -L/usr/X11R6/lib -lSDL -lGLU -lGL -lm -lX11
-INCLUDES_MAC = -I/usr/X11R6/include
-BIN_MAC = bin/itd-mac
-ifeq ($(shell uname),OSX)
-MAC_FLAGS = -D MAC
-else
-MAC_FLAGS = 
+ifeq ($(shell uname),Darwin)
+LIBS  = -L/usr/X11R6/lib -framework SDL -framework Cocoa -framework GLUT -framework OpenGL -lm -lX11
+INCLUDES := $(INCLUDES) -I/usr/X11R6/include -D_GNU_SOURCE=1 -D_THREAD_SAFE
+BIN_MAC = bin/itd-mac 
+FLAGS := $(FLAGS) -D MAC SDLmain.m
 endif
 
 # Compilateur
@@ -30,8 +28,6 @@ SRC_FILES = $(shell find $(SRC_PATH) -type f -name '*.c')
 OBJ_FILES = $(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRC_FILES))
 
 all : $(BIN) 
-
-mac : $(BIN_MAC)
  
 $(BIN): $(OBJ_FILES)
 	@echo "PHASE DE LIEN..."
@@ -40,22 +36,18 @@ $(BIN): $(OBJ_FILES)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 		@echo "Génération de $@ \c"
-		@$(CC) -I$(INCLUDES) -I$(INCLUDES_MAC) $(MAC_FLAGS) $(FLAGS) -c $< -o $@
+		@$(CC) -I$(INCLUDES) $(FLAGS) -c $< -o $@
 		@echo "=>OK"
 		
 $(BIN_MAC) : $(OBJ_FILES)
 	@echo "PHASE DE LIEN..."
-	$(CC) $(FLAGS) -I$(INCLUDES) -I$(INCLUDES_MAC) -o $(BIN) $^ $(LIBS_MAC)
+	$(CC) $(FLAGS) -I$(INCLUDES) -o $(BIN) $^ $(LIBS)
 	@echo "Compilation terminée.\nExécutez $(BIN) pour lancer le programme."
 		
-$(LIBS):
-	@echo "\n-----Compilation des librairies du projet-----"
-	@(cd $(LIBDIR) && $(MAKE))
-	@echo "-----Fin de la compilation des librairies.-----\n"
 	
 clean:
 	rm -f $(BIN)
-	rm -f $(OBJ_PATH)/*.o $(SRC_PATH)/*~ $(INCLUDES)/*~ 
+	rm -f $(OBJ_PATH)/*.o $(SRC_PATH)/*~ 
 	find . -name "*~" -exec rm {} \;
 
 #Nettoie aussi dans les libs

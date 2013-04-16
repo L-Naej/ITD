@@ -47,5 +47,5 @@ void initMenu();
  * ITD. Initialise le jeu et contient 
  * la boucle de jeu.
  */
-int main(int argc, char** argv);
+int main(int argc, char* argv[]);
 #endif

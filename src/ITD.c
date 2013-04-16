@@ -1,18 +1,19 @@
-#ifndef MAC
+#ifdef MAC
+#include <SDL/SDL.h>
+#include <SDL/SDL_main.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else 
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#else 
-#include "SDL.h"
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #endif
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"
 #include "ITD.h"
 
-int main(int argc, char** argv) {
+int main(int argc,  char* argv[]) {
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
 		exit(-1);
