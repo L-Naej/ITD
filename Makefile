@@ -1,19 +1,23 @@
 # $(BIN) est la nom du binaire genere
 BIN = bin/itd
 # FLAG
-FLAGS = -g -O2 -Wall $(shell sdl-config --cflags)
+FLAGS = -g -O2 -Wall 
 #Répertoire d'include des librairies
 INCLUDES = include
 # Répertoire des librairies
 LIBDIR = ./lib
 # Librairies
-LIBS = -lglut -lGL -lGLU -lm $(shell sdl-config --libs) -lSDL_image
+LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image
 
 #MAC
 LIBS_MAC  = -L/usr/X11R6/lib -lSDL -lGLU -lGL -lm -lX11
 INCLUDES_MAC = -I/usr/X11R6/include
 BIN_MAC = bin/itd-mac
+ifeq ($(shell uname),OSX)
 MAC_FLAGS = -D MAC
+else
+MAC_FLAGS = 
+endif
 
 # Compilateur
 CC = gcc

@@ -35,6 +35,10 @@ int main(int argc, char** argv) {
 		 */
 		 
 		 
+		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
+		au tour suivant.
+		 */
+		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime >= FRAMERATE_MILLISECONDS) {
 			/*
@@ -55,10 +59,6 @@ int main(int argc, char** argv) {
 		 * else handleGameActions();
 		 */
 		
-		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
-		au tour suivant.
-		 */
-		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 
 	}
 
