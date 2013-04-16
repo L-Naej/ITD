@@ -1,13 +1,20 @@
 # $(BIN) est la nom du binaire genere
 BIN = bin/itd
 # FLAG
-FLAGS = -g -Wall $(shell sdl-config --cflags)
+FLAGS = -g -O2 -Wall $(shell sdl-config --cflags)
 #Répertoire d'include des librairies
 INCLUDES = include
 # Répertoire des librairies
 LIBDIR = ./lib
 # Librairies
 LIBS = -lglut -lGL -lGLU -lm $(shell sdl-config --libs) -lSDL_image
+
+#MAC
+LIBS_MAC  = -L/usr/X11R6/lib -lSDL -lGLU -lGL -lm -lX11
+INCLUDES_MAC = -I/usr/X11R6/include
+BIN_MAC = bin/itd-mac
+MAC_FLAGS = -D MAC
+
 # Compilateur
 CC = gcc
 
@@ -19,6 +26,8 @@ SRC_FILES = $(shell find $(SRC_PATH) -type f -name '*.c')
 OBJ_FILES = $(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRC_FILES))
 
 all : $(BIN) 
+
+mac : $(BIN_MAC)
  
 $(BIN): $(OBJ_FILES)
 	@echo "PHASE DE LIEN..."
@@ -27,8 +36,13 @@ $(BIN): $(OBJ_FILES)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 		@echo "Génération de $@ \c"
-		@$(CC) -I$(INCLUDES) $(FLAGS) -c $< -o $@
+		@$(CC) -I$(INCLUDES) -I$(INCLUDES_MAC) $(MAC_FLAGS) $(FLAGS) -c $< -o $@
 		@echo "=>OK"
+		
+$(BIN_MAC) : $(OBJ_FILES)
+	@echo "PHASE DE LIEN..."
+	$(CC) $(FLAGS) -I$(INCLUDES) -I$(INCLUDES_MAC) -o $(BIN) $^ $(LIBS_MAC)
+	@echo "Compilation terminée.\nExécutez $(BIN) pour lancer le programme."
 		
 $(LIBS):
 	@echo "\n-----Compilation des librairies du projet-----"

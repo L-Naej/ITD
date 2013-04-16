@@ -1,6 +1,12 @@
+#ifndef MAC
 #include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#else 
+#include "SDL.h"
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"

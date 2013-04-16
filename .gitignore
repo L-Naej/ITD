@@ -20,3 +20,5 @@
 towerDefense.pdf
 #fichiers temporaires
 *~
+src/*~
+include/*~
