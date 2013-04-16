@@ -62,7 +62,7 @@ int chargeMap(Map* map, char* path_itd){
 		fscanf(file,"%d\n",&(map->nodeList.size));
 
 		int coordx;
-		int coory;
+		int coordy;
 		fscanf(file,"%d %d\n",coordx,coordy);
 
 // si j'ai bien compris on fait une liste de noeud pour le chemin. Donc il faudrait mettre 2 userdata dans chaque noeud non?
