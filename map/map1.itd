@@ -1,0 +1,14 @@
+@ITD 1
+carte fichier.ppm
+energie 100
+chemin 255 255 255
+noeud 0 0 0
+construct 255 200 80
+in 0 200 0
+out 200 0 0
+5
+10 20
+454 103
+300 103
+200 103
+200 206
