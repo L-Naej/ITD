@@ -41,9 +41,9 @@ bool isAreaConstructible(int x1, int y1, int x2, int y2);
 /**
  * Fait avancer le monde d'un pas de temps.
  * Appelée à chaque nouveau tour de boucle de 
- * jeu.
+ * jeu. Renvoie si le jeu est terminé ou non.
  */
-void worldNewStep();
+bool worldNewStep();
 
 /**
  * Fait tirer toutes les tours capable

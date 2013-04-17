@@ -1,23 +1,6 @@
 #ifndef ITD_ITD_H
 #define ITD_ITD_H
 
-/**
- * Défini les modes dans lequel le programme
- * peut être. Mode MENU le programme affiche le menu
- * de sélection de carte. 
- */
-typedef enum{
-	/**
-	 * Mode MENU, le programme affiche le menu
- 	 * de sélection de carte.
-	 */
-	MENU,
-	/**
-	 * Mode GAME, le programme affiche la carte
-	 * du jeu et l'interface utilisateur de jeu.
-	 */
-	GAME
-}Mode;
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;
@@ -28,6 +11,12 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 /* Nombre minimal de millisecondes separant le rendu de deux images */
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
+
+/* Unité de temps d'un pas de jeu = 10ms */
+static const Uint32 TIMESTEP_MILLISECONDS = 10;
+
+/*Longueur max d'un nom de fichier*/
+static const unsigned int MAX_FILE_LENGTH = 30;
 
 /**
  * Initialise la fenêtre SDL du
@@ -40,7 +29,11 @@ int initWindow();
 static int setVideoMode();
 static void reshape();
 
-void initMenu();
+/*
+ * Initialise la liste des maps disponibles
+ * et retourne une liste la contenant.
+ */
+List initMenu();
 
 /**
  * Fonction principale du programme

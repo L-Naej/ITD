@@ -12,21 +12,55 @@
 #include <stdio.h>
 #include "Map.h"
 #include "ITD.h"
+#include "Utils.h"
 
+/**
+ * Afficher menu
+ * Initialiser la map demandée
+ * Lancer la boucle de jeu
+ */
 int main(int argc,  char* argv[]) {
+	/*Initialisation SDL, OpenGL etc */
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
 		exit(-1);
 	}
 	
-	//Au lancement on tombe sur le menu
-	Mode mode = MENU;
-	initMenu();
+/*-------------- GESTION DU MENU --------------------*/
+
+	bool mapChosen = false;
+	List mapList;
+	char[MAX_FILE_LENGTH] mapName;
+	mapList = initMenu();
 	
+	while(mapChosen == false) {
+		/* Récupération du temps au début de la boucle */
+		Uint32 startTime = SDL_GetTicks();
+
+		/* Placer ici le code de dessin du menu */
+		drawMenu();
+		
+		/* Echange du front et du back buffer : mise à jour de la fenêtre */
+		SDL_GL_SwapBuffers();
+
+		/* Renvoie une chaine de caractère contenant le nom
+		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
+		mapName = handleMenuActions();
+		if(mapName != NULL) mapChosen = true;
+		
+		/* Calcul du temps écoulé */
+		Uint32 elapsedTime = SDL_GetTicks() - startTime;
+		/* Si trop peu de temps s'est écoulé, on met en pause le programme */
+		if(elapsedTime < FRAMERATE_MILLISECONDS) {
+			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
+		}
+	}
 	
-	/* Boucle d'affichage */
-	int loop = 1;
-	while(loop) {
+
+/*-------------- GESTION DU JEU --------------------*/
+
+	bool gameFinished = false;
+	while(!gameFinished) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 		
@@ -34,33 +68,26 @@ int main(int argc,  char* argv[]) {
 		 * Placer ici le code qui fait avancer le
 		 * monde d'un pas de temps.
 		 */
-		 
+		Uint32 elapsedTime = SDL_GetTicks() - startTime;
+		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
+		if(elapsedTime >= TIMESTEP_MILLISECONDS) {
+			gameFinished = worldNewStep();
+		}
 		 
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
 		au tour suivant.
 		 */
-		Uint32 elapsedTime = SDL_GetTicks() - startTime;
+		elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime >= FRAMERATE_MILLISECONDS) {
-			/*
-			 * if(mode == MENU) drawMenu();
-			 * else{
-			 * 	drawWorld();
-			 * 	drawInterface();
-			 * } 
-			 */
+			 drawWorld();
+			 drawInterface();
 			 /* Echange du front et du back buffer : mise à jour de la fenêtre */
 			SDL_GL_SwapBuffers();
 		}
-
-		/* Boucle traitant les evenements */
-		/*
-		 * if (mode == MENU)
-		 * 	handleMenuActions();
-		 * else handleGameActions();
-		 */
 		
-
+		/* Boucle traitant les evenements */
+		 handleGameActions();
 	}
 
 	/* Liberation des ressources associées à la SDL */ 
@@ -89,7 +116,7 @@ int initWindow(){
 	return 0;
 }
 
-void initMenu(){
+List initMenu(){
 	
 }
 

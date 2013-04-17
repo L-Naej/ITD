@@ -3,11 +3,6 @@
 #include <stdlib.h>
 
 /**
- * Permet de simuler le type booléen.
- */
-typedef enum {false=0, true=1} bool;  
-
-/**
  * Permet de connaître le type de liste
  * à l'exécution. Un type UNKNOWN est prévu
  * au cas où.
