@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"
+#include "sdl_tools.h"
+#include "tower.h"
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;

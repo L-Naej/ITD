@@ -13,20 +13,19 @@ Cell* createCell(void* userData){
 	return c;
 }
 
-List* createEmptyList(LIST_TYPE type){
+List* createEmptyList(){
 	List* list = (List*) malloc(sizeof(List));
 	if(list == NULL) return NULL;
 	
 	list->head = list->cursor = list->bottom = NULL;
 	list->size = 0;
-	list->type = type;
 	list->position = 0;
 	
 	return list;
 }
 
-List* createList(LIST_TYPE type, void* headUserData){
-	List* list = createEmptyList(type);
+List* createList(void* headUserData){
+	List* list = createEmptyList();
 	if(list == NULL || headUserData == NULL) return NULL;
 	
 	list->head = createCell(headUserData);
@@ -445,29 +444,13 @@ void* delCellInList(List* list, Cell* theCell){
 
 void freeCellByPosition(List* list, int position){
 	//delCellByPosition fait les tests pour nous...
-	
-	void* userData = delCellByPosition(list,position);
-	
-	switch(list->type){
-		case NODE :
-		break;
-		case UNKNOWN : free(userData);
-		break;
-		default : free(userData);
-		break;
-	}
+	delCellByPosition(list,position);
+
 }
 
 void freeCellInList(List* list, Cell* c){
-	void* userData = delCellInList(list,c);
-	switch(list->type){
-		case NODE :
-		break;
-		case UNKNOWN : free(userData);
-		break;
-		default : free(userData);
-		break;
-	}
+	delCellInList(list,c);
+
 }
 
 void freeCell(Cell* c){
@@ -526,12 +509,7 @@ void dumpList(List* list){
 	
 	while(nextCell(list) != NULL){
 		printf("\n\tCellule %d)  Adresse : %p", cnt, currentCell(list));
-		switch(list->type){
-			case NODE :
-			break;
-			case UNKNOWN : printf("de type inconnu\n");
-			break;
-		}
+		
 		if(list->cursor->next != NULL)
 			printf("Next Cell : %p\n", list->cursor->next);
 		else

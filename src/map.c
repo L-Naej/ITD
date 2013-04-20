@@ -22,11 +22,11 @@ Map initMap(){
 	newMap.inAreaColor = initColor();
 	newMap.outAreaColor = initColor();
 	
-	newMap.nodeList.head = NULL;
-	newMap.nodeList.bottom = NULL;
-	newMap.nodeList.cursor = NULL;
-	newMap.nodeList.size = 0;
-	newMap.nodeList.position = 0;
+	newMap.nodeList->head = NULL;
+	newMap.nodeList->bottom = NULL;
+	newMap.nodeList->cursor = NULL;
+	newMap.nodeList->size = 0;
+	newMap.nodeList->position = 0;
 	
 	return newMap;
 }
@@ -41,11 +41,14 @@ int loadMap(Map* map){
 		return 0;
 	else{
 		char versionMap [30];
-		fscanf(file,"%c %c %c %c %c %c \n",versionMap);
+		int i;
+		for (i=0; i< 6; i++){
+			fscanf(file,"%c",versionMap);
+		}
 		// la je sais pas du tout si c'est comme ça qu'il faut faire
 		if (strcmp(versionMap,"@ITDSP1")!= 0 && strcmp(versionMap,"@ITDSP2")!=0 ){
 			printf("Fichier incompatible");
-			return;
+			exit(1);
 		} 
 
 		if (strcmp(versionMap,"@ITDSP1")==0){
@@ -82,23 +85,21 @@ int loadMap(Map* map){
 			map->outAreaColor.green = float32toubyte8(V);
 			map->outAreaColor.blue = float32toubyte8(B);
 
-			fscanf(file,"%d\n",&(map->nodeList.size));
+			fscanf(file,"%d\n",&(map->nodeList->size));
 
 
-			PathNode node1; 
-			fscanf(file,"%d %d\n",&(node1.x),&(node1.y));
+			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
+			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
 			
 
-			map->nodeList = createList(node1); 
+			map->nodeList = createList((void*)node1); 
 
 			int i=0;
 			while (i<(map->nodeList->size)-1){
-				PathNode node;
-				fscanf(file,"%d %d\n",&(node.x),&(node.y));
-				insertBottomCell(map->nodeList,node);
+				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
+				fscanf(file,"%d %d\n",&(node->x),&(node->y));
+				insertBottomCell(map->nodeList,(void*)node);
 			}
-
-
 
 			// On vide  le buffer et on ferme le fichier
 			fflush(file);
@@ -127,11 +128,11 @@ void dumpMap(Map map){
 	printf("\nOut Area color : ");
 	dumpColor3u(map.outAreaColor);
 	
-	printf("\nNode list (%d nodes)\n", map.nodeList.size);
-	goToHeadList(&map.nodeList);
+	printf("\nNode list (%d nodes)\n", map.nodeList->size);
+	goToHeadList(map.nodeList);
 	
 	PathNode* cur = NULL;
-	while( (cur = nextData(&map.nodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.nodeList.position, cur->x, cur->y);
+	while( (cur = nextData(map.nodeList)) != NULL){
+		printf("Node %d : x=%d y=%d\n", map.nodeList->position, cur->x, cur->y);
 	}
 }

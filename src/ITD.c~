@@ -1,9 +1,11 @@
 #include <SDL/SDL.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+//#include <GL/gl.h>
+//#include <GL/glu.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"
+#include "sdl_tools.h"
+#include "tower.h"
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;
@@ -45,7 +47,10 @@ int main(int argc, char** argv) {
 		/* Placer ici le code de dessin */
 		/*
 		 * if(mode == MENU) drawMenu();
-		 * else drawWorld();
+		 * else{
+		 * 	drawWorld();
+		 * 	drawInterface();
+		 * } 
 		 */
 		
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */

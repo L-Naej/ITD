@@ -1,22 +1,13 @@
 # $(BIN) est la nom du binaire genere
 BIN = bin/itd
 # FLAG
-FLAGS = -g -O2 -Wall 
+FLAGS = -g -Wall
 #Répertoire d'include des librairies
 INCLUDES = include
 # Répertoire des librairies
 LIBDIR = ./lib
 # Librairies
-LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image
-
-#MAC
-ifeq ($(shell uname),Darwin)
-LIBS  = -L/usr/X11R6/lib -framework SDL -framework Cocoa -framework GLUT -framework OpenGL -lm -lX11
-INCLUDES := $(INCLUDES) -I/usr/X11R6/include -D_GNU_SOURCE=1 -D_THREAD_SAFE
-BIN_MAC = bin/itd-mac 
-FLAGS := $(FLAGS) -D MAC SDLmain.m
-endif
-
+LIBS = -lglut -lGL -lGLU -lm
 # Compilateur
 CC = gcc
 
@@ -26,30 +17,31 @@ BIN_PATH = bin
 
 SRC_FILES = $(shell find $(SRC_PATH) -type f -name '*.c')
 OBJ_FILES = $(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRC_FILES))
+LIBS = 
 
 all : $(BIN) 
  
 $(BIN): $(OBJ_FILES)
 	@echo "PHASE DE LIEN..."
-	$(CC) $(FLAGS) -L$(LIBDIR) -I$(INCLUDES) -o $(BIN) $^ $(LIBS)
+	@$(CC) $(FLAGS) -L$(LIBDIR) -I$(INCLUDES) -o $(BIN) $^ $(LIBS)
 	@echo "Compilation terminée.\nExécutez $(BIN) pour lancer le programme."
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(LIBS)
 		@echo "Génération de $@ \c"
 		@$(CC) -I$(INCLUDES) $(FLAGS) -c $< -o $@
 		@echo "=>OK"
 
-$(BIN_MAC) : $(OBJ_FILES)
-	@echo "PHASE DE LIEN..."
-	$(CC) $(FLAGS) -I$(INCLUDES) -o $(BIN) $^ $(LIBS)
-	@echo "Compilation terminée.\nExécutez $(BIN) pour lancer le programme."
-
-
+$(LIBS):
+	@echo "\n-----Compilation des librairies du projet-----"
+	@(cd $(LIBDIR) && $(MAKE))
+	@echo "-----Fin de la compilation des librairies.-----\n"
+	
 clean:
 	rm -f $(BIN)
-	rm -f $(OBJ_PATH)/*.o $(SRC_PATH)/*~ 
+	rm -f $(OBJ_PATH)/*.o $(SRC_PATH)/*~ $(INCLUDES)/*~ 
 	find . -name "*~" -exec rm {} \;
 
 #Nettoie aussi dans les libs
 bigclean: clean
 	@(cd $(LIBDIR) && $(MAKE) bigclean)
+
