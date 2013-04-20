@@ -89,7 +89,7 @@ int loadMap(Map* map){
 			fscanf(file,"%d %d\n",&(node1.x),&(node1.y));
 			
 
-			map->nodeList = createList((void)node1); 
+			map->nodeList = createList(node1); 
 
 			int i=0;
 			while (i<(map->nodeList->size)-1){
