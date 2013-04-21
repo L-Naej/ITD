@@ -1,5 +1,5 @@
 #ifndef ITD_UTILS
 #define ITD_UTILS
 
-unsigned char float32toubyte8(float);
+unsigned char int32toubyte8(int);
 #endif

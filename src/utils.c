@@ -1,6 +1,6 @@
 #include "utils.h"
 
-unsigned char float32toubyte8(float color){
+unsigned char int32toubyte8(int color){
 
 
 	if(color>1)

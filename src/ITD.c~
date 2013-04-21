@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
-//#include <GL/gl.h>
-//#include <GL/glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "Map.h"
@@ -35,9 +35,11 @@ void initWindow(){
 
 }
 int main(int argc, char** argv) {
+Map map = initMap();
+int result = loadMap(&map);
+printf("%d", result);
 	initWindow();
 
-	
 	/* Boucle d'affichage */
 	int loop = 1;
 	while(loop) {
@@ -57,18 +59,22 @@ int main(int argc, char** argv) {
 		SDL_GL_SwapBuffers();
 
 		/* Boucle traitant les evenements */
-		//handleActions();
+		/*handleActions();*/
 		
 		/* Calcul du temps écoulé */
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
-		/* Si trop peu de temps s'est écoulé, on met en pause le programme */
+		/*Si trop peu de temps s'est écoulé, on met en pause le programme */
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
 			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
 		}
 	}
+
+	
 
 	/* Liberation des ressources associées à la SDL */ 
 	SDL_Quit();
 
 	return EXIT_SUCCESS;
 }
+
+

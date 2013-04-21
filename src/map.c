@@ -4,109 +4,146 @@
 #include "Map.h"
 #include "utils.h"
 
-Color3u initColor(){
+Color3u initColor(void){
 	Color3u newColor;
 	newColor.red = newColor.green = newColor.blue = 0;
 	return newColor;
 }
 
-Map initMap(){
+Map initMap(void){
 	Map newMap;
 	newMap.name = NULL;
 	newMap.width = 0;
 	newMap.height = 0;
-	
+
 	newMap.pathColor = initColor();
 	newMap.nodeColor = initColor();
 	newMap.constructAreaColor = initColor();
 	newMap.inAreaColor = initColor();
 	newMap.outAreaColor = initColor();
-	
+
+newMap.nodeList = createEmptyList();
 	newMap.nodeList->head = NULL;
 	newMap.nodeList->bottom = NULL;
 	newMap.nodeList->cursor = NULL;
 	newMap.nodeList->size = 0;
 	newMap.nodeList->position = 0;
-	
+
+
 	return newMap;
 }
 
 int loadMap(Map* map){	
 
-	// On ouvre le fichier 
+	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen("map/map1.itd","r");
-	if(file == NULL)
+	file = fopen("../map/map1.itd","r");
+	if(file == NULL){
 		return 0;
+	}
 	else{
 		char versionMap [30];
 		int i;
 		for (i=0; i< 6; i++){
 			fscanf(file,"%c",versionMap);
+			printf("version : %s\n",versionMap);
 		}
-		// la je sais pas du tout si c'est comme ça qu'il faut faire
-		if (strcmp(versionMap,"@ITDSP1")!= 0 && strcmp(versionMap,"@ITDSP2")!=0 ){
+		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
+		/*if (strcmp(versionMap,"@ITDSP1")!= 0 && strcmp(versionMap,"@ITDSP2")!=0 ){
 			printf("Fichier incompatible");
-			exit(1);
+			return 0;
 		} 
 
-		if (strcmp(versionMap,"@ITDSP1")==0){
+		if (strcmp(versionMap,"@ITDSP1")==0){*/
 
-			// nom de l'image
-			(map->name) = (char*)malloc(sizeof(char)*30); //  on a dit que le nom de la carte ferait 30 caractères maxi
-			fscanf(file,"%s \n",map->name); // par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher
+			/* nom de l'image*/
+			(map->name) = (char*)malloc(sizeof(char)*30);
+ /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
+			fscanf(file,"%s \n",map->name);
+			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
 
-			//rajouter width et height quand on aura le fichier .ppm
+			/*rajouter width et height quand on aura le fichier .ppm*/
 			int R,V,B;
 			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			map->pathColor.red = float32toubyte8(R);
-			map->pathColor.green = float32toubyte8(V);
-			map->pathColor.blue = float32toubyte8(B);
+			printf("%d\n",R);
+			printf("%d\n",V);
+			printf("%d\n",B);
+			map->pathColor.red =(unsigned char)R;
+			map->pathColor.green = (unsigned char)V;
+			map->pathColor.blue =(unsigned char)B;
+			printf("couleur des chemins : %d %d %d\n",map->pathColor.red,map->pathColor.green,map->pathColor.blue);
 
 
 			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			map->nodeColor.red = float32toubyte8(R);
-			map->nodeColor.green = float32toubyte8(V);
-			map->nodeColor.blue = float32toubyte8(B);
+			printf("%d\n",R);
+			printf("%d\n",V);
+			printf("%d\n",B);
+			map->nodeColor.red = (unsigned char)R;
+			map->nodeColor.green = (unsigned char)V;
+			map->nodeColor.blue = (unsigned char)B;
+			printf("couleur des noeuds : %d %d %d\n",map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue);
 
 			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			map->constructAreaColor.red = float32toubyte8(R);
-			map->constructAreaColor.green = float32toubyte8(V);
-			map->constructAreaColor.blue = float32toubyte8(B);
+			printf("%d\n",R);
+			printf("%d\n",V);
+			printf("%d\n",B);
+			map->constructAreaColor.red = (unsigned char)R;
+			map->constructAreaColor.green = (unsigned char)V;
+			map->constructAreaColor.blue = (unsigned char)B;
+			printf("couleur des zones constructibles : %d %d %d\n",map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue);
 
 			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			map->inAreaColor.red = float32toubyte8(R);
-			map->inAreaColor.green = float32toubyte8(V);
-			map->inAreaColor.blue = float32toubyte8(B);
+			printf("%d\n",R);
+			printf("%d\n",V);
+			printf("%d\n",B);
+			map->inAreaColor.red = (unsigned char)R;
+			map->inAreaColor.green = (unsigned char)V;
+			map->inAreaColor.blue = (unsigned char)B;
+			printf("couleur des zones d'entrée : %d %d %d\n",map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue);
+
 
 			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			map->outAreaColor.red = float32toubyte8(R);
-			map->outAreaColor.green = float32toubyte8(V);
-			map->outAreaColor.blue = float32toubyte8(B);
+			printf("%d\n",R);
+			printf("%d\n",V);
+			printf("%d\n",B);
+			map->outAreaColor.red = (unsigned char)R;
+			map->outAreaColor.green = (unsigned char)V;
+			map->outAreaColor.blue = (unsigned char)B;
+			printf("couleur des zones de sortie : %d %d %d\n",map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
 
 			fscanf(file,"%d\n",&(map->nodeList->size));
+			printf("nombre de noeuds : %d\n",map->nodeList->size);
 
 
 			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
 			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
+			printf(" noeud : %d %d\n",node1->x,node1->y);
 			
-
+			int size = map->nodeList->size;
+			printf("taille = %d",size);
 			map->nodeList = createList((void*)node1); 
 
-			int i=0;
-			while (i<(map->nodeList->size)-1){
+			int j=0;
+
+
+			while (j<size-1){
+
 				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
 				fscanf(file,"%d %d\n",&(node->x),&(node->y));
+			printf(" noeud : %d %d\n",node->x,node->y);
 				insertBottomCell(map->nodeList,(void*)node);
+				j++;
 			}
 
-			// On vide  le buffer et on ferme le fichier
+
+
+			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
 			return 1;
 		}
-	}
+	/*}*/
 }
 
 void dumpColor3u(Color3u color){

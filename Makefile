@@ -1,47 +1,27 @@
-# $(BIN) est la nom du binaire genere
-BIN = bin/itd
-# FLAG
-FLAGS = -g -Wall
-#Répertoire d'include des librairies
-INCLUDES = include
-# Répertoire des librairies
-LIBDIR = ./lib
-# Librairies
-LIBS = -lglut -lGL -lGLU -lm
-# Compilateur
 CC = gcc
+CFLAGS = -Wall -ansi
+LDFLAGS = -lSDL
+
+APP_BIN = raytracer
 
 SRC_PATH = src
 OBJ_PATH = obj
+INC_PATH = -I include
 BIN_PATH = bin
+LIB_PATH = lib
 
 SRC_FILES = $(shell find $(SRC_PATH) -type f -name '*.c')
-OBJ_FILES = $(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRC_FILES))
-LIBS = 
+OBJ_FILES = $(patsubst $(SRC_PATH)/%.c,$(OBJ_PATH)/%.o, $(SRC_FILES))
 
-all : $(BIN) 
- 
-$(BIN): $(OBJ_FILES)
-	@echo "PHASE DE LIEN..."
-	@$(CC) $(FLAGS) -L$(LIBDIR) -I$(INCLUDES) -o $(BIN) $^ $(LIBS)
-	@echo "Compilation terminée.\nExécutez $(BIN) pour lancer le programme."
+all: $(APP_BIN)
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c $(LIBS)
-		@echo "Génération de $@ \c"
-		@$(CC) -I$(INCLUDES) $(FLAGS) -c $< -o $@
-		@echo "=>OK"
+$(APP_BIN): $(OBJ_FILES)
+	@mkdir -p $(BIN_PATH)
+	$(CC) -o $(BIN_PATH)/$(APP_BIN) $(OBJ_FILES) $(LDFLAGS)
 
-$(LIBS):
-	@echo "\n-----Compilation des librairies du projet-----"
-	@(cd $(LIBDIR) && $(MAKE))
-	@echo "-----Fin de la compilation des librairies.-----\n"
-	
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	@mkdir -p "$(@D)"
+	$(CC) -c $< -o $@ $(CFLAGS) $(INC_PATH)
+
 clean:
-	rm -f $(BIN)
-	rm -f $(OBJ_PATH)/*.o $(SRC_PATH)/*~ $(INCLUDES)/*~ 
-	find . -name "*~" -exec rm {} \;
-
-#Nettoie aussi dans les libs
-bigclean: clean
-	@(cd $(LIBDIR) && $(MAKE) bigclean)
-
+	rm $(OBJ_FILES) $(BIN_PATH)/$(APP_BIN)
