@@ -6,7 +6,7 @@
 #include "Utils.h"
 #include "list.h"
 
-static const unsigned char MONSTERS_PER_WAVE = 10;
+#define MONSTERS_PER_WAVE 10
 
 /* Unité de temps d'un pas de jeu = 10ms */
 static const Uint32 TIMESTEP_MILLISECONDS = 10;
@@ -26,6 +26,7 @@ typedef struct{
 
 /**
  * Variable globale contenant l'état du monde actuel.
+ * Voir si c'est vraiment pertinent de la placer ici.
  */
 World currentWorld;
 
@@ -33,7 +34,7 @@ World currentWorld;
  * Initialise un monde à partir du fichier .itd
  * dont le chemin est passé en paramètre.
  */
-void initWorld(const char* pathToItdFile);
+World initWorld(const char* pathToItdFile);
 
 /**
  * Indique si la zone de la carte correspondant
@@ -44,11 +45,17 @@ void initWorld(const char* pathToItdFile);
 bool isAreaConstructible(int x1, int y1, int x2, int y2);
 
 /**
- * Fait avancer le monde d'un pas de temps.
+ * Fait avancer le monde d'un ou plusieurs pas de temps.
  * Appelée à chaque nouveau tour de boucle de 
  * jeu. Renvoie si le jeu est terminé ou non.
  */
 bool worldNewStep(World* world);
+
+/*
+ * Effectue un tour de jeux.
+ * Appelée par worldNewStep.
+ */
+bool doTurn(World* world);
 
 /**
  * Fait tirer toutes les tours capable
@@ -65,6 +72,6 @@ void towersShoot(List* towerList);
  * mettre à jour la durée depuis laquel le monstre a
  * bougé depuis la dernière fois.
  */
-void monstersMove(Monster* monsters);
+void moveMonsters(Monster* monsters, List* pathNodeList);
 
 #endif

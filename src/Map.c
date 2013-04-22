@@ -26,6 +26,34 @@ Map initMap(){
 	
 	return newMap;
 }
+
+Point3D nextNode(List* pathNodeList, Point3D currentNode){
+	if(pathNodeList == NULL){
+		fprintf(stderr, "Erreur fatale : La liste de noeuds de chemin passée en paramètre de nextNode est NULL.\n");
+		exit(-1);
+	}
+	
+	Point3D* tmpNode = NULL;
+	bool pointIsNode = false;
+	
+	goToHeadList(pathNodeList);
+	//On cherche le node courant
+	while( (tmpNode = (Point3D*) nextData(pathNodeList) ) != NULL && !pointIsNode){
+		pointIsNode = arePointsEquals(currentNode, *tmpNode);
+	}
+	
+	if(tmpNode == NULL){
+		fprintf(stderr, "Erreur fatale, le point passé en paramètre de nextNode n'est pas un noeud valide.\n");
+		exit(-1);
+	}
+	
+	//Puis on retourne celui qui le suit.
+	//La liste gère toute seule si elle est en fin de liste et ne "dépasse" pas (reste sur le dernier node)
+	tmpNode = (Point3D*) nextData(pathNodeList);
+
+	return *tmpNode;
+}
+
 void dumpColor3u(Color3u color){
 	printf("(r:%d, g:%d, b:%d)", color.red, color.green, color.blue);
 }
@@ -48,8 +76,8 @@ void dumpMap(Map map){
 	printf("\nNode list (%d nodes)\n", map.nodeList->size);
 	goToHeadList(map.nodeList);
 	
-	PathNode* cur = NULL;
+	Point3D* cur = NULL;
 	while( (cur = nextData(map.nodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.nodeList->position, cur->x, cur->y);
+		printf("Node %d : x=%f y=%f\n", map.nodeList->position, cur->x, cur->y);
 	}
 }

@@ -12,30 +12,53 @@ bool worldNewStep(World* world){
 	if (turnsRemaining == 0) turnsRemaining = 1;
 	
 	while(i < turnsRemaining && !isGameFinished){
-		isGameFinished = doTurn();
+		isGameFinished = doTurn(world);
 		i++;
 	}
 	return isGameFinished;
 }
 
 bool doTurn(World* world){
+//TODO
 	if(world == NULL) return false;
+	bool isGameFinished = false;
 	
-	monstersMove(&(world->currentMonsters));
+	moveMonsters(world->currentMonsters, world->loadedMap.nodeList);
 	towersShoot(&(world->currentTowersList));
-
+	
+	//Le jeu est-il fini ?
+	//On regarde si un monstre a atteint l'arrivée
+	int i = 0;
+	while(i < MONSTERS_PER_WAVE && !isGameFinished){
+		isGameFinished = arePointsEquals(world->currentMonsters[i].position,world->loadedMap.endPoint);
+		++i;
+	}
+	
+	return isGameFinished;
 }
 
-void monstersMove(Monster* monsters){
+//Note : la variable monster->speed est égale au nombre de tours nécessaires au monstre pour
+//avancer d'un pixel.
+void moveMonsters(Monster* monsters, List* pathNodeList){
 	if(monsters == NULL) return;
 		
 	int i = 0;
-	int nbPixelMove = 0;
+	bool monsterMove = false;
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-		nbPixelMove = monsters[i]->speed / monsters[i]->nbTurnsSinceLastMove;
+		monsters[i].nbTurnsSinceLastMove++;
 		
-		//Calculer newPosX et newPosY
+		monsterMove = (monsters[i].nbTurnsSinceLastMove /  monsters[i].speed) >= 1;
+		if(monsterMove) moveMonster(&(monsters[i]));
 		
+		//Si on est sur un pathnode, on change de pathnode de destination
+		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
+			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+		}
+		
+		monsters[i].nbTurnsSinceLastMove = 0;
+		monsterMove = false;
 	}
 	
 }
+
+void towersShoot(List* towerList){}

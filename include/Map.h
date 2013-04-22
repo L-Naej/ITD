@@ -1,17 +1,15 @@
 #ifndef ITD_MAP_H
 #define ITD_MAP_H
 #include "list.h"
+#include "Point3D.h"
+
+/** Note : les PathNodes sont implémentés par des Point3D **/
 
 typedef struct{
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
 }Color3u;
-
-typedef struct{
-	int x;
-	int y;
-}PathNode;
 
 typedef struct{
 	char* name;
@@ -24,7 +22,9 @@ typedef struct{
 	Color3u inAreaColor;
 	Color3u outAreaColor;
 	
-	List* nodeList;
+	Point3D startPoint;
+	Point3D endPoint;
+	List* nodeList;///Liste de Point3D
 	
 	unsigned char* pixelArray;
 }Map;
@@ -40,6 +40,16 @@ Map initMap();
  * (tous les membres à NULL/0).
  */
 Color3u initColor();
+
+/**
+ * Retourne le prochain Node devant être atteint
+ * à partir du Node passé en paramètre et de la liste de Node (le chemin
+ * à suivre).
+ * /!\ Si le point passé en paramètre ne correspond pas à un Node, quitte le programme
+ * avec un message d'erreur.
+ * /!\ Si la List passée en paramètre est NULL, quitte le programme avec message d'erreur.
+ */
+Point3D nextNode(List* pathNodeList, Point3D currentNode);
 
 /**
  * Fonction de debug, affiche dans la

@@ -2,16 +2,25 @@
 #define ITD_MONSTER_H
 #include <stdlib.h>
 #include "Utils.h"
+#include "Point3D.h"
+#include "list.h"
 
 typedef struct{
-	float positionX;
-	float positionY;
+	Point3D position;
+	Point3D destination;
 	
 	//Nombre de tours depuis le dernier mouvement
-	Uint32 nbTurnsSinceLastMove;
-	Uint32 healthPoints;
+	unsigned char nbTurnsSinceLastMove;
+	unsigned char healthPoints;
 	//Exprimée en tours de jeux pour avancer d'un pixel
-	Uint32 speed;
+	unsigned char speed;
+	
+	List* myWay;
 }Monster;
 
+/*
+ * Fait bouger le monstre d'un pixel sur la carte selon
+ * sa position courante et sa destination.
+ */
+void moveMonster(Monster* monster);
 #endif
