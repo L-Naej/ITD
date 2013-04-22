@@ -1,6 +1,7 @@
 #ifndef LIST_H
 #define LIST_H
 #include <stdlib.h>
+#include "Utils.h"
 
 /**
  * Permet de connaître le type de liste

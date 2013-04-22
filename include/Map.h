@@ -24,7 +24,7 @@ typedef struct{
 	Color3u inAreaColor;
 	Color3u outAreaColor;
 	
-	List nodeList;
+	List* nodeList;
 	
 	unsigned char* pixelArray;
 }Map;

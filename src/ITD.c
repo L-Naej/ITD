@@ -10,9 +10,13 @@
 #endif
 #include <stdlib.h>
 #include <stdio.h>
-#include "Map.h"
+
 #include "ITD.h"
-#include "Utils.h"
+#include "World.h"
+#include "list.h"
+#include "ActionManager.h"
+#include "MapDrawer.h"
+#include "InterfaceDrawer.h"
 
 /**
  * Afficher menu
@@ -27,10 +31,10 @@ int main(int argc,  char* argv[]) {
 	}
 	
 /*-------------- GESTION DU MENU --------------------*/
-
+	//TODO
 	bool mapChosen = false;
 	List mapList;
-	char[MAX_FILE_LENGTH] mapName;
+	char mapName[MAX_FILE_LENGTH];
 	mapList = initMenu();
 	
 	while(mapChosen == false) {
@@ -45,7 +49,7 @@ int main(int argc,  char* argv[]) {
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		mapName = handleMenuActions();
+		handleMenuActions(mapName);
 		if(mapName != NULL) mapChosen = true;
 		
 		/* Calcul du temps écoulé */
@@ -58,9 +62,9 @@ int main(int argc,  char* argv[]) {
 	
 
 /*-------------- GESTION DU JEU --------------------*/
-
-	bool gameFinished = false;
-	while(!gameFinished) {
+	//TODO
+	bool gameFinished = false, askedForQuit = false;
+	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 		
@@ -71,7 +75,7 @@ int main(int argc,  char* argv[]) {
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime >= TIMESTEP_MILLISECONDS) {
-			gameFinished = worldNewStep();
+			gameFinished = worldNewStep(NULL);
 		}
 		 
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
@@ -87,7 +91,7 @@ int main(int argc,  char* argv[]) {
 		}
 		
 		/* Boucle traitant les evenements */
-		 handleGameActions();
+		askedForQuit = handleGameActions();
 	}
 
 	/* Liberation des ressources associées à la SDL */ 
@@ -117,7 +121,9 @@ int initWindow(){
 }
 
 List initMenu(){
-	
+	//TODO
+	List menuList;
+	return menuList;
 }
 
 void reshape() {

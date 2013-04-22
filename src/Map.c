@@ -20,12 +20,7 @@ Map initMap(){
 	newMap.inAreaColor = initColor();
 	newMap.outAreaColor = initColor();
 	
-	newMap.nodeList.head = NULL;
-	newMap.nodeList.bottom = NULL;
-	newMap.nodeList.cursor = NULL;
-	newMap.nodeList.size = 0;
-	newMap.nodeList.position = 0;
-	newMap.nodeList.type = NODE;
+	newMap.nodeList = createEmptyList(NODE);
 	
 	newMap.pixelArray = NULL;
 	
@@ -50,11 +45,11 @@ void dumpMap(Map map){
 	printf("\nOut Area color : ");
 	dumpColor3u(map.outAreaColor);
 	
-	printf("\nNode list (%d nodes)\n", map.nodeList.size);
-	goToHeadList(&map.nodeList);
+	printf("\nNode list (%d nodes)\n", map.nodeList->size);
+	goToHeadList(map.nodeList);
 	
 	PathNode* cur = NULL;
-	while( (cur = nextData(&map.nodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.nodeList.position, cur->x, cur->y);
+	while( (cur = nextData(map.nodeList)) != NULL){
+		printf("Node %d : x=%d y=%d\n", map.nodeList->position, cur->x, cur->y);
 	}
 }

@@ -1,10 +1,15 @@
 #ifndef ITD_WORLD_H
 #define ITD_WORLD_H
 #include "Map.h"
-#include "tower.h"
+#include "Tower.h"
+#include "Monster.h"
+#include "Utils.h"
 #include "list.h"
 
 static const unsigned char MONSTERS_PER_WAVE = 10;
+
+/* Unité de temps d'un pas de jeu = 10ms */
+static const Uint32 TIMESTEP_MILLISECONDS = 10;
 
 /**
  * Structure représentant l'état du "monde",
@@ -12,7 +17,7 @@ static const unsigned char MONSTERS_PER_WAVE = 10;
  * Choix de conception non définitifs...
  */
 typedef struct{
-	Uint32 currentTime;///Temps actuel
+	Uint32 worldTime;///Temps actuel dans le tour de jeu
 	Map loadedMap;///Map chargée
 	unsigned char currentMonstersWave;///Vague de monstres en cours (sur 20)
 	Monster currentMonsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
@@ -43,7 +48,7 @@ bool isAreaConstructible(int x1, int y1, int x2, int y2);
  * Appelée à chaque nouveau tour de boucle de 
  * jeu. Renvoie si le jeu est terminé ou non.
  */
-bool worldNewStep();
+bool worldNewStep(World* world);
 
 /**
  * Fait tirer toutes les tours capable
@@ -51,7 +56,7 @@ bool worldNewStep();
  * cette fonction est appelée.
  * (appelée à chaque pas de temps).
  */
-void towersShoot();
+void towersShoot(List* towerList);
 
 /**
  * Fait bouger tous les monstres à chaque pas de temps. 
@@ -60,6 +65,6 @@ void towersShoot();
  * mettre à jour la durée depuis laquel le monstre a
  * bougé depuis la dernière fois.
  */
-void monstersMove();
+void monstersMove(Monster* monsters);
 
 #endif

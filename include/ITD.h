@@ -1,6 +1,6 @@
 #ifndef ITD_ITD_H
 #define ITD_ITD_H
-
+#include "list.h"
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;
@@ -11,9 +11,6 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 /* Nombre minimal de millisecondes separant le rendu de deux images */
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
-
-/* Unité de temps d'un pas de jeu = 10ms */
-static const Uint32 TIMESTEP_MILLISECONDS = 10;
 
 /*Longueur max d'un nom de fichier*/
 static const unsigned int MAX_FILE_LENGTH = 30;

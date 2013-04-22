@@ -1,5 +1,7 @@
 #ifndef TOWERS
 #define TOWERS
+#include <stdlib.h>
+#include "Utils.h"
 
 typedef enum {
 	ROCKET, LASER, MITRAILLETTE, HYBRID
@@ -11,6 +13,10 @@ typedef struct {
 	int range;
 	int power;
 	float price;
+	Uint32 lastShot;
+	float positionX;
+	float positionY;
 }Tower;
 
 #endif
+
