@@ -35,25 +35,30 @@ void initWindow(){
 
 }
 int main(int argc, char** argv) {
-Map map = initMap();
-int result = loadMap(&map);
-printf("%d", result);
-	initWindow();
+	Map map = initMap();
 
+	int result = loadMap(&map);
+	printf("%d", result);
+	return 0;
+
+	dumpMap(map);
+
+	initWindow();
 	/* Boucle d'affichage */
 	int loop = 1;
 	while(loop) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
+
 		/* Placer ici le code de dessin */
 		/*
-		 * if(mode == MENU) drawMenu();
-		 * else{
-		 * 	drawWorld();
-		 * 	drawInterface();
-		 * } 
-		 */
+		* if(mode == MENU) drawMenu();
+		* else{
+		* 	drawWorld();
+		* 	drawInterface();
+		* } 
+		*/
 		
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();
@@ -71,10 +76,10 @@ printf("%d", result);
 
 	
 
-	/* Liberation des ressources associées à la SDL */ 
-	SDL_Quit();
+		/* Liberation des ressources associées à la SDL */ 
+		SDL_Quit();
 
-	return EXIT_SUCCESS;
+		return EXIT_SUCCESS;
 }
 
 

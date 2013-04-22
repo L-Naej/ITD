@@ -3,6 +3,7 @@
 #include <string.h>
 #include "Map.h"
 #include "utils.h"
+#define MAX_LENGHT 30
 
 Color3u initColor(void){
 	Color3u newColor;
@@ -38,27 +39,31 @@ int loadMap(Map* map){
 	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen("../map/map1.itd","r");
+	file = fopen("map/map1.itd","r");
 	if(file == NULL){
 		return 0;
 	}
 	else{
-		char versionMap [30];
+		char versionMap [MAX_LENGHT];
+		int k;
+		for (k=0; k<MAX_LENGHT;k++){
+			versionMap[k]= 0;
+		}
 		int i;
 		for (i=0; i< 6; i++){
-			fscanf(file,"%c",versionMap);
-			printf("version : %s\n",versionMap);
+			fscanf(file,"%c",versionMap+i);
+			printf("version : %s\n",versionMap+i);
 		}
 		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
-		/*if (strcmp(versionMap,"@ITDSP1")!= 0 && strcmp(versionMap,"@ITDSP2")!=0 ){
+		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 			printf("Fichier incompatible");
 			return 0;
 		} 
 
-		if (strcmp(versionMap,"@ITDSP1")==0){*/
+		if (strcmp(versionMap,"@ITD 1")==0){
 
 			/* nom de l'image*/
-			(map->name) = (char*)malloc(sizeof(char)*30);
+			(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
  /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
 			fscanf(file,"%s \n",map->name);
 			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
@@ -118,10 +123,10 @@ int loadMap(Map* map){
 
 			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
 			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
-			printf(" noeud : %d %d\n",node1->x,node1->y);
+			/*printf(" noeud : %d %d\n",node1->x,node1->y);*/
 			
 			int size = map->nodeList->size;
-			printf("taille = %d",size);
+			/*printf("taille = %d",size);*/
 			map->nodeList = createList((void*)node1); 
 
 			int j=0;
@@ -131,7 +136,7 @@ int loadMap(Map* map){
 
 				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
 				fscanf(file,"%d %d\n",&(node->x),&(node->y));
-			printf(" noeud : %d %d\n",node->x,node->y);
+			/*printf(" noeud : %d %d\n",node->x,node->y);*/
 				insertBottomCell(map->nodeList,(void*)node);
 				j++;
 			}
@@ -143,7 +148,7 @@ int loadMap(Map* map){
 			fclose(file);
 			return 1;
 		}
-	/*}*/
+	}
 }
 
 void dumpColor3u(Color3u color){
@@ -151,6 +156,7 @@ void dumpColor3u(Color3u color){
 }
 
 void dumpMap(Map map){
+	printf ("coucou\n");
 	printf("-------- DUMP MAP %s --------\n", map.name == NULL ? "" : map.name);
 	printf("Width : %d\n", map.width);
 	printf("Height : %d\n", map.height);
