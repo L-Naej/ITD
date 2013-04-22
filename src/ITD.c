@@ -6,6 +6,7 @@
 #include "Map.h"
 #include "sdl_tools.h"
 #include "tower.h"
+#include "interfaceDrawer.h"
 
 /* Dimensions de la fenêtre */
 static unsigned int WINDOW_WIDTH = 800;
@@ -20,31 +21,39 @@ static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 void initWindow(){
 	/* Initialisation de la SDL */
 	if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
-	fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
-	return EXIT_FAILURE;
-	}
-
-	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER)) {
-		fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
+		fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
 		return EXIT_FAILURE;
 	}
 
+	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
+	 if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | 		SDL_RESIZABLE)) {
+    		fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
+    		exit(EXIT_FAILURE);
+  	}
+
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
+	
+
+    
 
 }
+
 int main(int argc, char** argv) {
 	Map map = initMap();
 
 	int result = loadMap(&map);
 	printf("%d", result);
 	dumpMap(map);
-	return 0;
 
+	char* menuHelp = "images/menuhelp.jpg";
+	GLuint texture;
 
 
 	initWindow();
+  	SDL_WM_SetCaption("OpenGL", NULL);
+
+	texture = makeTexture ();
 	/* Boucle d'affichage */
 	int loop = 1;
 	while(loop) {
@@ -60,7 +69,19 @@ int main(int argc, char** argv) {
 		* 	drawInterface();
 		* } 
 		*/
-		
+   		glClear(GL_COLOR_BUFFER_BIT);
+    
+   		glMatrixMode(GL_MODELVIEW); 
+    		glLoadIdentity();
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glAlphaFunc(GL_GREATER,0.0f);
+
+		drawCarre();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();
 
