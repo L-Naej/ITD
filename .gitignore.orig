@@ -16,5 +16,11 @@
 *.out
 *.app
 
+<<<<<<< HEAD
 #Temporary files
+=======
+#Sujet du projet
+towerDefense.pdf
+#fichiers temporaires
+>>>>>>> master
 *~

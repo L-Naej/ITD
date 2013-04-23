@@ -24,7 +24,7 @@ typedef struct{
 	Color3u inAreaColor;
 	Color3u outAreaColor;
 	
-	List nodeList;
+	List* nodeList;
 }Map;
 
 /**
@@ -32,6 +32,12 @@ typedef struct{
  * (tous les membres à NULL/0).
  */
 Map initMap();
+
+/**
+ * charge les infos venant du .itd
+ * dans la structure Map.
+ */
+int loadMap(Map*);
 
 /**
  * Retourne une structure Color3u initialisée
