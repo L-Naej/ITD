@@ -11,6 +11,11 @@
 /* Unité de temps d'un pas de jeu = 10ms */
 static const Uint32 TIMESTEP_MILLISECONDS = 10;
 
+/*Temps d'attente en nombre de tours entre deux vagues successives */
+static const Uint32 NB_TURNS_BETWEEN_WAVES = 100;//=1seconde
+
+static const Uint32 NB_TOTAL_WAVES = 20;
+
 /**
  * Structure représentant l'état du "monde",
  * c'est-à-dire de la partie en cours.
@@ -18,10 +23,14 @@ static const Uint32 TIMESTEP_MILLISECONDS = 10;
  */
 typedef struct{
 	Uint32 worldTime;///Temps actuel dans le tour de jeu
-	Map loadedMap;///Map chargée
+	Map map;///Map chargée
 	unsigned char currentMonstersWave;///Vague de monstres en cours (sur 20)
+	unsigned char nbMonstersAlive;///Nombre de monstres encore en vie
+	bool isBetweenWave;///Indique si l'on est entre deux vagues de monstres
+	Uint32 nbTurnsWaiting;///Nombre de tours restant à attendre avant la prochaine vague de monstres
+	
 	Monster currentMonsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
-	List currentTowersList;///Liste des tours actuellement sur la map.
+	List* currentTowersList;///Liste des tours actuellement sur la map.
 }World;
 
 /**

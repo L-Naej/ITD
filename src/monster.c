@@ -3,6 +3,45 @@
 #include <stdio.h>
 #include "geometry.h"
 
+Monster createMonster(unsigned char wave){
+//TODO
+	return createMonster1();
+}
+
+Monster createMonster1() {
+
+	/*Type monster = MONSTER_TYPE1;*/
+	Monster monster;
+	
+	monster.life = 3;
+	monster.strenght = 1;
+	monster.money = 5;
+	monster.speed = 2;
+	
+	monster.position = PointXYZ(-1,-1,-1);
+	monster.destination = PointXYZ(-1,-1,-1);
+	monster.nbTurnsSinceLastMove = 0;
+
+	return monster;
+}
+
+
+Monster createMonster2() {
+
+	/*Type monster = MONSTER_TYPE2;*/	
+	Monster monster;
+	
+	monster.life = 3;
+	monster.strenght = 1;
+	monster.money = 5;
+	monster.speed = 1;
+	monster.posX = 0;
+	monster.posY = 0;
+
+	return monster;
+	
+}
+
 /* Explication de la détermination du pixel vers lequel le monstre doit aller :
  * On sait qu'à chaque tour un monstre avance au maximum d'un pixel.
  * Cette fonction a donc pour rôle de déplacer un monstre d'un pixel dans la bonne direction
