@@ -1,9 +1,7 @@
 #ifndef ITD_MAP_H
 #define ITD_MAP_H
-#include <SDL/SDL.h>
 #include "list.h"
 #include "point3D.h"
-#include "utils.h"
 
 /** Note : les PathNodes sont implémentés par des Point3D **/
 
@@ -26,9 +24,9 @@ typedef struct{
 	
 	Point3D startPoint;
 	Point3D endPoint;
-	List* pathNodeList;///Liste de Point3D
+	List* nodeList;///Liste de Point3D
 	
-	SDL_Surface* pixelArray;
+	unsigned char* pixelArray;
 }Map;
 
 /**
@@ -40,9 +38,8 @@ Map initMap();
 /**
  * charge les infos venant du .itd
  * dans la structure Map.
- * Retourne vrai si le chargement a réussi, faux sinon.
  */
-bool loadMap(Map*, const char* pathToItdFile);
+int loadMap(Map*);
 
 /**
  * Retourne une structure Color3u initialisée

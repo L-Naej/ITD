@@ -1,35 +1,47 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+<<<<<<< HEAD
 #include "map.h"
 
+Color3u initColor(){
+=======
+#include <string.h>
+#include "Map.h"
+#include "utils.h"
 #define MAX_LENGHT 30
 
 Color3u initColor(void){
+>>>>>>> marina
 	Color3u newColor;
 	newColor.red = newColor.green = newColor.blue = 0;
 	return newColor;
 }
 
+<<<<<<< HEAD
+Map initMap(){
+=======
 Map initMap(void){
+>>>>>>> marina
 	Map newMap;
 	newMap.name = NULL;
 	newMap.width = 0;
 	newMap.height = 0;
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> marina
 	newMap.pathColor = initColor();
 	newMap.nodeColor = initColor();
 	newMap.constructAreaColor = initColor();
 	newMap.inAreaColor = initColor();
 	newMap.outAreaColor = initColor();
-
-	newMap.pathNodeList = createEmptyList();
-	if(newMap.pathNodeList == NULL){
-		perror("Erreur fatale : Impossible d'allouer la mémoire pour le chemin des monstres.\n");
-		exit(-1);
-	}
+<<<<<<< HEAD
+	
+	newMap.nodeList = createEmptyList(NODE);
+	
 	newMap.pixelArray = NULL;
-
+	
 	return newMap;
 }
 
@@ -58,18 +70,27 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	tmpNode = (Point3D*) nextData(pathNodeList);
 
 	return *tmpNode;
+=======
+
+newMap.nodeList = createEmptyList();
+	newMap.nodeList->head = NULL;
+	newMap.nodeList->bottom = NULL;
+	newMap.nodeList->cursor = NULL;
+	newMap.nodeList->size = 0;
+	newMap.nodeList->position = 0;
+
+
+	return newMap;
 }
 
-bool loadMap(Map* map, const char* pathToItdFile){	
-	if(pathToItdFile == NULL || map == NULL || map->pathNodeList == NULL)
-		return false;
-	
+int loadMap(Map* map){	
+
 	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen(pathToItdFile,"r");
+	file = fopen("map/map1.itd","r");
 	if(file == NULL){
-		return false;
+		return 0;
 	}
 	else{
 		char versionMap [MAX_LENGHT];
@@ -85,17 +106,13 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
 		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 			printf("Fichier incompatible");
-			return false;
+			return 0;
 		} 
 
 		if (strcmp(versionMap,"@ITD 1")==0){
 
 			/* nom de l'image*/
 			(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
-			if(map->name == NULL){
-				perror("Erreur fatale : impossible d'allouer l'espace mémoire nécessaire dans loadMap\n");
-				exit(-1);
-			}
  /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
 			fscanf(file,"%s \n",map->name);
 			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
@@ -148,53 +165,51 @@ bool loadMap(Map* map, const char* pathToItdFile){
 			map->outAreaColor.green = (unsigned char)V;
 			map->outAreaColor.blue = (unsigned char)B;
 			printf("couleur des zones de sortie : %d %d %d\n",map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
-			
-			int size;
-			fscanf(file,"%d\n",&size);
-			printf("nombre de noeuds : %d\n",size);
 
-			
-			/*
-			Point3D* node1 = (Point3D*)malloc (sizeof(Point3D));
-			if(node1 == NULL){
-				fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
-				exit(-1);
-			}
-			
-			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));*/
+			fscanf(file,"%d\n",&(map->nodeList->size));
+			printf("nombre de noeuds : %d\n",map->nodeList->size);
+
+
+			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
+			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
 			/*printf(" noeud : %d %d\n",node1->x,node1->y);*/
 			
+			int size = map->nodeList->size;
 			/*printf("taille = %d",size);*/
-			
+			map->nodeList = createList((void*)node1); 
 
 			int j=0;
 
-			while (j<size){
-				Point3D* node = (Point3D*)malloc (sizeof(Point3D));
-				if(node == NULL){
-					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
-					exit(-1);
-				}		
+
+			while (j<size-1){
+
+				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
 				fscanf(file,"%d %d\n",&(node->x),&(node->y));
 			/*printf(" noeud : %d %d\n",node->x,node->y);*/
-				insertBottomCell(map->pathNodeList,(void*)node);
+				insertBottomCell(map->nodeList,(void*)node);
 				j++;
 			}
+
+
 
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
-			return true;
+			return 1;
 		}
 	}
+>>>>>>> marina
 }
-
 
 void dumpColor3u(Color3u color){
 	printf("(r:%d, g:%d, b:%d)", color.red, color.green, color.blue);
 }
 
 void dumpMap(Map map){
+<<<<<<< HEAD
+=======
+	printf ("coucou\n");
+>>>>>>> marina
 	printf("-------- DUMP MAP %s --------\n", map.name == NULL ? "" : map.name);
 	printf("Width : %d\n", map.width);
 	printf("Height : %d\n", map.height);
@@ -209,11 +224,17 @@ void dumpMap(Map map){
 	printf("\nOut Area color : ");
 	dumpColor3u(map.outAreaColor);
 	
-	printf("\nNode list (%d nodes)\n", map.pathNodeList->size);
-	goToHeadList(map.pathNodeList);
+	printf("\nNode list (%d nodes)\n", map.nodeList->size);
+	goToHeadList(map.nodeList);
 	
+<<<<<<< HEAD
 	Point3D* cur = NULL;
-	while( (cur = nextData(map.pathNodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.pathNodeList->position, cur->x, cur->y);
+	while( (cur = nextData(map.nodeList)) != NULL){
+		printf("Node %d : x=%f y=%f\n", map.nodeList->position, cur->x, cur->y);
+=======
+	PathNode* cur = NULL;
+	while( (cur = nextData(map.nodeList)) != NULL){
+		printf("Node %d : x=%d y=%d\n", map.nodeList->position, cur->x, cur->y);
+>>>>>>> marina
 	}
 }

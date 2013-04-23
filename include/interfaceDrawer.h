@@ -3,7 +3,4 @@
 
 void drawInterface();
 void drawMenu();
-void drawCarre(void);
-GLuint makeTexture (void);
-
 #endif
