@@ -36,6 +36,12 @@ typedef struct{
 Map initMap();
 
 /**
+ * charge les infos venant du .itd
+ * dans la structure Map.
+ */
+int loadMap(Map*);
+
+/**
  * Retourne une structure Color3u initialisée
  * (tous les membres à NULL/0).
  */
