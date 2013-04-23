@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include "geometry.h"
 
+Monster createMonster(unsigned char wave){
+//TODO
+	return createMonster1();
+}
 
 Monster createMonster1() {
 
@@ -12,12 +16,13 @@ Monster createMonster1() {
 	monster.life = 3;
 	monster.strenght = 1;
 	monster.money = 5;
-	monster.speed = 0.5;
-	monster.posX = 0;
-	monster.posY = 0;
+	monster.speed = 2;
+	
+	monster.position = PointXYZ(-1,-1,-1);
+	monster.destination = PointXYZ(-1,-1,-1);
+	monster.nbTurnsSinceLastMove = 0;
 
 	return monster;
-	
 }
 
 
@@ -35,22 +40,6 @@ Monster createMonster2() {
 
 	return monster;
 	
-}
-
-Monster createMonster(Monster monster){
-	switch (monster.type){
-		case MONSTER_TYPE1:
-			return createMonster1();
-		break;
-
-		case MONSTER_TYPE2:
-			return createMonster2();
-		break;
-		default :
-			return createMonster1();
-		break;
-	}
-
 }
 
 /* Explication de la détermination du pixel vers lequel le monstre doit aller :

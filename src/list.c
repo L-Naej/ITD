@@ -444,16 +444,17 @@ void* delCellInList(List* list, Cell* theCell){
 
 void freeCellByPosition(List* list, int position){
 	/*delCellByPosition fait les tests pour nous...*/
-	delCellByPosition(list,position);
-
+	void* data = delCellByPosition(list,position);
+	free(data);
 }
 
 void freeCellInList(List* list, Cell* c){
-	delCellInList(list,c);
-
+	void* data = delCellInList(list,c);
+	free(data);
 }
 
 void freeCell(Cell* c){
+	free(c->userData);
 	free(c);
 }
 

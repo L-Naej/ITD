@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "map.h"
-#include "utils.h"
+
 #define MAX_LENGHT 30
 
 Color3u initColor(void){
@@ -23,9 +23,12 @@ Map initMap(void){
 	newMap.inAreaColor = initColor();
 	newMap.outAreaColor = initColor();
 
-	newMap.nodeList = createEmptyList();
+	newMap.pathNodeList = createEmptyList();
+	if(newMap.pathNodeList == NULL){
+		perror("Erreur fatale : Impossible d'allouer la mémoire pour le chemin des monstres.\n");
+		exit(-1);
+	}
 	newMap.pixelArray = NULL;
-
 
 	return newMap;
 }
@@ -57,14 +60,16 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	return *tmpNode;
 }
 
-int loadMap(Map* map){	
-
+bool loadMap(Map* map, const char* pathToItdFile){	
+	if(pathToItdFile == NULL || map == NULL || map->pathNodeList == NULL)
+		return false;
+	
 	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen("map/map1.itd","r");
+	file = fopen(pathToItdFile,"r");
 	if(file == NULL){
-		return 0;
+		return false;
 	}
 	else{
 		char versionMap [MAX_LENGHT];
@@ -80,13 +85,17 @@ int loadMap(Map* map){
 		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
 		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 			printf("Fichier incompatible");
-			return 0;
+			return false;
 		} 
 
 		if (strcmp(versionMap,"@ITD 1")==0){
 
 			/* nom de l'image*/
 			(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
+			if(map->name == NULL){
+				perror("Erreur fatale : impossible d'allouer l'espace mémoire nécessaire dans loadMap\n");
+				exit(-1);
+			}
  /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
 			fscanf(file,"%s \n",map->name);
 			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
@@ -139,37 +148,43 @@ int loadMap(Map* map){
 			map->outAreaColor.green = (unsigned char)V;
 			map->outAreaColor.blue = (unsigned char)B;
 			printf("couleur des zones de sortie : %d %d %d\n",map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
+			
+			int size;
+			fscanf(file,"%d\n",&size);
+			printf("nombre de noeuds : %d\n",size);
 
-			fscanf(file,"%d\n",&(map->nodeList->size));
-			printf("nombre de noeuds : %d\n",map->nodeList->size);
-
-
-			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
-			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
+			
+			/*
+			Point3D* node1 = (Point3D*)malloc (sizeof(Point3D));
+			if(node1 == NULL){
+				fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
+				exit(-1);
+			}
+			
+			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));*/
 			/*printf(" noeud : %d %d\n",node1->x,node1->y);*/
 			
-			int size = map->nodeList->size;
 			/*printf("taille = %d",size);*/
-			map->nodeList = createList((void*)node1); 
+			
 
 			int j=0;
 
-
-			while (j<size-1){
-
-				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
+			while (j<size){
+				Point3D* node = (Point3D*)malloc (sizeof(Point3D));
+				if(node == NULL){
+					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
+					exit(-1);
+				}		
 				fscanf(file,"%d %d\n",&(node->x),&(node->y));
 			/*printf(" noeud : %d %d\n",node->x,node->y);*/
-				insertBottomCell(map->nodeList,(void*)node);
+				insertBottomCell(map->pathNodeList,(void*)node);
 				j++;
 			}
-
-
 
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
-			return 1;
+			return true;
 		}
 	}
 }
@@ -194,11 +209,11 @@ void dumpMap(Map map){
 	printf("\nOut Area color : ");
 	dumpColor3u(map.outAreaColor);
 	
-	printf("\nNode list (%d nodes)\n", map.nodeList->size);
-	goToHeadList(map.nodeList);
+	printf("\nNode list (%d nodes)\n", map.pathNodeList->size);
+	goToHeadList(map.pathNodeList);
 	
 	Point3D* cur = NULL;
-	while( (cur = nextData(map.nodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.nodeList->position, cur->x, cur->y);
+	while( (cur = nextData(map.pathNodeList)) != NULL){
+		printf("Node %d : x=%d y=%d\n", map.pathNodeList->position, cur->x, cur->y);
 	}
 }
