@@ -16,7 +16,4 @@ typedef struct {
 	Uint32 lastShot;
 	float positionX;
 	float positionY;
-}Tower;
-
 #endif
-

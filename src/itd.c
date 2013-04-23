@@ -140,8 +140,5 @@ int setVideoMode() {
   
   reshape();
   
-  glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  
-  return 0;
+  return EXIT_SUCCESS;
 }

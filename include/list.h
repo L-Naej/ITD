@@ -3,15 +3,7 @@
 #include <stdlib.h>
 #include "utils.h"
 
-/**
- * Permet de connaître le type de liste
- * à l'exécution. Un type UNKNOWN est prévu
- * au cas où.
- */
-typedef enum list_type{
-	NODE,
-	UNKNOWN
-} LIST_TYPE;
+
 
 /**
  * Représente une cellule d'une liste,
@@ -36,7 +28,6 @@ typedef struct list{
 	
 	int size;
 	int position;
-	LIST_TYPE type;
 } List;
 
 /**
@@ -63,14 +54,14 @@ Cell* createCell(void* userData);
 /**
  * Créé une liste de Cell vide.
  */ 
-List* createEmptyList(LIST_TYPE type);
+List* createEmptyList();
 /**
  * Créé une liste de Cell ayant pour premier élément
  * une Cell contenant headUserData. Place le curseur sur 
  * la première donnée de la liste.
  * @param headUserData le premier élément de la liste créée.
  */
-List* createList(LIST_TYPE type, void* headUserData);
+List* createList(void* headUserData);
 
 /**
  * Renvoie le Cell courrant de la liste list
