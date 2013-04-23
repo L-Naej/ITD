@@ -1,6 +1,6 @@
 #include "World.h"
 #include <SDL/SDL.h>
-#include "Utils.h"
+#include "utils.h"
 
 bool worldNewStep(World* world){
 	if(world == NULL) return false;

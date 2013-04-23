@@ -1,6 +1,6 @@
-#ifndef LDR_POINT3D_H
-#define LDR_POINT3D_H
-#include "Utils.h"
+#ifndef ITD_POINT3D_H
+#define ITD_POINT3D_H
+#include "utils.h"
 
 typedef struct{
 	float x;

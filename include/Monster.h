@@ -1,8 +1,8 @@
 #ifndef ITD_MONSTER_H
 #define ITD_MONSTER_H
 #include <stdlib.h>
-#include "Utils.h"
-#include "Point3D.h"
+#include "utils.h"
+#include "point3D.h"
 #include "list.h"
 
 typedef struct{

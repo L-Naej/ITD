@@ -1,4 +1,4 @@
-#include "Vector3D.h"
+#include "vector3D.h"
 #include <math.h>
 #include <stdio.h>
 

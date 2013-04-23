@@ -1,4 +1,4 @@
-#include "InterfaceDrawer.h"
+#include "interfaceDrawer.h"
 //TODO
 void drawInterface(){}
 void drawMenu(){}

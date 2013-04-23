@@ -1,7 +1,7 @@
 #ifndef ITD_MAP_H
 #define ITD_MAP_H
 #include "list.h"
-#include "Point3D.h"
+#include "point3D.h"
 
 /** Note : les PathNodes sont implémentés par des Point3D **/
 

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "Tower.h"
+#include "tower.h"
 
 void TestTypeTower(Tower* tower){
 	switch (tower->type){

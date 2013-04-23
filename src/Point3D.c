@@ -1,4 +1,4 @@
-#include "Point3D.h"
+#include "point3D.h"
 #include <stdio.h>
 
 Point3D PointXYZ(float x, float y, float z){

@@ -1,5 +1,5 @@
-#ifndef LDR_VECTOR3D_H
-#define LDR_VECTOR3D_H
+#ifndef ITD_VECTOR3D_H
+#define ITD_VECTOR3D_H
 
 typedef struct{
 	float x;

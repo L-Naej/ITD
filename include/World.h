@@ -1,9 +1,9 @@
 #ifndef ITD_WORLD_H
 #define ITD_WORLD_H
-#include "Map.h"
-#include "Tower.h"
-#include "Monster.h"
-#include "Utils.h"
+#include "map.h"
+#include "tower.h"
+#include "monster.h"
+#include "utils.h"
 #include "list.h"
 
 #define MONSTERS_PER_WAVE 10

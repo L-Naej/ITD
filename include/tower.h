@@ -1,7 +1,7 @@
 #ifndef TOWERS
 #define TOWERS
 #include <stdlib.h>
-#include "Utils.h"
+#include "utils.h"
 
 typedef enum {
 	ROCKET, LASER, MITRAILLETTE, HYBRID

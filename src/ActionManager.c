@@ -1,4 +1,4 @@
-#include "ActionManager.h"
+#include "actionManager.h"
 
 void handleMenuActions(char* mapName){}
 bool handleGameActions(){}

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "Map.h"
+#include "map.h"
 
 Color3u initColor(){
 	Color3u newColor;

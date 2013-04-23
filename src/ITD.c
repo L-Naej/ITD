@@ -11,12 +11,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "ITD.h"
-#include "World.h"
+#include "itd.h"
+#include "world.h"
 #include "list.h"
-#include "ActionManager.h"
-#include "MapDrawer.h"
-#include "InterfaceDrawer.h"
+#include "actionManager.h"
+#include "mapDrawer.h"
+#include "interfaceDrawer.h"
 
 /**
  * Afficher menu
