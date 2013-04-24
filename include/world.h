@@ -6,15 +6,15 @@
 #include "utils.h"
 #include "list.h"
 
-#define MONSTERS_PER_WAVE 10
+#define MONSTERS_PER_WAVE 1
 
 /* Unité de temps d'un pas de jeu = 10ms */
-static const Uint32 TIMESTEP_MILLISECONDS = 10;
+static const int TIMESTEP_MILLISECONDS = 10;
 
 /*Temps d'attente en nombre de tours entre deux vagues successives */
-static const Uint32 NB_TURNS_BETWEEN_WAVES = 100;//=1seconde
+static const int NB_TURNS_BETWEEN_WAVES = 100;//=1seconde
 
-static const Uint32 NB_TOTAL_WAVES = 20;
+static const int NB_TOTAL_WAVES = 20;
 
 /**
  * Structure représentant l'état du "monde",

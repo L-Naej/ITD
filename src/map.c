@@ -44,7 +44,9 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	
 	goToHeadList(pathNodeList);
 	//On cherche le node courant
-	while( (tmpNode = (Point3D*) nextData(pathNodeList) ) != NULL && !pointIsNode){
+	/*Très important de tester pointIsNode en premier sinon on risque de se décaler encore une fois
+	dans la liste alors qu'il ne faut pas */
+	while( !pointIsNode && (tmpNode = (Point3D*) nextData(pathNodeList) ) != NULL){
 		pointIsNode = arePointsEquals(currentNode, *tmpNode);
 	}
 	
@@ -56,6 +58,8 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	//Puis on retourne celui qui le suit.
 	//La liste gère toute seule si elle est en fin de liste et ne "dépasse" pas (reste sur le dernier node)
 	tmpNode = (Point3D*) nextData(pathNodeList);
+	//Si on est sur le dernier point on le retourne lui même
+	if(tmpNode == NULL) return currentNode;
 
 	return *tmpNode;
 }
@@ -65,6 +69,10 @@ Point3D getStartPoint(const Map* map){
 	
 	goToHeadList(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) nextData(map->pathNodeList);
+	if(tmpPtr == NULL){
+		printf("startPoint NULL\n");
+		exit(-1);
+	}
 	Point3D startPoint = *tmpPtr;
 	
 	return startPoint;
@@ -75,6 +83,10 @@ Point3D getEndPoint(const Map* map){
 	
 	goToBottomCell(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) currentData(map->pathNodeList);
+	if(tmpPtr == NULL){
+		printf("endPoint NULL\n");
+		exit(-1);
+	}
 	Point3D endPoint = *tmpPtr;
 	
 	return endPoint;
@@ -196,6 +208,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 					exit(-1);
 				}		
 				fscanf(file,"%f %f\n",&(node->x),&(node->y));
+				node->z = 0;
 			/*printf(" noeud : %d %d\n",node->x,node->y);*/
 				insertBottomCell(map->pathNodeList,(void*)node);
 				j++;

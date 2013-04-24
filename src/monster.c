@@ -4,13 +4,7 @@
 #include "geometry.h"
 
 Monster createMonster(unsigned char wave){
-//TODO
-	return createMonster1();
-}
-
-Monster createMonster1() {
-
-	/*Type monster = MONSTER_TYPE1;*/
+//TODO	
 	Monster monster;
 	
 	monster.life = 3;
@@ -18,27 +12,11 @@ Monster createMonster1() {
 	monster.money = 5;
 	monster.speed = 2;
 	
-	monster.position = PointXYZ(-1,-1,-1);
-	monster.destination = PointXYZ(-1,-1,-1);
+	monster.position = PointXYZ(-1,-1,0);
+	monster.destination = PointXYZ(-1,-1,0);
 	monster.nbTurnsSinceLastMove = 0;
 
 	return monster;
-}
-
-
-Monster createMonster2() {
-
-	/*Type monster = MONSTER_TYPE2;*/	
-	Monster monster;
-	
-	monster.life = 3;
-	monster.strenght = 1;
-	monster.money = 5;
-	monster.speed = 1;
-
-
-	return monster;
-	
 }
 
 /* Explication de la détermination du pixel vers lequel le monstre doit aller :
@@ -63,13 +41,21 @@ void moveMonster(Monster* monster){
 	Vector3D direction = Normalize(Vector(monster->position, monster->destination));
 	
 	cosAlpha = DotProduct(direction, ITD_X_AXIS);
-	slope = (monster->position.y - monster->destination.y) / (monster->position.x - monster->destination.x); 
 	
 	//Principe : on projette le vecteur direction sur axe des x et axe des y,
 	//on regarde sur quel axe on se déplace le plus, et ensuite on déplace
 	//le monstre d'un pixel sur cet axe.
-	moveX =  cosAlpha;
-	moveY = slope*moveX;
+	
+	//Si direction parallèle à Y_AXIS (soit cosAlpha == 0), on regarde dans quel sens on va
+	if(fabs(cosAlpha - 0.0) < 0.00001) {
+		moveY = monster->destination.y - monster->position.y;
+		moveX = 0.0;
+	}
+	else{
+		slope = (monster->position.y - monster->destination.y) / (monster->position.x - monster->destination.x); 
+		moveX =  cosAlpha;
+		moveY = slope*moveX;
+	}
 
 	
 	if(fabs(moveX) > fabs(moveY)){

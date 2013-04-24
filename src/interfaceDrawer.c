@@ -1,9 +1,5 @@
 #include <SDL/SDL.h>
-#ifdef MAC
-#include <SDL_image/SDL_image.h>
-#else
-#include <SDL/SDL_image.h>
-#endif
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "interfaceDrawer.h"
@@ -24,7 +20,7 @@ void drawCarre(){
     	glVertex2f(0.5,-0.5);
     glEnd();
 }
-
+/*
 GLuint makeTexture (void){
 	GLuint texture;
 	GLenum format;
@@ -36,10 +32,11 @@ GLuint makeTexture (void){
 	}
 	
 	printf("image chargée\n");
-
+*/
 	/* création de la texture */
-	glGenTextures(1,&texture);/* allocation de la mémoire*/
-	glBindTexture(GL_TEXTURE_2D,texture); /* bindage*/
+/*
+	glGenTextures(1,&texture);
+	glBindTexture(GL_TEXTURE_2D,texture); 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
 
@@ -60,9 +57,12 @@ GLuint makeTexture (void){
 		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
 		return EXIT_FAILURE;
 	}
-
+*/
 	/*envoi de la texture à openGL*/
+/*
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGB, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels); 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	SDL_FreeSurface(image);
+
 }
+*/
