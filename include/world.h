@@ -26,11 +26,11 @@ typedef struct{
 	Map map;///Map chargée
 	unsigned char currentMonstersWave;///Vague de monstres en cours (sur 20)
 	unsigned char nbMonstersAlive;///Nombre de monstres encore en vie
-	bool isBetweenWave;///Indique si l'on est entre deux vagues de monstres
+	bool isBetweenWaves;///Indique si l'on est entre deux vagues de monstres
 	Uint32 nbTurnsWaiting;///Nombre de tours restant à attendre avant la prochaine vague de monstres
 	
-	Monster currentMonsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
-	List* currentTowersList;///Liste des tours actuellement sur la map.
+	Monster monsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
+	List* towersList;///Liste des tours actuellement sur la map.
 }World;
 
 /**

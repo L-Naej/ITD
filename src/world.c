@@ -11,8 +11,8 @@ World initWorld(const char* pathToItdFile){
 	newWorld.nbTurnsWaiting = 0;
 	newWorld.nbMonstersAlive = 0;//Pas de monstres au départ
 	
-	newWorld.currentTowersList = createEmptyList();
-	if(newWorld.currentTowersList == NULL){
+	newWorld.towersList = createEmptyList();
+	if(newWorld.towersList == NULL){
 		perror("Erreur fatale, impossible d'allouer l'espace mémoire nécessaire.\n");
 		exit(-1);
 	}
@@ -28,8 +28,18 @@ void startNewMonsterWave(World* world){
 	world->currentMonstersWave++;
 	
 	int i = 0;
-	for(i = 0, i < MONSTERS_PER_WAVE; ++i){
+	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map
+	//Avec comme destination le point de départ de leur chemin.
+	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 		world->monsters[i] = createMonster(world->currentMonstersWave);
+		world->monsters[i].destination = getStartPoint(&(world->map));
+		if(world->monsters[i].destination.y == 0){
+			world->monsters[i].position.x = world->monsters[i].destination.x;
+			world->monsters[i].position.y =  i*MONSTER_WIDTH_PX*world->monsters[i].speed -MONSTER_WIDTH_PX / 2;
+		}else{
+			world->monsters[i].position.y = world->monsters[i].destination.y;
+			world->monsters[i].position.x =  i*MONSTER_WIDTH_PX*world->monsters[i].speed -MONSTER_WIDTH_PX / 2;	
+		}	
 	}
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
 }
@@ -68,16 +78,16 @@ bool doTurn(World* world){
 		return isGameFinished;
 	}
 	
-	moveMonsters(world->currentMonsters, world->map.pathNodeList);
-	towersShoot(&(world->currentTowersList));
+	moveMonsters(world->monsters, world->map.pathNodeList);
+	towersShoot(world->towersList);
 	
 	//Les monstres sont-ils tous morts ? 
 	//Un monstre a-t-il atteint l'arrivée ?
 	//Tous les monstres sont morts et c'était la dernier vague => Le jeu est fini ?
 	int i = 0;
 	while(i < MONSTERS_PER_WAVE && !isGameFinished){
-		isGameFinished = arePointsEquals(world->currentMonsters[i].position,world->map.endPoint);
-		if(monsters[i]->life <= 0) world->nbMonstersAlive--;
+		isGameFinished = arePointsEquals(world->monsters[i].position,getEndPoint(&(world->map)));
+		if(world->monsters[i].life <= 0) world->nbMonstersAlive--;
 		++i;
 	}
 	if(world->nbMonstersAlive <= 0){
@@ -96,6 +106,7 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		
 	int i = 0;
 	bool monsterMove = false;
+	
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 		if(monsters[i].life <= 0) continue;
 		monsters[i].nbTurnsSinceLastMove++;

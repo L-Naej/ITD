@@ -35,8 +35,7 @@ Monster createMonster2() {
 	monster.strenght = 1;
 	monster.money = 5;
 	monster.speed = 1;
-	monster.posX = 0;
-	monster.posY = 0;
+
 
 	return monster;
 	

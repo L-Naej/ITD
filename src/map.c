@@ -60,6 +60,26 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	return *tmpNode;
 }
 
+Point3D getStartPoint(const Map* map){
+	if(map == NULL) return PointXYZ(-1,-1,-1);
+	
+	goToHeadList(map->pathNodeList);
+	Point3D* tmpPtr = (Point3D*) nextData(map->pathNodeList);
+	Point3D startPoint = *tmpPtr;
+	
+	return startPoint;
+}
+
+Point3D getEndPoint(const Map* map){
+	if(map == NULL) return PointXYZ(-1,-1,-1);
+	
+	goToBottomCell(map->pathNodeList);
+	Point3D* tmpPtr = (Point3D*) currentData(map->pathNodeList);
+	Point3D endPoint = *tmpPtr;
+	
+	return endPoint;
+}
+
 bool loadMap(Map* map, const char* pathToItdFile){	
 	if(pathToItdFile == NULL || map == NULL || map->pathNodeList == NULL)
 		return false;
@@ -175,7 +195,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
 					exit(-1);
 				}		
-				fscanf(file,"%d %d\n",&(node->x),&(node->y));
+				fscanf(file,"%f %f\n",&(node->x),&(node->y));
 			/*printf(" noeud : %d %d\n",node->x,node->y);*/
 				insertBottomCell(map->pathNodeList,(void*)node);
 				j++;
@@ -214,6 +234,6 @@ void dumpMap(Map map){
 	
 	Point3D* cur = NULL;
 	while( (cur = nextData(map.pathNodeList)) != NULL){
-		printf("Node %d : x=%d y=%d\n", map.pathNodeList->position, cur->x, cur->y);
+		printf("Node %d : x=%f y=%f\n", map.pathNodeList->position, cur->x, cur->y);
 	}
 }

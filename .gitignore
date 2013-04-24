@@ -20,3 +20,5 @@
 *~
 src/*.c~
 include/*~
+.DS_Store
+*/.DS_Store

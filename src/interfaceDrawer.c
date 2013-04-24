@@ -1,5 +1,9 @@
 #include <SDL/SDL.h>
+#ifdef MAC
+#include <SDL_image/SDL_image.h>
+#else
 #include <SDL/SDL_image.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "interfaceDrawer.h"

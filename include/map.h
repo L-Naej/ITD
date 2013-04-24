@@ -24,8 +24,6 @@ typedef struct{
 	Color3u inAreaColor;
 	Color3u outAreaColor;
 	
-	Point3D startPoint;
-	Point3D endPoint;
 	List* pathNodeList;///Liste de Point3D
 	
 	SDL_Surface* pixelArray;
@@ -59,6 +57,17 @@ Color3u initColor();
  * /!\ Si la List passée en paramètre est NULL, quitte le programme avec message d'erreur.
  */
 Point3D nextNode(List* pathNodeList, Point3D currentNode);
+
+/**
+ * Retourne le point de départ des monstres sur la map.
+ */
+Point3D getStartPoint(const Map* map);
+
+/**
+ * Retourne le point d'arrivée des monstres sur la map
+ * (celui qu'ils ne doivent pas atteindre si le joueur veut gagner). 
+ */
+Point3D getEndPoint(const Map* map);
 
 /**
  * Fonction de debug, affiche dans la
