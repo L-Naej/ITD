@@ -24,13 +24,6 @@
  * Lancer la boucle de jeu
  */
 int main(int argc,  char* argv[]) {
-	World world = initWorld("./map/map1.itd");
-	bool isFinished = false;
-	while(!isFinished){
-		isFinished = worldNewStep(&world);
-	}
-	
-	exit(0);
 	/*Initialisation SDL, OpenGL etc */
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");

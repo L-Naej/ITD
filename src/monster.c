@@ -36,34 +36,29 @@ Monster createMonster(unsigned char wave){
 void moveMonster(Monster* monster){
 	if(monster == NULL) return;
 	
-	float moveX, moveY, cosAlpha, slope;//slope = pente
+	float factorX, factorY;
 	
 	Vector3D direction = Normalize(Vector(monster->position, monster->destination));
 	
-	cosAlpha = DotProduct(direction, ITD_X_AXIS);
+	factorX = DotProduct(direction, ITD_X_AXIS);
+	factorY = DotProduct(direction, ITD_Y_AXIS);
 	
 	//Principe : on projette le vecteur direction sur axe des x et axe des y,
 	//on regarde sur quel axe on se déplace le plus, et ensuite on déplace
 	//le monstre d'un pixel sur cet axe.
 	
-	//Si direction parallèle à Y_AXIS (soit cosAlpha == 0), on regarde dans quel sens on va
-	if(fabs(cosAlpha - 0.0) < 0.00001) {
-		moveY = monster->destination.y - monster->position.y;
-		moveX = 0.0;
-	}
-	else{
-		slope = (monster->position.y - monster->destination.y) / (monster->position.x - monster->destination.x); 
-		moveX =  cosAlpha;
-		moveY = slope*moveX;
-	}
-
-	
-	if(fabs(moveX) > fabs(moveY)){
-		if(moveX > 0) monster->position.x++;
+	if(fabs(factorX) > fabs(factorY)){
+		if(factorX > 0) monster->position.x++;
 		else monster->position.x--;
 	}
-	else{
-		if(moveY > 0) monster->position.y++;
+	else if(fabs(factorY) > fabs(factorX)){
+		if(factorY > 0) monster->position.y++;
 		else monster->position.y--;
 	}
+	else if((fabs(factorX)-fabs(factorY)) < 0.00001){
+		if(factorY > 0) monster->position.y++;
+		else monster->position.y--;	
+		if(factorX > 0) monster->position.x++;
+		else monster->position.x--;
+	}	
 }

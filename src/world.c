@@ -119,13 +119,9 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 			moveMonster(&(monsters[i]));
 			monsters[i].nbTurnsSinceLastMove = 0;
 		}
-		printf("New Position");
-		dumpPoint(monsters[i].position);
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
-			printf("New Destination :");
-			dumpPoint(monsters[i].destination);
 		}
 		monsterMove = false;
 	}
