@@ -8,7 +8,10 @@ Monster createMonster(unsigned char wave){
 	Monster monster;
 	
 	monster.life = 3;
-	monster.strenght = 1;
+	monster.rocketResistance = 1;
+	monster.laserResistance = 1;
+	monster.gunResistance = 1;
+	monster.hybridResistance = 1;
 	monster.money = 5;
 	monster.speed = 2;
 	
@@ -35,6 +38,9 @@ Monster createMonster(unsigned char wave){
  */
 void moveMonster(Monster* monster){
 	if(monster == NULL) return;
+	bool monsterMove = false;
+	monsterMove = monster->nbTurnsSinceLastMove >= monster->speed;
+	if(!monsterMove) return;
 	
 	float factorX, factorY;
 	
@@ -60,5 +66,7 @@ void moveMonster(Monster* monster){
 		else monster->position.y--;	
 		if(factorX > 0) monster->position.x++;
 		else monster->position.x--;
-	}	
+	}
+	
+	monster->nbTurnsSinceLastMove = 0;	
 }

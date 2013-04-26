@@ -1,7 +1,9 @@
 #include "World.h"
 #include <SDL/SDL.h>
 #include <math.h>
+#include "geometry.h"
 
+//-------------- FONCTIONS PUBLIQUES --------------------------
 World initWorld(const char* pathToItdFile){
 	World newWorld;
 	
@@ -65,6 +67,29 @@ bool worldNewStep(World* world){
 	return isGameFinished;
 }
 
+//TODO
+bool canIPutATowerHere(World* world, int posX, int posY){
+	if(world == NULL) return false;
+	return true;
+}
+
+void addTowerOnMap(World* world, int posX, int posY, TowerType type){
+	if(world == NULL || world->towersList == NULL) return;
+	//Si la zone où l'on veut construire la tour est non constructible, 
+	//on annule l'action.
+	if(canIPutATowerHere(world, posX, posY) == false) return;
+	
+	Point3D towerPosition = PointXYZ(posX,posY,0);
+	//L'erreur d'allocation est gérée plus bas
+	//Le programme s'arrête si le malloc a échoué 
+	Tower* newTower = createTower(type);
+	newTower->position = towerPosition;
+	
+	insertBottomCell(world->towersList, newTower);
+}
+
+
+//---------------------- FONCTIONS PRIVEES ---------------------
 bool doTurn(World* world){
 	if(world == NULL) return false;
 	bool isGameFinished = false;
@@ -81,7 +106,7 @@ bool doTurn(World* world){
 	}
 	
 	moveMonsters(world->monsters, world->map.pathNodeList);
-	towersShoot(world->towersList);
+	towersShoot(world->towersList, world->monsters);
 	
 	//Les monstres sont-ils tous morts ? 
 	//Un monstre a-t-il atteint l'arrivée ?
@@ -114,11 +139,8 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		if(monsters[i].life <= 0) continue;
 		monsters[i].nbTurnsSinceLastMove++;
 		
-		monsterMove = monsters[i].nbTurnsSinceLastMove >= monsters[i].speed;
-		if(monsterMove){
-			moveMonster(&(monsters[i]));
-			monsters[i].nbTurnsSinceLastMove = 0;
-		}
+		moveMonster(&(monsters[i]));
+		
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
@@ -128,4 +150,31 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 	
 }
 
-void towersShoot(List* towerList){}
+void towersShoot(List* towersList, Monster* monsters){
+	if(towersList == NULL || monsters == NULL) return;
+
+	Tower* curTower = NULL;	
+	goToHeadList(towersList);
+	
+	//Pour chaque tour on regarde si elle peut tirer sur un monstre
+	while( (curTower = (Tower*) nextData(towersList)) != NULL){
+		curTower->nbTurnsSinceLastShoot++;
+		towerShoots(curTower, monsters);
+	}
+}
+
+void towerShoots(Tower* tower, Monster* monsters){
+	if(tower == NULL || monsters == NULL) return;
+	if(tower->cadence < tower->nbTurnsSinceLastShoot) return;
+	bool towerCanShoot = true;
+	int i;
+	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
+		if(Norm(Vector(monsters[i].position, tower->position)) <= tower->range){
+			monsters[i].life -= tower->power;
+			towerCanShoot = tower->type == GUN;//Seul les GUN peuvent tirer sur tous les monstres en même temps
+		}
+		i++;
+	}
+}
+
+

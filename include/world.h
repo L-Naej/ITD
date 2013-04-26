@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "list.h"
 
-#define MONSTERS_PER_WAVE 1
+#define MONSTERS_PER_WAVE 10
 
 /* Unité de temps d'un pas de jeu = 10ms */
 static const int TIMESTEP_MILLISECONDS = 10;
@@ -14,6 +14,7 @@ static const int TIMESTEP_MILLISECONDS = 10;
 /*Temps d'attente en nombre de tours entre deux vagues successives */
 static const int NB_TURNS_BETWEEN_WAVES = 100;//=1seconde
 
+/* Nombre de vagues de monstres que le jouer va devoir affronter */
 static const int NB_TOTAL_WAVES = 20;
 
 /**
@@ -33,25 +34,13 @@ typedef struct{
 	List* towersList;///Liste des tours actuellement sur la map.
 }World;
 
-/**
- * Variable globale contenant l'état du monde actuel.
- * Voir si c'est vraiment pertinent de la placer ici.
- */
-World currentWorld;
 
+//------------ FONCTIONS FAITES POUR ETRE APPELEES DE L'EXTERIEUR ---------
 /**
  * Initialise un monde à partir du fichier .itd
  * dont le chemin est passé en paramètre.
  */
 World initWorld(const char* pathToItdFile);
-
-/**
- * Indique si la zone de la carte correspondant
- * au carré passé en paramètre est constructible.
- * x1,x2,y1,y2 correspondent aux coordonnées de deux
- * points opposés du carré.
- */
-bool isAreaConstructible(int x1, int y1, int x2, int y2);
 
 /**
  * Fait avancer le monde d'un ou plusieurs pas de temps.
@@ -60,6 +49,22 @@ bool isAreaConstructible(int x1, int y1, int x2, int y2);
  */
 bool worldNewStep(World* world);
 
+/**
+ * Indique s'il est possible de poser une tour à
+ * la position (posX,posY) sur la carte du jeu.
+ **/
+bool canIPutATowerHere(World* world, int posX, int posY);
+
+/**
+ * Ajoute une tour de type 'type' à la position posX posY
+ * sur la carte du jeu.
+ * Si la zone où la tour est posée n'est pas constructible,
+ * ne pose pas la tour (fait appel à canIPutATowerHere).
+ **/
+void addTowerOnMap(World* world, int posX, int posY, TowerType type);
+
+
+// -------- FONCTIONS INTERNES, A NE PAS APPELER DE L'EXTERIEUR -----------
 /*
  * Effectue un tour de jeux.
  * Appelée par worldNewStep.
@@ -72,7 +77,13 @@ bool doTurn(World* world);
  * cette fonction est appelée.
  * (appelée à chaque pas de temps).
  */
-void towersShoot(List* towerList);
+void towersShoot(List* towerList, Monster* monsters);
+
+/**
+ * Fait tirer une tour (si elle le peut).
+ * Appelée par towersShoot.
+ **/
+void towerShoots(Tower* tower, Monster* monsters);
 
 /**
  * Fait bouger tous les monstres à chaque pas de temps. 

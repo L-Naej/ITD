@@ -11,7 +11,10 @@ static const int MONSTER_WIDTH_PX = 50;
 
 typedef struct{
 	int life; 		/*points de vie*/
-	int strenght; 	 	/* résistance */
+	int rocketResistance;
+	int laserResistance;
+	int gunResistance;
+	int hybridResistance; 	 	/* résistance */
 	int money; 
 	
 	//Exprimée en tours de jeux pour avancer d'un pixel
@@ -22,8 +25,6 @@ typedef struct{
 	
 	//Nombre de tours depuis le dernier mouvement
 	int nbTurnsSinceLastMove;
-
-	List* myWay;
 }Monster;
 
 /**
