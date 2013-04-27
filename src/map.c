@@ -34,6 +34,96 @@ newMap.nodeList = createEmptyList();
 	return newMap;
 }
 
+int loadITD1 (Map* map, FILE* file){
+	/* nom de l'image*/
+	fseek (file,6,SEEK_CUR); 
+	(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
+ 	/*  on a dit que le nom de la carte ferait 30 caractères maxi*/
+	fscanf(file,"%s \n",map->name);
+
+
+	/*rajouter width et height quand on aura le fichier .ppm*/
+
+	int R,V,B;
+			
+	fseek (file,7,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->pathColor.red =(unsigned char)R;
+	map->pathColor.green = (unsigned char)V;
+	map->pathColor.blue =(unsigned char)B;
+	if (testItdValid(map->pathColor.red,map->pathColor.green,map->pathColor.blue)!= 1){
+		return 0;
+	}
+
+
+	fseek (file,6,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->nodeColor.red = (unsigned char)R;
+	map->nodeColor.green = (unsigned char)V;
+	map->nodeColor.blue = (unsigned char)B;
+	if (testItdValid(map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue)!= 1){
+		return 0;
+	}
+
+
+	fseek (file,10,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->constructAreaColor.red = (unsigned char)R;
+	map->constructAreaColor.green = (unsigned char)V;
+	map->constructAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue)!= 1){
+		return 0;
+	}
+
+
+	fseek (file,3,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->inAreaColor.red = (unsigned char)R;
+	map->inAreaColor.green = (unsigned char)V;
+	map->inAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue)!= 1){
+		return 0;
+	}
+
+
+	fseek (file,4,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->outAreaColor.red = (unsigned char)R;
+	map->outAreaColor.green = (unsigned char)V;
+	map->outAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue)!= 1){
+		return 0;
+	}
+
+
+	fscanf(file,"%d\n",&(map->nodeList->size));
+
+
+
+	PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
+	fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
+
+	
+	int size = map->nodeList->size;
+	map->nodeList = createList((void*)node1); 
+
+	int j=0;
+
+
+	while (j<size-1){
+
+		PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
+		fscanf(file,"%d %d\n",&(node->x),&(node->y));
+		insertBottomCell(map->nodeList,(void*)node);
+		j++;
+	}
+
+	int nbNode = listCountElem(map->nodeList);
+	if (nbNode != map->nodeList->size){
+		return 0;
+	}
+	return 1;
+} 
 int loadMap(Map* map){	
 
 	/* On ouvre le fichier */
@@ -58,96 +148,28 @@ int loadMap(Map* map){
 		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 			printf("Fichier incompatible");
 			return 0;
-		} 
+		}
+		
+		 
 
 		if (strcmp(versionMap,"@ITD 1")==0){
-
-			/* nom de l'image*/
-			(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
- /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
-			fscanf(file,"%s \n",map->name);
-			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
-
-			/*rajouter width et height quand on aura le fichier .ppm*/
-			int R,V,B;
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->pathColor.red =(unsigned char)R;
-			map->pathColor.green = (unsigned char)V;
-			map->pathColor.blue =(unsigned char)B;
-			printf("couleur des chemins : %d %d %d\n",map->pathColor.red,map->pathColor.green,map->pathColor.blue);
-
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->nodeColor.red = (unsigned char)R;
-			map->nodeColor.green = (unsigned char)V;
-			map->nodeColor.blue = (unsigned char)B;
-			printf("couleur des noeuds : %d %d %d\n",map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue);
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->constructAreaColor.red = (unsigned char)R;
-			map->constructAreaColor.green = (unsigned char)V;
-			map->constructAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones constructibles : %d %d %d\n",map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue);
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->inAreaColor.red = (unsigned char)R;
-			map->inAreaColor.green = (unsigned char)V;
-			map->inAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones d'entrée : %d %d %d\n",map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue);
-
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->outAreaColor.red = (unsigned char)R;
-			map->outAreaColor.green = (unsigned char)V;
-			map->outAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones de sortie : %d %d %d\n",map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
-
-			fscanf(file,"%d\n",&(map->nodeList->size));
-			printf("nombre de noeuds : %d\n",map->nodeList->size);
-
-
-			PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
-			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
-			/*printf(" noeud : %d %d\n",node1->x,node1->y);*/
-			
-			int size = map->nodeList->size;
-			/*printf("taille = %d",size);*/
-			map->nodeList = createList((void*)node1); 
-
-			int j=0;
-
-
-			while (j<size-1){
-
-				PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
-				fscanf(file,"%d %d\n",&(node->x),&(node->y));
-			/*printf(" noeud : %d %d\n",node->x,node->y);*/
-				insertBottomCell(map->nodeList,(void*)node);
-				j++;
+			if (loadITD1(map,file)==1){
+				/* On vide  le buffer et on ferme le fichier*/
+				fflush(file);
+				fclose(file);
+				printf("carte chargée");
+				return 1;
 			}
-
-
-
-			/* On vide  le buffer et on ferme le fichier*/
-			fflush(file);
-			fclose(file);
-			return 1;
 		}
+		
+		if (strcmp(versionMap,"@ITD 2")==0){	
+			if (loadITD1(map,file)=!1){	
+				return 0;
+			}
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(tower->nodeList->size));
+		}
+
 	}
 }
 

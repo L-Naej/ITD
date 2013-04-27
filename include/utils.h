@@ -1,5 +1,5 @@
 #ifndef ITD_UTILS
 #define ITD_UTILS
 
-unsigned char int32toubyte8(int);
+int testItdValid(unsigned char R,unsigned char V,unsigned char B);
 #endif

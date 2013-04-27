@@ -8,12 +8,12 @@
 
 
 void drawCarre(){
-	glBegin(GL_POLYGON);
- 	glTexCoord2f(0, 1);
+	glBegin(GL_QUADS);
+ 	glTexCoord2f(1, 0);
     	glVertex2f(-0.5,-0.5);
  	glTexCoord2f(1, 1);
     	glVertex2f(-0.5,0.5);
- 	glTexCoord2f(1, 0);
+ 	glTexCoord2f(0, 1);
     	glVertex2f(0.5,0.5);
  	glTexCoord2f(0, 0);
     	glVertex2f(0.5,-0.5);
@@ -57,7 +57,9 @@ GLuint makeTexture (void){
 	}
 
 	/*envoi de la texture à openGL*/
-	glTexImage2D(GL_TEXTURE_2D,0, GL_RGB, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels); 
+	glTexImage2D(GL_TEXTURE_2D,0,4, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels); 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	SDL_FreeSurface(image);
+	
+	return texture;
 }
