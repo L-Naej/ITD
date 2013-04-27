@@ -4,10 +4,10 @@
 
 typedef struct {
 	TowerType type;
-	int cadence;
+	int rate;
 	int range;
 	int power;
-	float price;
+	int cost;
 	float lastshot;
 	float x;
 	float y;

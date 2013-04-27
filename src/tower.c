@@ -8,27 +8,31 @@
 void TestTypeTower(Tower tower){
 	switch (tower.type){
 		case ROCKET:
-			tower.cadence =3;
+			tower.rate =3;
 			tower.range = 9;
 			tower.power=10;
+			tower.cost = 10;
 		break;
 
 		case LASER:
-			tower.cadence =10;
+			tower.rate =10;
 			tower.range = 3;
 			tower.power=5;
+			tower.cost = 6;
 		break;
 
 		case MITRAILLETTE:
-			tower.cadence =10;
+			tower.rate =10;
 			tower.range = 3;
 			tower.power=3;
+			tower.cost = 4;
 		break;
 
 		case HYBRID:
-			tower.cadence = 8;
+			tower.rate = 8;
 			tower.range = 10;
 			tower.power=3;
+			tower.cost = 8;
 		break;
 
 		

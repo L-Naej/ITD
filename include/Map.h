@@ -1,6 +1,7 @@
 #ifndef ITD_MAP_H
 #define ITD_MAP_H
 #include "list.h"
+#include "tower.h"
 
 typedef struct{
 	unsigned char red;
@@ -37,7 +38,7 @@ Map initMap();
  * charge les infos venant du .itd
  * dans la structure Map.
  */
-int loadMap(Map*);
+int loadMap(Map* map, Tower* rocket, Tower* laser, Tower* mitraillette, Tower* hybrid);
 
 /**
  * Retourne une structure Color3u initialisée

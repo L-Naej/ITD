@@ -1,4 +1,4 @@
-@ITD 2
+@ITD 1
 carte nom1.ppm
 chemin 255 255 255
 noeud 0 0 0
@@ -8,22 +8,5 @@ out 200 0 0
 5
 10 20
 454 103
-300 103
 200 103
 200 206
-powerR 10
-powerL 5
-powerM 3
-powerH 3
-rateR 3
-rateL 10
-rateM 10
-rateH 8
-rangeR 9
-rangeL 3
-rangeM 3
-rangeH 10
-costR 10
-costL 6
-costM 4
-costH 8

@@ -33,9 +33,12 @@ int initWindow(){
 
 int main(int argc, char** argv) {
 	Map map = initMap();
-
-	loadMap(&map);
-	dumpMap(map);
+	Tower* rocket = (Tower*) malloc (sizeof(Tower));
+	Tower* laser = (Tower*) malloc (sizeof(Tower));
+	Tower* mitraillette = (Tower*) malloc (sizeof(Tower));
+	Tower* hybrid = (Tower*) malloc (sizeof(Tower));
+	loadMap(&map,rocket, laser, mitraillette, hybrid);
+	/*dumpMap(map);*/
 
 	/* récupération de l'image du boutton HELP  */
 	char* menuHelp = "images/menuhelp.jpg";
