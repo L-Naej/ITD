@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -ansi
-LDFLAGS = -lSDL -lm -lGL -lGLU -lglut -lSDL_image 
+LDFLAGS = -lSDL -lm -lGL -lGLU -lglut -lSDL_image -lSDL_ttf
 
 APP_BIN = raytracer
 

@@ -15,6 +15,7 @@ static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 /*Longueur max d'un nom de fichier*/
 static const unsigned int MAX_FILE_LENGTH = 30;
 
+
 /**
 * Initialise la fenêtre SDL du
 * programme ITD. Créé le contexte

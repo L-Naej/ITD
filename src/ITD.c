@@ -3,6 +3,7 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "Map.h"
 #include "sdl_tools.h"
 #include "tower.h"
@@ -11,22 +12,27 @@
 #include "ITD.h"
 
 
+SDL_Surface* ecran= NULL;
 
 int initWindow(){
 	/* Initialisation de la SDL */
+
 	if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
 		fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
 		return EXIT_FAILURE;
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	 if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | 		SDL_RESIZABLE)) {
+	 ecran = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_RESIZABLE);
+	 if(ecran == NULL ) {
     		fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
     		exit(EXIT_FAILURE);
   	}
 
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
+	return 1;
+
 }
 
 /* ________________________________ MAIN ____________________________________*/
@@ -40,14 +46,16 @@ int main(int argc, char** argv) {
 	loadMap(&map,rocket, laser, mitraillette, hybrid);
 	/*dumpMap(map);*/
 
-	/* récupération de l'image du boutton HELP  */
-	char* menuHelp = "images/menuhelp.jpg";
+	/* récupération de l'image du boutton HELP, pour le moment en ligne de commande  */
+	char* nom =argv[1];
+	
+	chdir("images/");
 
 
 	initWindow();
 
 
-	GLuint texture = makeTexture ();
+	GLuint texture = makeTexture (nom);
 	/* Boucle d'affichage du menu */
 
 	int loop = 1;
@@ -60,20 +68,31 @@ int main(int argc, char** argv) {
     		glMatrixMode(GL_MODELVIEW); 
     		glLoadIdentity();
 
-		glEnable(GL_ALPHA_TEST);
+		drawMapMenu();
+
+		/*glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		
 		glPushMatrix();
 		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
-		drawCarre();
+		drawButton();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
+
+		glPushMatrix();
+		glColor3ub(0,255,0);
+		glTranslatef(-0.25, 0.5, 0);
+		drawCarre();
+		glPopMatrix();*/
+
+
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();
 
