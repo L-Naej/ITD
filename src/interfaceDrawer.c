@@ -3,10 +3,10 @@
 #include <SDL/SDL_ttf.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "ITD.h"
 
 
-extern SDL_Surface* ecran;
+
+
 
 
 
@@ -25,27 +25,17 @@ void drawButton(){
 
 void drawCarre(){
 	glBegin(GL_QUADS);
-    	glVertex2f(-0.15,-0.15);
-    	glVertex2f(-0.15,0.);
-    	glVertex2f(0.,0.);
-    	glVertex2f(0.,-0.15);
+	glVertex2f(-0.25,-0.15);
+	glVertex2f(-0.25,0.);
+	glVertex2f(0.,0.);
+	glVertex2f(0.,-0.15);
     glEnd();
 }
 
 
-void drawMapMenu(){
-
-	if(TTF_Init()== -1){
-		printf("Error loading TTF: %s\n",TTF_GetError());
-		exit(1);
-	}
-
-
-	TTF_Font* police = NULL;
-	police = TTF_OpenFont("/home/camarasa/Documents/ITD/font/lighthouse.ttf",0.5);
-
-
-
+SDL_Surface* drawMapMenu(TTF_Font* police){
+	
+	police = TTF_OpenFont("/home/camarasa/Documents/ITD/font/lighthouse.ttf",1);
 
 	SDL_Color blanc = {255, 255, 255};
 
@@ -59,30 +49,21 @@ void drawMapMenu(){
 	}
 
 
-		SDL_Rect position;
-		position.x = 0;
-		position.y = 0;
-		SDL_BlitSurface(text, NULL, ecran ,&position);
-
-
-
-
-	TTF_CloseFont(police);
-	TTF_Quit;
+	return text;
+	
 	
 }
 
-GLuint makeTexture (char* path){
+GLuint makeTexture (SDL_Surface* image){
 	GLuint texture;
 	GLenum format;
-	/*char* menuHelp = "images/monstrehelp.png";*/
-	SDL_Surface* image = IMG_Load(path);
+
+
 	if (image ==NULL){
 		printf("error chargement\n");
 		exit(1);
 	}
 	
-	printf("image chargée\n");
 
 	/* création de la texture */
 	glGenTextures(1,&texture);/* allocation de la mémoire*/

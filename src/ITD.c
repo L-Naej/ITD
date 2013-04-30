@@ -3,16 +3,22 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
+#include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
+
 #include "Map.h"
 #include "sdl_tools.h"
 #include "tower.h"
 #include "interfaceDrawer.h"
 #include "ActionManager.h"
 #include "ITD.h"
+#include "utils.h"
 
 
-SDL_Surface* ecran= NULL;
+extern char* rootPath;
+
 
 int initWindow(){
 	/* Initialisation de la SDL */
@@ -23,8 +29,7 @@ int initWindow(){
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	 ecran = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_RESIZABLE);
-	 if(ecran == NULL ) {
+	 if(SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_RESIZABLE) == NULL ) {
     		fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
     		exit(EXIT_FAILURE);
   	}
@@ -38,25 +43,58 @@ int initWindow(){
 /* ________________________________ MAIN ____________________________________*/
 
 int main(int argc, char** argv) {
+
+	/* initialisation de SDL_TTF*/
+	if(TTF_Init()== -1){
+		printf("Error loading TTF: %s\n",TTF_GetError());
+		exit(1);
+	}
+	int taille = strlen(argv[0]);
+	argv[0][taille-7] = 0;
+	rootPath = argv[0];
+
+
+
 	Map map = initMap();
 	Tower* rocket = (Tower*) malloc (sizeof(Tower));
 	Tower* laser = (Tower*) malloc (sizeof(Tower));
 	Tower* mitraillette = (Tower*) malloc (sizeof(Tower));
 	Tower* hybrid = (Tower*) malloc (sizeof(Tower));
 	loadMap(&map,rocket, laser, mitraillette, hybrid);
-	/*dumpMap(map);*/
 
-	/* récupération de l'image du boutton HELP, pour le moment en ligne de commande  */
-	char* nom =argv[1];
-	
-	chdir("images/");
+	/* recupération du chemin de l'image "help" */
+	char* helpButtonPath = (char*)malloc(sizeof(char)*(strlen(rootPath)+22));
+	strcpy(helpButtonPath,rootPath);
+	helpButtonPath = strcat(helpButtonPath,"images/monstrehelp.png");
+
+	/* recupération du chemin de l'image "carte" */
+	char* mapButtonPath = (char*)malloc(sizeof(char)*(strlen(rootPath)+23));
+	strcpy(mapButtonPath,rootPath);
+	mapButtonPath = strcat(mapButtonPath,"images/monstrecarte.png");
+
+
+
+	TTF_Font* police = NULL;
+
+	/* création des surface des boutons */
+	SDL_Surface* helpTexture = IMG_Load(helpButtonPath);
+
+	SDL_Surface* mapTexture = IMG_Load(mapButtonPath);
+
+
+	SDL_Surface* text=drawMapMenu(police); /* première carte */
 
 
 	initWindow();
 
 
-	GLuint texture = makeTexture (nom);
+	GLuint helpButton = makeTexture (helpTexture);
+	GLuint mapButton = makeTexture (mapTexture);
+	GLuint MapMenu = makeTexture (text);
 	/* Boucle d'affichage du menu */
+		
+		
+
 
 	int loop = 1;
 	while(loop) {
@@ -68,11 +106,34 @@ int main(int argc, char** argv) {
     		glMatrixMode(GL_MODELVIEW); 
     		glLoadIdentity();
 
-		drawMapMenu();
 
-		/*glEnable(GL_ALPHA_TEST);
+/* _________________ Dessin du sous-menu pour choisir la carte( qui marche pas )_______________*/
+		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, MapMenu);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		
+
+
+	
+	TTF_CloseFont(police);
+
+/* _________________ Dessin du bouton d'aide_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, helpButton);
 
 		
 		glPushMatrix();
@@ -86,11 +147,23 @@ int main(int argc, char** argv) {
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 
+/* _________________ Dessin du bouton pour choisir la carte_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mapButton);
+
 		glPushMatrix();
-		glColor3ub(0,255,0);
-		glTranslatef(-0.25, 0.5, 0);
-		drawCarre();
-		glPopMatrix();*/
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glTranslatef(0.5,-0.5,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
 
 
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
@@ -137,6 +210,7 @@ int main(int argc, char** argv) {
 	
 
 		/* Liberation des ressources associées à la SDL */ 
+		TTF_Quit;
 		SDL_Quit();
 
 		return EXIT_SUCCESS;

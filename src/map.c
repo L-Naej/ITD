@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Map.h"
-#include "utils.h"
+
 #define MAX_LENGHT 30
 
 Color3u initColor(void){
@@ -32,6 +32,16 @@ newMap.nodeList = createEmptyList();
 
 
 	return newMap;
+}
+
+int testItdValid(unsigned char R,unsigned char V,unsigned char B){
+	if ((R>=0 && R<= 255) && (V>=0 && V<= 255) && (B>=0 && B<= 255)){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+
 }
 
 int loadITD1 (Map* map, FILE* file){

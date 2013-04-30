@@ -39,6 +39,7 @@ Map initMap();
  * dans la structure Map.
  */
 int loadMap(Map* map, Tower* rocket, Tower* laser, Tower* mitraillette, Tower* hybrid);
+int testItdValid(unsigned char R,unsigned char V,unsigned char B);
 
 /**
  * Retourne une structure Color3u initialisée

@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -Wall -ansi
+CFLAGS = -Wall -ansi -g
 LDFLAGS = -lSDL -lm -lGL -lGLU -lglut -lSDL_image -lSDL_ttf
 
-APP_BIN = raytracer
+APP_BIN = itd
 
 SRC_PATH = src
 OBJ_PATH = obj
