@@ -8,8 +8,14 @@
 /* Largeur d'un sprite de monstre en pixels (ca respecte pas trop 
 mvc de le mettre là mais en attendant de trouver mieux... */
 static const int MONSTER_WIDTH_PX = 50;
+typedef enum{
+	BLUE_OCTOPUS,
+	ORANGE_OCTOPUS,
+	GREEN_OCTOPUS
+}MonsterType;
 
 typedef struct{
+	MonsterType type;
 	int life; 		/*points de vie*/
 	int rocketResistance;
 	int laserResistance;
@@ -36,7 +42,15 @@ void moveMonster(Monster* monster);
 /**
  * Créé un monstre avec les caractéristiques correspondant
  * à la vague (de 1 à 20) à laquelle il appartient.
+ * Renvoie automatiquement le bon type de monstre
+ * en fonction de la vague en cours et du nombre de monstre
+ * déjà créé pour la vague en cours.
  **/ 
-Monster createMonster(unsigned char wave);
+Monster createMonster(unsigned char wave, int nbMonstersCreated);
+
+//---------- FONCTIONS INTERNES --------------
+Monster createBlueOctopus(unsigned char wave);
+Monster createOrangeOctopus(unsigned char wave);
+Monster createGreenOctopus(unsigned char wave);
 
 #endif

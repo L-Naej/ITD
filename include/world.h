@@ -71,6 +71,11 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type);
  */
 bool doTurn(World* world);
 
+/*
+ * Démarre une nouvelle vague de monstres.
+ */
+void startNewMonsterWave(World* world);
+
 /**
  * Fait tirer toutes les tours capable
  * de toucher un monstre au moment où

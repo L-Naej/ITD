@@ -3,22 +3,87 @@
 #include <stdio.h>
 #include "geometry.h"
 
-Monster createMonster(unsigned char wave){
-//TODO	
+Monster createMonster(unsigned char wave, int nbMonstersCreated){
+	MonsterType type;
+	if(wave < 10) type = BLUE_OCTOPUS;
+	else if (wave < 15){
+		if(nbMonstersCreated < (wave - 9))
+			type = ORANGE_OCTOPUS;
+		else type = BLUE_OCTOPUS;
+	}
+	else{
+		if(nbMonstersCreated < (wave -14))
+			type = GREEN_OCTOPUS;
+		else type = ORANGE_OCTOPUS;
+	}
+
+		
+	switch(type){
+		case BLUE_OCTOPUS : return createBlueOctopus(wave);
+		break;
+		case ORANGE_OCTOPUS : return createOrangeOctopus(wave);
+		break;
+		case GREEN_OCTOPUS : return createGreenOctopus(wave);
+		break;
+		default : return createBlueOctopus(wave);
+		break;
+	}
+}
+
+Monster createBlueOctopus(unsigned char wave){
 	Monster monster;
-	
-	monster.life = 3;
-	monster.rocketResistance = 1;
-	monster.laserResistance = 1;
+	monster.type = BLUE_OCTOPUS;
+	monster.life = 3*wave;
+	monster.rocketResistance = wave;
+	monster.laserResistance = wave;
 	monster.gunResistance = 1;
 	monster.hybridResistance = 1;
-	monster.money = 5;
+	monster.money = 5*wave;
 	monster.speed = 2;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
 	monster.nbTurnsSinceLastMove = 0;
+	
+	
+	return monster;
+}
 
+Monster createOrangeOctopus(unsigned char wave){
+	Monster monster;
+	monster.type = ORANGE_OCTOPUS;
+	monster.life = 3*wave;
+	monster.rocketResistance = wave;
+	monster.laserResistance = wave;
+	monster.gunResistance = 1;
+	monster.hybridResistance = 1;
+	monster.money = 5*wave;
+	monster.speed = 2;
+	
+	monster.position = PointXYZ(-1,-1,0);
+	monster.destination = PointXYZ(-1,-1,0);
+	monster.nbTurnsSinceLastMove = 0;
+	
+	
+	return monster;
+}
+
+Monster createGreenOctopus(unsigned char wave){
+	Monster monster;
+	monster.type = GREEN_OCTOPUS;
+	monster.life = 3*wave;
+	monster.rocketResistance = wave;
+	monster.laserResistance = wave;
+	monster.gunResistance = 1;
+	monster.hybridResistance = 1;
+	monster.money = 5*wave;
+	monster.speed = 2;
+	
+	monster.position = PointXYZ(-1,-1,0);
+	monster.destination = PointXYZ(-1,-1,0);
+	monster.nbTurnsSinceLastMove = 0;
+	
+	
 	return monster;
 }
 
@@ -30,9 +95,7 @@ Monster createMonster(unsigned char wave){
  * d'arrivée (qui est le prochaine PathNode). A partir de là on connait sa direction. Le calcul de la direction à chaque déplacement
  * permet d'éviter la propagation des erreurs.
  * Il faut donc choisir s'il se déplace d'un pixel en X ou en Y.
- * Pour cela on regarde dans l'espace réel de combien il se déplace en X et en Y selon
- * sa direction grâce à Pythagore (calcul de cos(alpha) pour trouver x, calcul de la pente
- * puis calcul de y=pente*x).
+ * Pour cela on regarde si la direction est plus proche de l'axe X ou de l'axe Y grâce au produit scalaire.
  * On compare les deux valeurs, et la plus grande détermine l'axe dans lequel va se déplacer le monstre.
  * Il faut regarder le signe de la valeur pour savoir si on va en -X ou X / -Y ou Y.
  */

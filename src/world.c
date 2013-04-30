@@ -36,7 +36,7 @@ void startNewMonsterWave(World* world){
 	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map
 	//Avec comme destination le point de départ de leur chemin.
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-		world->monsters[i] = createMonster(world->currentMonstersWave);
+		world->monsters[i] = createMonster(world->currentMonstersWave, i);
 		world->monsters[i].destination = startPoint;
 		if(world->monsters[i].destination.y == 0){
 			world->monsters[i].position.x = world->monsters[i].destination.x;
@@ -167,11 +167,24 @@ void towerShoots(Tower* tower, Monster* monsters){
 	if(tower == NULL || monsters == NULL) return;
 	if(tower->cadence < tower->nbTurnsSinceLastShoot) return;
 	bool towerCanShoot = true;
-	int i;
+	int i; int lifeLosed = 0;
 	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
 		if(Norm(Vector(monsters[i].position, tower->position)) <= tower->range){
-			monsters[i].life -= tower->power;
+			switch(tower->type){
+				case ROCKET : lifeLosed = tower->power - monsters[i].rocketResistance;
+				break;
+				case GUN : lifeLosed = tower->power - monsters[i].gunResistance;
+				break;
+				case LASER : lifeLosed = tower->power - monsters[i].laserResistance;
+				break;
+				case HYBRID : lifeLosed = tower->power - monsters[i].hybridResistance;
+				break;
+				default : lifeLosed = tower->power;
+				break;
+			}
+			monsters[i].life -= lifeLosed;
 			towerCanShoot = tower->type == GUN;//Seul les GUN peuvent tirer sur tous les monstres en même temps
+			tower->nbTurnsSinceLastShoot = 0;
 		}
 		i++;
 	}
