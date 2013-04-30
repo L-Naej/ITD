@@ -26,7 +26,7 @@ typedef struct{
 	
 	List* pathNodeList;///Liste de Point3D
 	
-	SDL_Surface* pixelArray;
+	SDL_Surface* image;
 }Map;
 
 /**

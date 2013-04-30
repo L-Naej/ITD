@@ -1,5 +1,6 @@
 #include "World.h"
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <math.h>
 #include "geometry.h"
 
@@ -21,8 +22,14 @@ World initWorld(const char* pathToItdFile){
 	
 	newWorld.map = initMap();
 	loadMap(&(newWorld.map), pathToItdFile);
-	dumpMap(newWorld.map);
 	
+	//pour test avant d'avoir la fonction de marina
+	newWorld.map.image = IMG_Load("images/map.ppm");
+	if(newWorld.map.image == NULL){
+		fprintf(stderr, "Map dans un mauvais format.\n");
+		exit(-1);
+	}
+	printf("SDL_image error : %s\n", IMG_GetError());
 	return newWorld;
 }
 

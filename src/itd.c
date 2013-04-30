@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "itd.h"
+#include "graphics.h"
 #include "world.h"
 #include "list.h"
 #include "actionManager.h"
@@ -25,9 +26,7 @@
  */
 int main(int argc,  char* argv[]) {
 	World world = initWorld("map/map1.itd");
-	world.currentMonstersWave = 19;
-	startNewMonsterWave(&world);
-	exit(0);
+
 	/*Initialisation SDL, OpenGL etc */
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
@@ -36,10 +35,8 @@ int main(int argc,  char* argv[]) {
 	
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool mapChosen = false;
-	List mapList;
+	bool mapChosen = true;//Pour debug, à remettre à false pour de vrai
 	char mapName[MAX_FILE_LENGTH];
-	mapList = initMenu();
 	
 	while(mapChosen == false) {
 		/* Récupération du temps au début de la boucle */
@@ -68,6 +65,7 @@ int main(int argc,  char* argv[]) {
 /*-------------- GESTION DU JEU --------------------*/
 	//TODO
 	bool gameFinished = false, askedForQuit = false;
+	initGameGraphics(world.map.image);
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -79,7 +77,7 @@ int main(int argc,  char* argv[]) {
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime >= TIMESTEP_MILLISECONDS) {
-			gameFinished = worldNewStep(NULL);
+			//gameFinished = worldNewStep(&world);
 		}
 		 
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
@@ -87,11 +85,13 @@ int main(int argc,  char* argv[]) {
 		 */
 		elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
-		if(elapsedTime >= FRAMERATE_MILLISECONDS) {
-			 drawWorld();
+		if(elapsedTime < FRAMERATE_MILLISECONDS) {
+			 drawWorld(&world);
 			 drawInterface();
 			 /* Echange du front et du back buffer : mise à jour de la fenêtre */
 			SDL_GL_SwapBuffers();
+      			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
+    			
 		}
 		
 		/* Boucle traitant les evenements */
@@ -105,44 +105,3 @@ int main(int argc,  char* argv[]) {
 }
 
 
-int initWindow(){
-	/* Initialisation de la SDL */
-	if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
-	fprintf(stderr, "Impossible d'initialiser la SDL.\n");
-	return EXIT_FAILURE;
-	}
-
-	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(EXIT_FAILURE == setVideoMode()) {
-		fprintf(stderr, "Impossible d'ouvrir la fenetre.\n");
-		return EXIT_FAILURE;
-	}
-
-	/* Titre de la fenêtre */
-	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
-	
-	return 0;
-}
-
-List initMenu(){
-	//TODO
-	List menuList;
-	return menuList;
-}
-
-void reshape() {
-  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(-1., 1., -1., 1.);
-}
-
-int setVideoMode() {
-  if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_RESIZABLE)) {
-    return EXIT_FAILURE;
-  }
-  
-  reshape();
-  
-  return EXIT_SUCCESS;
-}

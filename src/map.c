@@ -28,7 +28,7 @@ Map initMap(void){
 		perror("Erreur fatale : Impossible d'allouer la mémoire pour le chemin des monstres.\n");
 		exit(-1);
 	}
-	newMap.pixelArray = NULL;
+	newMap.image = NULL;
 
 	return newMap;
 }
