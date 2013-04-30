@@ -11,10 +11,10 @@ LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image
 
 #MAC
 ifeq ($(shell uname),Darwin)
-LIBS  = -L/usr/X11R6/lib -framework SDL -framework Cocoa -framework GLUT -framework OpenGL -lm -lX11
-INCLUDES := $(INCLUDES) -I/usr/X11R6/include -D_GNU_SOURCE=1 -D_THREAD_SAFE
+LIBS  = -L/usr/X11R6/lib -L/opt/local/lib -lSDL -lSDLmain -lSDL_image -lSDL_ttf -framework Cocoa -framework GLUT -framework OpenGL -lm -lX11
+INCLUDES := $(INCLUDES) -I/usr/X11R6/include -I/opt/local/include -D_GNU_SOURCE=1 -D_THREAD_SAFE
 BIN_MAC = bin/itd-mac 
-FLAGS := $(FLAGS) -D MAC SDLmain.m
+FLAGS := $(FLAGS) -D MAC #SDLmain.m
 endif
 
 # Compilateur

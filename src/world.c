@@ -169,7 +169,8 @@ void towerShoots(Tower* tower, Monster* monsters){
 	bool towerCanShoot = true;
 	int i; int lifeLosed = 0;
 	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
-		if(Norm(Vector(monsters[i].position, tower->position)) <= tower->range){
+		if(monsters[i].life > 0
+		&& Norm(Vector(monsters[i].position, tower->position)) <= tower->range){
 			switch(tower->type){
 				case ROCKET : lifeLosed = tower->power - monsters[i].rocketResistance;
 				break;

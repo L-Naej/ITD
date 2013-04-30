@@ -1,7 +1,13 @@
 #include <SDL/SDL.h>
-
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
+#ifdef MAC
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 #include "interfaceDrawer.h"
 //TODO
 void drawInterface(){}
