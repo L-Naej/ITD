@@ -46,6 +46,8 @@ int testItdValid(int R,int V,int B);
 
 int loadITD1 (Map* map, FILE* file);
 
+bool loadPpmMap(Map* map);
+
 /**
  * Retourne une structure Color3u initialisée
  * (tous les membres à NULL/0).

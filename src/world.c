@@ -23,12 +23,6 @@ World initWorld(const char* pathToItdFile){
 	newWorld.map = initMap();
 	loadMap(&(newWorld.map), pathToItdFile);
 	
-	//pour test avant d'avoir la fonction de marina
-	newWorld.map.image = IMG_Load("images/map.ppm");
-	if(newWorld.map.image == NULL){
-		fprintf(stderr, "Map dans un mauvais format.\n");
-		exit(-1);
-	}
 	return newWorld;
 }
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "map.h"
+#include <SDL/SDL_image.h>
 
 #define MAX_LENGHT 30
 
@@ -199,6 +200,8 @@ int loadITD1 (Map* map, FILE* file){
 		printf("nombre de coordonnée de noeuds incorrect - error 2- \n");
 		return 0;
 	}*/
+	
+	loadPpmMap(map);
 
 	return 1;
 } 
@@ -234,10 +237,12 @@ bool loadMap(Map* map, const char* pathToItdFile){
 			printf("carte chargée");
 			return true;
 		}
+		return false;
 	}
 	
+	
 	if (strcmp(versionMap,"@ITD 2")==0){	
-		if( loadITD1(map,file) !=1 ) return 0;
+		if( loadITD1(map,file) !=1 ) return false;
 		/*
 		fseek (file,7,SEEK_CUR); 
 		fscanf(file,"%d\n",&(rocket->power));
@@ -289,6 +294,116 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	}
 }
 
+/* Récupération de la couleur d'un pixel */
+Uint32 recupColorPixel(SDL_Surface *surface, int x, int y){
+    /*nbOctetsParPixel = nombre d'octets utilisés pour stocker un pixel.*/
+    int nbOctetsParPixel = surface->format->BytesPerPixel;
+    /*surface->pixels contient l'adresse du premier pixel de l'image*/
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * nbOctetsParPixel;
+    /*Gestion différente suivant le nombre d'octets par pixel de l'image*/
+    switch(nbOctetsParPixel)
+    {
+        case 1:
+            return *p;
+ 
+        case 2:
+            return *(Uint16 *)p;
+ 
+        case 3:
+            /*Suivant l'architecture de la machine*/
+            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+                return p[0] << 16 | p[1] << 8 | p[2];
+            else
+                return p[0] | p[1] << 8 | p[2] << 16;
+ 
+        case 4:
+            return *(Uint32 *)p;
+ 
+        default:
+            return 0;
+    }
+}
+
+
+/* Modification de la couleur du pixel */
+void modifColorPixel(SDL_Surface *surface, int x, int y, Uint32 pixel){
+   
+    int nbOctetsParPixel = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * nbOctetsParPixel;
+ 
+    switch(nbOctetsParPixel)
+    {
+        case 1:
+            *p = pixel;
+            break;
+ 
+        case 2:
+            *(Uint16 *)p = pixel;
+            break;
+ 
+        case 3:
+            if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            {
+                p[0] = (pixel >> 16) & 0xff;
+                p[1] = (pixel >> 8) & 0xff;
+                p[2] = pixel & 0xff;
+            }
+            else
+            {
+                p[0] = pixel & 0xff;
+                p[1] = (pixel >> 8) & 0xff;
+                p[2] = (pixel >> 16) & 0xff;
+            }
+            break;
+ 
+        case 4:
+            *(Uint32 *)p = pixel;
+            break;
+    }
+}
+
+
+bool loadPpmMap(Map* map){
+	
+	/*Chargement de l'image*/
+      char chemin [38] = "images/";
+	strcat(chemin,map->name);
+	/* J'ai pas réussi à concatener pour que le nom de la carte ne soit pas en dur >< */
+  	map->image = IMG_Load(chemin);
+  	
+  	if(map->image == NULL) {
+   		fprintf(stderr, "Impossible de charger le fichier %s.\n", map->name);
+  		 return false;
+	}	  
+	
+	int i,j =0;
+	Color3u colorPixel;
+	Uint32 initColorPixel;
+	Uint32 newColorPixel; 
+	for(i=0; i<map->image->w; i++) {		
+		for(j=0; j<map->image->h; j++) {
+			initColorPixel = recupColorPixel(map->image, i, j);
+			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
+			if(colorPixel.red == 120 && colorPixel.green == 120 && colorPixel.blue == 120) {				
+				colorPixel.red = map->constructAreaColor.red;
+				colorPixel.green = map->constructAreaColor.green;
+				colorPixel.blue = map->constructAreaColor.blue;	
+				
+				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
+				modifColorPixel(map->image, i, j, newColorPixel);
+			} else if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
+				
+				colorPixel.red = map->pathColor.red;
+				colorPixel.green = map->pathColor.green;
+				colorPixel.blue = map->pathColor.blue;		
+				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
+				modifColorPixel(map->image, i, j, newColorPixel);
+			}
+		}
+	}
+
+	return true;
+}
 
 void dumpColor3u(Color3u color){
 	printf("(r:%d, g:%d, b:%d)", color.red, color.green, color.blue);
