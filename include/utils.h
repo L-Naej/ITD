@@ -1,7 +1,6 @@
 #ifndef ITD_UTILS
 #define ITD_UTILS
 #include <stdlib.h>
-static char* rootPath = NULL;
 
 typedef enum{false=0, true=1}bool;
 

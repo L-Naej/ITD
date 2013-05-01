@@ -13,7 +13,29 @@
 void handleMenuActions(char* mapName){}
 
 bool handleGameActions(){
-	return false;
+	SDL_Event e;
+	bool askedForQuit = false;
+	while(SDL_PollEvent(&e)) {
+		/* L'utilisateur ferme la fenêtre : */
+		if(e.type == SDL_QUIT) {
+			askedForQuit = true;
+			break;
+		}
+		switch(e.type) {
+		case SDL_KEYDOWN:
+			switch(e.key.keysym.sym){
+			case 'q' : 
+			case SDLK_ESCAPE : 
+			askedForQuit = true;
+			break;
+			default : break;
+			}
+		break;
+		default : break;
+		}
+	}
+
+	return askedForQuit;
 }
 
 void clicButton (SDL_Event e){

@@ -221,12 +221,11 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	int i;
 	for (i=0; i< 6; i++){
 		fscanf(file,"%c",versionMap+i);
-		printf("version : %s\n",versionMap+i);
 	}
 	/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
 	if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
-		printf("Fichier incompatible");
-		return 0;
+		fprintf(stderr, "Fichier incompatible\n");
+		return false;
 	}
 	
 	if (strcmp(versionMap,"@ITD 1")==0){
@@ -234,7 +233,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
-			printf("carte chargée");
+			printf("Carte chargée\n");
 			return true;
 		}
 		return false;
@@ -289,7 +288,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	*/
 		fflush(file);
 		fclose(file);
-		printf("carte chargée");
+		printf("Carte chargée\n");
 		return true;
 	}
 }
