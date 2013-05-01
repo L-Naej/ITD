@@ -13,20 +13,19 @@ Cell* createCell(void* userData){
 	return c;
 }
 
-List* createEmptyList(LIST_TYPE type){
+List* createEmptyList(void){
 	List* list = (List*) malloc(sizeof(List));
 	if(list == NULL) return NULL;
 	
 	list->head = list->cursor = list->bottom = NULL;
 	list->size = 0;
-	list->type = type;
 	list->position = 0;
 	
 	return list;
 }
 
-List* createList(LIST_TYPE type, void* headUserData){
-	List* list = createEmptyList(type);
+List* createList(void* headUserData){
+	List* list = createEmptyList();
 	if(list == NULL || headUserData == NULL) return NULL;
 	
 	list->head = createCell(headUserData);
@@ -38,7 +37,7 @@ List* createList(LIST_TYPE type, void* headUserData){
 	
 	list->head->previous = NULL;
 	
-	//On place le curseur sur la donnée ajoutée
+	/*On place le curseur sur la donnée ajoutée*/
 	list->cursor = list->head;	
 	list->size = 1;
 	list->position = 1;
@@ -50,34 +49,34 @@ Cell* currentCell(List* list){
 	return list->cursor;
 }
 
-//Note: si curseur en début de list cursor == NULL
-//	  si curseur en fin de liste, cursor->next == NULL
+/*Note: si curseur en début de list cursor == NULL
+	  si curseur en fin de liste, cursor->next == NULL*/
 Cell* nextCell(List* list){
 	if(list == NULL) return NULL;
 	
-	//Cas spécial : curseur en début de liste, le curseur avance donc sur head
+	/*Cas spécial : curseur en début de liste, le curseur avance donc sur head*/
 	if(list->cursor == NULL){
 		list->cursor = list->head;
 		list->position++;
 		return list->cursor;
 	}
 	
-	//Cas spécial : curseur en fin de liste, on ne bouge pas le curseur
+	/*Cas spécial : curseur en fin de liste, on ne bouge pas le curseur*/
 	if(list->cursor->next == NULL) return NULL;
 	
-	//Cas général, on avance le curseur et on le retourne
+	/*Cas général, on avance le curseur et on le retourne*/
 	list->cursor = list->cursor->next;
 	list->position++;
 	
 	return list->cursor;
 }
 
-//Note: si curseur en début de list cursor == NULL
-//	  si curseur en fin de liste, cursor->next == NULL
+/*Note: si curseur en début de list cursor == NULL
+si curseur en fin de liste, cursor->next == NULL*/
 Cell* previousCell(List* list){
 	if(list == NULL) return NULL;
 	
-	//Cas spécial : curseur en début de liste
+	/*Cas spécial : curseur en début de liste*/
 	if(list->cursor == NULL){
 		return NULL;
 	}
@@ -128,7 +127,7 @@ bool isListEmpty(List* list){
 }
 
 Cell* insertHeadCell(List* list, void* userData){
-	//La liste doit être initialisée (sinon ça devient le bordel)
+	/*La liste doit être initialisée (sinon ça devient le bordel)*/
 	if(list == NULL || userData == NULL){
 		fprintf(stderr,"Tentative d'insertion d'un élement dans une liste nulle.\n");	
 		return NULL;
@@ -150,7 +149,7 @@ Cell* insertHeadCell(List* list, void* userData){
 }
 
 Cell* insertBottomCell(List* list, void* userData){
-	//La liste doit être initialisée (sinon ça devient le bordel)
+	/*La liste doit être initialisée (sinon ça devient le bordel)*/
 	if(list == NULL || userData == NULL){
 		fprintf(stderr,"Tentative d'insertion d'un élement dans une liste nulle.\n");	
 		return NULL;
@@ -163,7 +162,7 @@ Cell* insertBottomCell(List* list, void* userData){
 	}
 	 
 	c->previous = list->bottom;
-	//Cas spécial, la liste est vide
+	/*Cas spécial, la liste est vide*/
 	if(isListEmpty(list)){
 		list->head = list->bottom = c;
 	}
@@ -185,9 +184,9 @@ Cell* insertAfterCell(List* list, void* userData){
 		return NULL;
 	}
 	
-	//-------On relie cToInsert à son voisin de droite
+	/*-------On relie cToInsert à son voisin de droite
 	
-	//Cas spécial : on a inséré après la tête de liste
+	//Cas spécial : on a inséré après la tête de liste*/
 	if(list->cursor == NULL){
 		cToInsert->next = list->head;
 	}
@@ -195,7 +194,7 @@ Cell* insertAfterCell(List* list, void* userData){
 		cToInsert->next = list->cursor->next;
 	}
 	
-	//Cas spécial : on a inséré après le dernier élément
+	/*Cas spécial : on a inséré après le dernier élément*/
 	if(list->cursor == list->bottom){
 		cToInsert->next = NULL;
 		list->bottom = cToInsert;
@@ -204,14 +203,14 @@ Cell* insertAfterCell(List* list, void* userData){
 		cToInsert->next->previous = cToInsert;
 	}
 	
-	//On relie cToInsert à son voisin de gauche
+	/*On relie cToInsert à son voisin de gauche*/
 	cToInsert->previous = list->cursor;
 	
 	
-	//----------Cas spécial : on a inséré après la tête de liste 
-	//(donc pas de voisin de gauche)
+	/*----------Cas spécial : on a inséré après la tête de liste 
+	//(donc pas de voisin de gauche)*/
 	if(list->cursor == NULL){
-		//Nouvelle tête de liste
+		/*Nouvelle tête de liste*/
 		list->head = cToInsert;
 	}
 	else{
@@ -231,9 +230,9 @@ Cell* insertBeforeCell(List* list, void* userData){
 		fprintf(stderr, "Erreur lors de l'ajout d'une cellule dans une liste");
 		return NULL;
 	}
-	//On relie cToInsert à son voisin de gauche
+	/*On relie cToInsert à son voisin de gauche
 	
-	//Cas spécial : on est au niveau de la tête OU en tête de liste
+	//Cas spécial : on est au niveau de la tête OU en tête de liste*/
 	if(list->cursor == NULL || list->cursor == list->head){
 		cToInsert->previous = NULL;
 	}
@@ -242,8 +241,8 @@ Cell* insertBeforeCell(List* list, void* userData){
 		cToInsert->previous->next = cToInsert;
 	}
 	
-	//On relie cToInsert à son voisin de droite
-	//Cas spécial: on a inséré avant la tête OU en tête de liste
+	/*On relie cToInsert à son voisin de droite
+	//Cas spécial: on a inséré avant la tête OU en tête de liste*/
 	if(list->cursor == NULL || list->cursor == list->head){
 		cToInsert->next = list->head;
 		list->head->previous = cToInsert;
@@ -287,9 +286,9 @@ int goToCell(List* list, Cell* cell){
 	while( ( currentCell = nextCell(list) ) != cell
 		&& currentCell != NULL);
 	
-	//Si currentCell == NULL c'est qu'on n'a pas trouvé cell
+	/*Si currentCell == NULL c'est qu'on n'a pas trouvé cell
 	// et il faut retourner à l'ancienne position.
-	//Sinon c'est qu'on est dessus.
+	//Sinon c'est qu'on est dessus.*/
 	if(currentCell == NULL){
 		restoreListState(state);
 		free(state);
@@ -312,9 +311,9 @@ int goToData(List* list, void* userData){
 	while( ( currentData = nextData(list) ) != userData
 		&& currentData != NULL );
 		
-	//Si currentData == NULL c'est qu'on n'a pas trouvé userData
+	/*Si currentData == NULL c'est qu'on n'a pas trouvé userData
 	// et il faut retourner à l'ancienne position.
-	//Sinon c'est qu'on est dessus.
+	//Sinon c'est qu'on est dessus.*/
 	if(currentData == NULL){
 		restoreListState(state);
 		free(state);
@@ -330,7 +329,7 @@ bool goToPosition(List* list, int position){
 		return false;
 		
 	int i;
-	//Cas spéciaux
+	/*Cas spéciaux*/
 	if(position == 1){
 		goToHeadList(list);
 		nextCell(list);
@@ -341,9 +340,9 @@ bool goToPosition(List* list, int position){
 		return true;
 	}
 	
-	//Optimisation, woulala !
+	/*Optimisation, woulala !
 	//Si la position est plus proche de la fin on part de la fin,
-	//et vice-versa.
+	//et vice-versa.*/
 	if(position > (list->size / 2 )){
 		goToBottomCell(list);
 		for(i = list->size; i >position; --i){
@@ -383,7 +382,7 @@ void* delCellByPosition(List* list, int position){
 		
 	Cell* theCell = getCellByPosition(list, position);
 	
-	//size-- est fait dans delCellInList
+	/*size-- est fait dans delCellInList*/
 	return delCellInList(list, theCell);
 }
 
@@ -391,45 +390,45 @@ void* delCellInList(List* list, Cell* theCell){
 	if(list == NULL || theCell == NULL) return NULL;
 	void* userData = NULL;
 	
-	//On coupe les liens !
+	/*On coupe les liens !
 	
-	//Cas spécial : c'est le dernier cell
+	//Cas spécial : c'est le dernier cell*/
 	if(list->size == 1){
 		list->head = list->bottom = list->cursor = NULL;
 		list->position = 0;
 		list->size--;
 	}
-	//Cas spécial : le Cell est en fin de liste
+	/*Cas spécial : le Cell est en fin de liste*/
 	else if(theCell == list->bottom){
 		theCell->previous->next = NULL;
 		list->bottom = theCell->previous;
 		theCell->previous = NULL;
 		list->size--;
-		//Si le curseur était sur theCell..
+		/*Si le curseur était sur theCell..*/
 		if(list->cursor == theCell){
 			list->cursor = list->bottom;
 			list->position = list->size;
 		}
 
 	}
-	//Cas spécial : le Cell est en tête de liste
+	/*Cas spécial : le Cell est en tête de liste*/
 	else if(theCell == list->head){
 		theCell->next->previous = NULL;
 		list->head = theCell->next;
 		theCell->next = NULL;
 		list->size--;
-		//Si le curseur était sur theCell..
+		/*Si le curseur était sur theCell..*/
 		if(list->cursor == theCell){
 			list->cursor = list->head;
 			list->position = 1;
 		}
 	}
-	//Sinon cas général
+	/*Sinon cas général*/
 	else{
 		theCell->next->previous = theCell->previous;
 		theCell->previous->next = theCell->next;
 	
-		//Si le curseur était sur theCell..
+		/*Si le curseur était sur theCell..*/
 		if(list->cursor == theCell){
 			list->cursor = theCell->next;
 		}
@@ -444,40 +443,25 @@ void* delCellInList(List* list, Cell* theCell){
 }
 
 void freeCellByPosition(List* list, int position){
-	//delCellByPosition fait les tests pour nous...
-	
-	void* userData = delCellByPosition(list,position);
-	
-	switch(list->type){
-		case NODE :
-		break;
-		case UNKNOWN : free(userData);
-		break;
-		default : free(userData);
-		break;
-	}
+	/*delCellByPosition fait les tests pour nous...*/
+	void* data = delCellByPosition(list,position);
+	free(data);
 }
 
 void freeCellInList(List* list, Cell* c){
-	void* userData = delCellInList(list,c);
-	switch(list->type){
-		case NODE :
-		break;
-		case UNKNOWN : free(userData);
-		break;
-		default : free(userData);
-		break;
-	}
+	void* data = delCellInList(list,c);
+	free(data);
 }
 
 void freeCell(Cell* c){
+	free(c->userData);
 	free(c);
 }
 
 
-//Comme on supprime les cellules, le curseur se déplace tout
+/*Comme on supprime les cellules, le curseur se déplace tout
 //seul. Il ne faut donc pas travailler sur nextCell mais sur
-//currentCell.
+//currentCell.*/
 void freeList(List* list){
 	if(list == NULL) return;
 	Cell* c = NULL;
@@ -491,9 +475,9 @@ void freeList(List* list){
 	free(list);
 }
 
-//Comme on supprime les cellules, le curseur se déplace tout
+/*Comme on supprime les cellules, le curseur se déplace tout
 //seul. Il ne faut donc pas travailler sur nextCell mais sur
-//currentCell.
+//currentCell.*/
 void freeListComplete(List* list){
 	if(list == NULL) return;
 	
@@ -526,12 +510,7 @@ void dumpList(List* list){
 	
 	while(nextCell(list) != NULL){
 		printf("\n\tCellule %d)  Adresse : %p", cnt, currentCell(list));
-		switch(list->type){
-			case NODE :
-			break;
-			case UNKNOWN : printf("de type inconnu\n");
-			break;
-		}
+		
 		if(list->cursor->next != NULL)
 			printf("Next Cell : %p\n", list->cursor->next);
 		else
@@ -567,17 +546,17 @@ void restoreListState(ListState* state){
 	Cell* curCell = NULL;
 	
 	goToHeadList(state->savedList);
-	//Cas spécial : on était en tête (curseur à NULL), rien à faire !
+	/*Cas spécial : on était en tête (curseur à NULL), rien à faire !*/
 	if(state->savedCell == NULL){
 		return;
 	}
-	//SINON
+	/*SINON
 	//On vérifie que la Cell sauvegardée n'est pas morte
 	//entre temps en allant à son ancienne position et en checkant
-	//qu'elle est toujours là.
+	//qu'elle est toujours là.*/
 	curCell = nextCell(state->savedList);
 	while( curCell != NULL ){
-		//Si on trouve la Cell, on peut partir on est désormais dessus !
+		/*Si on trouve la Cell, on peut partir on est désormais dessus !*/
 		if(curCell == state->savedCell){
 			return;
 		}
@@ -586,15 +565,15 @@ void restoreListState(ListState* state){
 	}
 	
 
-	//Si la cell existe encore, ou bien qu'elle n'existe plus
+	/*Si la cell existe encore, ou bien qu'elle n'existe plus
 	//mais que  son ancienne position dépasse
 	//la taille actuelle de la liste, on s'arrête là (dans le
-	//2eme cas le curseur est donc à la fin).
+	//2eme cas le curseur est donc à la fin).*/
 	if(curCell != NULL 
 	|| state->savedList->size < state->savedPosition) return;
 	
-	//Si la Cell n'existe plus (curCell == NULL), on se positionne
-	// à son ancienne...position
+	/*Si la Cell n'existe plus (curCell == NULL), on se positionne
+	// à son ancienne...position*/
 	goToHeadList(state->savedList);
 	while(state->savedList->position != state->savedPosition ){
 		nextCell(state->savedList);

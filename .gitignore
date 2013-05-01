@@ -16,7 +16,10 @@
 *.out
 *.app
 
-#Sujet du projet
-towerDefense.pdf
-#fichiers temporaires
+#Temporary files
 *~
+src/*.c~
+include/*~
+.DS_Store
+*/.DS_Store
+*.orig
