@@ -29,29 +29,35 @@ World initWorld(const char* pathToItdFile){
 		fprintf(stderr, "Map dans un mauvais format.\n");
 		exit(-1);
 	}
-	printf("SDL_image error : %s\n", IMG_GetError());
 	return newWorld;
 }
 
 void startNewMonsterWave(World* world){
 	if(world == NULL) return;
 	world->currentMonstersWave++;
+	printf("Starts monster wave n°%d\n", world->currentMonstersWave);
 	
 	int i = 0;
 	Point3D startPoint = getStartPoint(&(world->map));
+	Point3D secondPoint = nextNode(world->map.pathNodeList, startPoint); 
+	//Vector3D direction = Normalize(Vector(startPoint, secondPoint));
 
 	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map
 	//Avec comme destination le point de départ de leur chemin.
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 		world->monsters[i] = createMonster(world->currentMonstersWave, i);
-		world->monsters[i].destination = startPoint;
+		world->monsters[i].destination = secondPoint;
+		world->monsters[i].position = startPoint;
+		
+		/*
 		if(world->monsters[i].destination.y == 0){
 			world->monsters[i].position.x = world->monsters[i].destination.x;
 			world->monsters[i].position.y =  -(i*MONSTER_WIDTH_PX*(world->monsters[i].speed)) -MONSTER_WIDTH_PX / 2;
 		}else{
 			world->monsters[i].position.y = world->monsters[i].destination.y;
 			world->monsters[i].position.x =  -(i*MONSTER_WIDTH_PX*world->monsters[i].speed) -MONSTER_WIDTH_PX / 2;	
-		}	
+		}
+		*/	
 	}
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
 }
@@ -62,15 +68,20 @@ bool worldNewStep(World* world){
 	bool isGameFinished = false;
 	Uint32 now = SDL_GetTicks();
 	//Tps écoulé depuis le dernier tour de jeu permet de savoir combien de tour jouer cette fois
-	int turnsRemaining = (now - world->worldTime) / TIMESTEP_MILLISECONDS;
-	//if (turnsRemaining == 0) turnsRemaining = 1;//à voir
+	int tmp = (int)now - (int)world->worldTime;
+	printf("Now %d Worldtime %d Diff : %d \n",now, world->worldTime, tmp);
+	int turnsRemaining = (now - world->worldTime) / ((int)TIMESTEP_MILLISECONDS);
+	if(turnsRemaining > 0) world->worldTime = SDL_GetTicks();
+	printf("Turns remaining : %d\n", turnsRemaining);
 	
 	while(i < turnsRemaining && !isGameFinished){
 		isGameFinished = doTurn(world);
 		i++;
 	}
 	
-	if(turnsRemaining > 0) world->worldTime = SDL_GetTicks();
+	if(isGameFinished){
+		printf("Jeu fini. monstres vivants : %d, Vague en cours : %d\n", world->nbMonstersAlive, world->currentMonstersWave);
+	} 
 	return isGameFinished;
 }
 
@@ -99,6 +110,9 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 //---------------------- FONCTIONS PRIVEES ---------------------
 bool doTurn(World* world){
 	if(world == NULL) return false;
+	static int turnNumber = 0; //debug
+	turnNumber++;
+	
 	bool isGameFinished = false;
 	
 	//Phase d'attente entre deux vague de monstres ? On ne fait rien
@@ -122,6 +136,12 @@ bool doTurn(World* world){
 	Point3D endPoint = getEndPoint(&(world->map));
 	while(i < MONSTERS_PER_WAVE && !isGameFinished){
 		isGameFinished = arePointsEquals(world->monsters[i].position, endPoint);
+		if(isGameFinished){
+			printf("D'après doTurn le jeu est fini au tour n° %d le monstre %d a atteint la fin.\n", turnNumber, i);
+			printf("Position :");
+			dumpPoint(world->monsters[i].position);
+			dumpPoint(world->monsters[i].destination);
+		}
 		if(world->monsters[i].life <= 0) world->nbMonstersAlive--;
 		++i;
 	}
@@ -151,6 +171,8 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+			printf("monstre %d new destination :", i);
+			dumpPoint(monsters[i].destination);
 		}
 		monsterMove = false;
 	}

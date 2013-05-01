@@ -73,23 +73,20 @@ Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
 	oglPoint.z = 0.0;
 	
-	oglPoint.x = GL_X_AXIS_MIN + 2*X_RATIO * sdlPoint.x / WINDOW_WIDTH;
-	oglPoint.y = GL_Y_AXIS_MIN + 2*Y_RATIO * sdlPoint.y / WINDOW_HEIGHT;
+	oglPoint.x = GL_X_AXIS_MIN + 2*WINDOW_WIDTH * sdlPoint.x / WINDOW_WIDTH;
+	oglPoint.y = GL_Y_AXIS_MIN + 2*WINDOW_HEIGHT * sdlPoint.y / WINDOW_HEIGHT;
 	
 	return oglPoint;
 }
 
 void reshape() {
-	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+	glViewport(0, 0 , WINDOW_WIDTH , WINDOW_HEIGHT );
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	GL_X_AXIS_MAX = 1.;
-	GL_X_AXIS_MIN = -1.;
-	GL_Y_AXIS_MAX = 1.;
-	GL_Y_AXIS_MIN = -1.;
-
-	X_RATIO = WINDOW_WIDTH / 100.;
-	Y_RATIO = WINDOW_HEIGHT / 100.;
+	GL_X_AXIS_MAX = WINDOW_WIDTH / 2.0;
+	GL_X_AXIS_MIN = - GL_X_AXIS_MAX;
+	GL_Y_AXIS_MAX = WINDOW_HEIGHT / 2.0;
+	GL_Y_AXIS_MIN = - GL_Y_AXIS_MAX;
 
 	gluOrtho2D(GL_X_AXIS_MIN, GL_X_AXIS_MAX, GL_Y_AXIS_MIN, GL_Y_AXIS_MAX);
 }

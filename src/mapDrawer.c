@@ -10,13 +10,23 @@ void drawWorld(const World* world){
 	glLoadIdentity();
 	
 	drawMap();
+	
+	if( ! world->isBetweenWaves){
+		for(i = 0; i < MONSTERS_PER_WAVE; ++i){
+			drawMonster(world->monsters[i]);
+		}
+	}
 }
 
+//TODO (rajouter le chemin etc)
 void drawMap(){
 	
 	glPushMatrix();
 	glLoadIdentity();
-	glScalef(2.,2.,1.);
+	
+	//La map prend toute la fenêtre
+	glScalef(WINDOW_WIDTH,WINDOW_HEIGHT,1.);
+	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, GAME_TEXTURES_ID.MAP_ID);
 	glBegin(GL_QUADS);
@@ -59,24 +69,24 @@ void drawMonster(const Monster* monster){
 	glLoadIdentity();
 
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
-	
+	glScalef(0.1,0.1,1.0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, monsterTexture);
 	glBegin(GL_QUADS);
 	
 	//Bottom left
 	glTexCoord2f(0.0,1.0);
-	glVertex2f(GL_X_AXIS_MIN / 2.0,GL_Y_AXIS_MIN / 2.0);
+	glVertex2f(-0.5,-0.5);
 	//Bottom right
 	glTexCoord2f(1.0,1.0);
-	glVertex2f(GL_X_AXIS_MAX / 2.0,GL_Y_AXIS_MIN / 2.0);
+	glVertex2f(0.5,-0.5);
 
 	//Top right
 	glTexCoord2f(1.0,0.0);
-	glVertex2f(GL_X_AXIS_MAX / 2.0,GL_Y_AXIS_MAX / 2.0);
+	glVertex2f(0.5,0.5);
 	//Top left
 	glTexCoord2f(0.0,0.0);
-	glVertex2f(GL_X_AXIS_MIN / 2.0, GL_Y_AXIS_MAX / 2.0);
+	glVertex2f(-0.5, 0.5);
 
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);

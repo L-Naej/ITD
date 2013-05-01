@@ -36,14 +36,16 @@ float GL_X_AXIS_MAX;
 float GL_Y_AXIS_MIN;
 float GL_Y_AXIS_MAX; 
 
-/* Ratio largeur / hauteur = X_RATIO / Y_RATIO
-(valeurs calculées par la suite). */
-float X_RATIO;
-float Y_RATIO;
-
 /* Nombre de bits par pixel de la fenêtre */
 static const unsigned int BIT_PER_PIXEL = 32;
 
+
+/**
+ * Charge les textures du jeu dans la carte
+ * graphique et récupère les textures id qui leurs
+ * sont liés. Les stocke dans la variable globale 
+ * GAME_TEXTURES_ID.
+ */
 void initGameGraphics(const SDL_Surface* map);
 
 /**
@@ -74,8 +76,11 @@ GLuint makeTextureFromFile(const char* imagePath);
  */
 GLuint makeTextureFromSurface(const SDL_Surface* surface);
 
+/**
+ * Appelée quand la fenêtre est redimensionnée.
+ */
+void reshape();
 
 int setVideoMode();
-void reshape();
 
 #endif

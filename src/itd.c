@@ -25,14 +25,14 @@
  * Lancer la boucle de jeu
  */
 int main(int argc,  char* argv[]) {
-	World world = initWorld("map/map1.itd");
-
 	/*Initialisation SDL, OpenGL etc */
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
 		exit(-1);
 	}
 	
+	//Surtout à appeler APRES avoir initialisé la SDL
+	World world = initWorld("map/map1.itd");
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
 	bool mapChosen = true;//Pour debug, à remettre à false pour de vrai
@@ -70,20 +70,15 @@ int main(int argc,  char* argv[]) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 		
-		/**
-		 * Placer ici le code qui fait avancer le
-		 * monde d'un pas de temps.
-		 */
-		Uint32 elapsedTime = SDL_GetTicks() - startTime;
-		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
-		if(elapsedTime >= TIMESTEP_MILLISECONDS) {
-			//gameFinished = worldNewStep(&world);
-		}
+		/* On tente un nouveau cycle de tours de jeu si besoin. Le temps est 
+		 géré par la fonction. La plupart du temps plusieurs tours de jeu sont
+		 joués d'affilé. */
+		gameFinished = worldNewStep(&world);
 		 
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
 		au tour suivant.
 		 */
-		elapsedTime = SDL_GetTicks() - startTime;
+		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
 			 drawWorld(&world);
