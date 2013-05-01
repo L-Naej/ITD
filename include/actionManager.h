@@ -4,5 +4,6 @@
 
 void handleMenuActions(char* mapName);
 bool handleGameActions();
+void clicButton (SDL_Event e);
 
 #endif

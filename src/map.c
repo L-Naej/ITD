@@ -33,6 +33,7 @@ Map initMap(void){
 	return newMap;
 }
 
+
 Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	if(pathNodeList == NULL){
 		fprintf(stderr, "Erreur fatale : La liste de noeuds de chemin passée en paramètre de nextNode est NULL.\n");
@@ -92,16 +93,125 @@ Point3D getEndPoint(const Map* map){
 	return endPoint;
 }
 
-bool loadMap(Map* map, const char* pathToItdFile){	
-	if(pathToItdFile == NULL || map == NULL || map->pathNodeList == NULL)
-		return false;
+int testItdValid(unsigned char R,unsigned char V,unsigned char B){
+	if ((R>=0 && R<= 255) && (V>=0 && V<= 255) && (B>=0 && B<= 255)){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+
+}
+
+int loadITD1 (Map* map, FILE* file){
+	/* nom de l'image*/
+	fseek (file,6,SEEK_CUR); 
+	(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
+ 	/*  on a dit que le nom de la carte ferait 30 caractères maxi*/
+	fscanf(file,"%s \n",map->name);
+
+
+	/*rajouter width et height quand on aura le fichier .ppm*/
+
+	int R,V,B;
+			
+	fseek (file,7,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->pathColor.red =(unsigned char)R;
+	map->pathColor.green = (unsigned char)V;
+	map->pathColor.blue =(unsigned char)B;
+	if (testItdValid(map->pathColor.red,map->pathColor.green,map->pathColor.blue)!= 1){
+		printf("ligne de couleur de chemin erronée \n");
+		return 0;
+	}
+
+
+	fseek (file,6,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->nodeColor.red = (unsigned char)R;
+	map->nodeColor.green = (unsigned char)V;
+	map->nodeColor.blue = (unsigned char)B;
+	if (testItdValid(map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue)!= 1){
+		printf("ligne de couleur de noeud erronée \n");
+		return 0;
+	}
+
+
+	fseek (file,10,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->constructAreaColor.red = (unsigned char)R;
+	map->constructAreaColor.green = (unsigned char)V;
+	map->constructAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue)!= 1){
+		printf("ligne de couleur de zone constructible erronée \n");
+		return 0;
+	}
+
+
+	fseek (file,3,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->inAreaColor.red = (unsigned char)R;
+	map->inAreaColor.green = (unsigned char)V;
+	map->inAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue)!= 1){
+		printf("ligne de couleur d'entrée erronée \n");
+		return 0;
+	}
+
+
+	fseek (file,4,SEEK_CUR); 
+	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	map->outAreaColor.red = (unsigned char)R;
+	map->outAreaColor.green = (unsigned char)V;
+	map->outAreaColor.blue = (unsigned char)B;
+	if (testItdValid(map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue)!= 1){
+		printf("ligne de couleur de sortie erronée \n");
+		return 0;
+	}
+
+
+	fscanf(file,"%d\n",&(map->nodeList->size));
+
+
+
+	PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
+	fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
+
 	
+	int size = map->nodeList->size;
+	map->nodeList = createList((void*)node1); 
+
+	int j=0;
+
+
+	while (j<size-1){
+
+		PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
+		fscanf(file,"%d %d\n",&(node->x),&(node->y));
+		if ((node->x)==0 && (node->y)==0){
+			printf("nombre de coordonnée de noeuds incorrect - error 1- \n");
+			return 0;
+		}
+		insertBottomCell(map->nodeList,(void*)node);
+		j++;
+	}
+
+	/*int nbNode = listCountElem(map->nodeList);
+	if (nbNode != map->nodeList->size){
+		printf("nombre de coordonnée de noeuds incorrect - error 2- \n");
+		return 0;
+	}*/
+
+	return 1;
+} 
+int loadMap(Map* map, Tower* rocket, Tower* laser, Tower* mitraillette, Tower* hybrid){	
+
 	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen(pathToItdFile,"r");
+	file = fopen("map/map2.itd","r");
 	if(file == NULL){
-		return false;
+		return 0;
 	}
 	else{
 		char versionMap [MAX_LENGHT];
@@ -117,108 +227,74 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
 		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 			printf("Fichier incompatible");
-			return false;
-		} 
+			return 0;
+		}
+		
+		 
 
 		if (strcmp(versionMap,"@ITD 1")==0){
-
-			/* nom de l'image*/
-			(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
-			if(map->name == NULL){
-				perror("Erreur fatale : impossible d'allouer l'espace mémoire nécessaire dans loadMap\n");
-				exit(-1);
+			if (loadITD1(map,file)==1){
+				/* On vide  le buffer et on ferme le fichier*/
+				fflush(file);
+				fclose(file);
+				printf("carte chargée");
+				return 1;
 			}
- /*  on a dit que le nom de la carte ferait 30 caractères maxi*/
-			fscanf(file,"%s \n",map->name);
-			printf("nom image : %s\n",map->name); /* par contre je sais pas comment faire vu qu'on connait pas la taille du nom. %s va surement pas marcher*/
-
-			/*rajouter width et height quand on aura le fichier .ppm*/
-			int R,V,B;
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->pathColor.red =(unsigned char)R;
-			map->pathColor.green = (unsigned char)V;
-			map->pathColor.blue =(unsigned char)B;
-			printf("couleur des chemins : %d %d %d\n",map->pathColor.red,map->pathColor.green,map->pathColor.blue);
-
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->nodeColor.red = (unsigned char)R;
-			map->nodeColor.green = (unsigned char)V;
-			map->nodeColor.blue = (unsigned char)B;
-			printf("couleur des noeuds : %d %d %d\n",map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue);
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->constructAreaColor.red = (unsigned char)R;
-			map->constructAreaColor.green = (unsigned char)V;
-			map->constructAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones constructibles : %d %d %d\n",map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue);
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->inAreaColor.red = (unsigned char)R;
-			map->inAreaColor.green = (unsigned char)V;
-			map->inAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones d'entrée : %d %d %d\n",map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue);
-
-
-			fscanf(file,"%d %d %d\n",&R,&V,&B);
-			printf("%d\n",R);
-			printf("%d\n",V);
-			printf("%d\n",B);
-			map->outAreaColor.red = (unsigned char)R;
-			map->outAreaColor.green = (unsigned char)V;
-			map->outAreaColor.blue = (unsigned char)B;
-			printf("couleur des zones de sortie : %d %d %d\n",map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
-			
-			int size;
-			fscanf(file,"%d\n",&size);
-			printf("nombre de noeuds : %d\n",size);
-
-			
-			/*
-			Point3D* node1 = (Point3D*)malloc (sizeof(Point3D));
-			if(node1 == NULL){
-				fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
-				exit(-1);
-			}
-			
-			fscanf(file,"%d %d\n",&(node1->x),&(node1->y));*/
-			/*printf(" noeud : %d %d\n",node1->x,node1->y);*/
-			
-			/*printf("taille = %d",size);*/
-			
-
-			int j=0;
-
-			while (j<size){
-				Point3D* node = (Point3D*)malloc (sizeof(Point3D));
-				if(node == NULL){
-					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire pour le chemin des monstres.\n");
-					exit(-1);
-				}		
-				fscanf(file,"%f %f\n",&(node->x),&(node->y));
-				node->z = 0;
-			/*printf(" noeud : %d %d\n",node->x,node->y);*/
-				insertBottomCell(map->pathNodeList,(void*)node);
-				j++;
-			}
-
-			/* On vide  le buffer et on ferme le fichier*/
-			fflush(file);
-			fclose(file);
-			return true;
 		}
+		
+		if (strcmp(versionMap,"@ITD 2")==0){	
+			if (loadITD1(map,file)!=1){	
+				return 0;
+			}
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(rocket->power));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(rocket->rate));
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(rocket->range));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(rocket->cost));
+	
+
+				fseek (file,7,SEEK_CUR); 	
+				fscanf(file,"%d\n",&(laser->power));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(laser->rate));
+				fseek (file,7,SEEK_CUR);
+				fscanf(file,"%d\n",&(laser->range));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(laser->cost));
+		
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(mitraillette->power));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(mitraillette->rate));
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(mitraillette->range));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(mitraillette->cost));
+
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(hybrid->power));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(hybrid->rate));
+				fseek (file,7,SEEK_CUR); 
+				fscanf(file,"%d\n",&(hybrid->range));
+				fseek (file,6,SEEK_CUR); 
+				fscanf(file,"%d\n",&(hybrid->cost));
+			
+		printf("  ROCKET power : %d, rate : %d, range : %d, cost : %d \n", rocket->power, rocket->rate, rocket->range, rocket->cost);
+		printf("  LASER power : %d, rate : %d, range : %d, cost : %d \n", laser->power, laser->rate, laser->range, laser->cost);
+		printf("  MITRAILLETTE power : %d, rate : %d, range : %d, cost : %d \n", mitraillette->power, mitraillette->rate, mitraillette->range, mitraillette->cost);
+		printf("  HYBRID power : %d, rate : %d, range : %d, cost : %d \n", hybrid->power, hybrid->rate, hybrid->range, hybrid->cost);
+
+
+		fflush(file);
+		fclose(file);
+		printf("carte chargée");
+		return 1;
+		}
+
 	}
 }
 

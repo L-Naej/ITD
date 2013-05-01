@@ -1,5 +1,7 @@
-#ifndef ITD_UTILS_H
-#define ITD_UTILS_H
+#ifndef ITD_UTILS
+#define ITD_UTILS
+
+char* rootPath = NULL;
 
 typedef enum{false=0, true=1}bool;
 
