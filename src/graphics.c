@@ -73,8 +73,8 @@ Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
 	oglPoint.z = 0.0;
 	
-	oglPoint.x = GL_X_AXIS_MIN + 2*WINDOW_WIDTH * sdlPoint.x / WINDOW_WIDTH;
-	oglPoint.y = GL_Y_AXIS_MIN + 2*WINDOW_HEIGHT * sdlPoint.y / WINDOW_HEIGHT;
+	oglPoint.x = GL_X_AXIS_MIN + 2*GL_X_AXIS_MAX* sdlPoint.x / WINDOW_WIDTH;
+	oglPoint.y = - (GL_Y_AXIS_MIN + 2*GL_Y_AXIS_MAX* sdlPoint.y / WINDOW_HEIGHT);
 	
 	return oglPoint;
 }

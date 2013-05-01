@@ -13,7 +13,7 @@ void drawWorld(const World* world){
 	
 	if( ! world->isBetweenWaves){
 		for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-			drawMonster(world->monsters[i]);
+			drawMonster(&(world->monsters[i]));
 		}
 	}
 }
@@ -69,7 +69,8 @@ void drawMonster(const Monster* monster){
 	glLoadIdentity();
 
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
-	glScalef(0.1,0.1,1.0);
+	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
+	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, monsterTexture);
 	glBegin(GL_QUADS);

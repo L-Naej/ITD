@@ -5,5 +5,5 @@ void drawWorld(const World* world);
 
 //Fonctions internes
 void drawMap();
-void drawMonster();
+void drawMonster(const Monster* monster);
 #endif
