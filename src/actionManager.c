@@ -1,8 +1,14 @@
 #include "actionManager.h"
 #include <SDL/SDL.h>
+#ifdef MAC
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "ITD.h"
+#endif
+#include "itd.h"
+#include "graphics.h"
 
 void handleMenuActions(char* mapName){}
 

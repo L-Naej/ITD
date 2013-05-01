@@ -93,7 +93,7 @@ Point3D getEndPoint(const Map* map){
 	return endPoint;
 }
 
-int testItdValid(unsigned char R,unsigned char V,unsigned char B){
+int testItdValid(int R,int V,int B){
 	if ((R>=0 && R<= 255) && (V>=0 && V<= 255) && (B>=0 && B<= 255)){
 		return 1;
 	}
@@ -169,30 +169,28 @@ int loadITD1 (Map* map, FILE* file){
 		return 0;
 	}
 
+	int size;
+	fscanf(file,"%d\n",&size);
 
-	fscanf(file,"%d\n",&(map->nodeList->size));
 
 
+	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
+	fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
 
-	PathNode* node1 = (PathNode*)malloc (sizeof(PathNode)); 
-	fscanf(file,"%d %d\n",&(node1->x),&(node1->y));
-
-	
-	int size = map->nodeList->size;
-	map->nodeList = createList((void*)node1); 
+	map->pathNodeList = createList((void*)node1); 
 
 	int j=0;
 
 
 	while (j<size-1){
 
-		PathNode* node = (PathNode*)malloc (sizeof(PathNode));		
-		fscanf(file,"%d %d\n",&(node->x),&(node->y));
+		Point3D* node = (Point3D*)malloc (sizeof(Point3D));		
+		fscanf(file,"%f %f\n",&(node->x),&(node->y));
 		if ((node->x)==0 && (node->y)==0){
 			printf("nombre de coordonnée de noeuds incorrect - error 1- \n");
 			return 0;
 		}
-		insertBottomCell(map->nodeList,(void*)node);
+		insertBottomCell(map->pathNodeList,(void*)node);
 		j++;
 	}
 
@@ -204,97 +202,90 @@ int loadITD1 (Map* map, FILE* file){
 
 	return 1;
 } 
-int loadMap(Map* map, Tower* rocket, Tower* laser, Tower* mitraillette, Tower* hybrid){	
+bool loadMap(Map* map, const char* pathToItdFile){	
 
 	/* On ouvre le fichier */
 	FILE* file;
 
-	file = fopen("map/map2.itd","r");
-	if(file == NULL){
+	file = fopen(pathToItdFile,"r");
+	if(file == NULL) return false;
+	
+	char versionMap [MAX_LENGHT];
+	int k;
+	for (k=0; k<MAX_LENGHT;k++){
+		versionMap[k]= 0;
+	}
+	int i;
+	for (i=0; i< 6; i++){
+		fscanf(file,"%c",versionMap+i);
+		printf("version : %s\n",versionMap+i);
+	}
+	/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
+	if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
+		printf("Fichier incompatible");
 		return 0;
 	}
-	else{
-		char versionMap [MAX_LENGHT];
-		int k;
-		for (k=0; k<MAX_LENGHT;k++){
-			versionMap[k]= 0;
-		}
-		int i;
-		for (i=0; i< 6; i++){
-			fscanf(file,"%c",versionMap+i);
-			printf("version : %s\n",versionMap+i);
-		}
-		/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
-		if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
-			printf("Fichier incompatible");
-			return 0;
-		}
-		
-		 
-
-		if (strcmp(versionMap,"@ITD 1")==0){
-			if (loadITD1(map,file)==1){
-				/* On vide  le buffer et on ferme le fichier*/
-				fflush(file);
-				fclose(file);
-				printf("carte chargée");
-				return 1;
-			}
-		}
-		
-		if (strcmp(versionMap,"@ITD 2")==0){	
-			if (loadITD1(map,file)!=1){	
-				return 0;
-			}
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(rocket->power));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(rocket->rate));
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(rocket->range));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(rocket->cost));
 	
+	if (strcmp(versionMap,"@ITD 1")==0){
+		if (loadITD1(map,file)==1){
+			/* On vide  le buffer et on ferme le fichier*/
+			fflush(file);
+			fclose(file);
+			printf("carte chargée");
+			return true;
+		}
+	}
+	
+	if (strcmp(versionMap,"@ITD 2")==0){	
+		if( loadITD1(map,file) !=1 ) return 0;
+		/*
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(rocket->power));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(rocket->rate));
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(rocket->range));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(rocket->cost));
 
-				fseek (file,7,SEEK_CUR); 	
-				fscanf(file,"%d\n",&(laser->power));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(laser->rate));
-				fseek (file,7,SEEK_CUR);
-				fscanf(file,"%d\n",&(laser->range));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(laser->cost));
+
+		fseek (file,7,SEEK_CUR); 	
+		fscanf(file,"%d\n",&(laser->power));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(laser->rate));
+		fseek (file,7,SEEK_CUR);
+		fscanf(file,"%d\n",&(laser->range));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(laser->cost));
+
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(mitraillette->power));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(mitraillette->rate));
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(mitraillette->range));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(mitraillette->cost));
+
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(hybrid->power));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(hybrid->rate));
+		fseek (file,7,SEEK_CUR); 
+		fscanf(file,"%d\n",&(hybrid->range));
+		fseek (file,6,SEEK_CUR); 
+		fscanf(file,"%d\n",&(hybrid->cost));
 		
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(mitraillette->power));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(mitraillette->rate));
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(mitraillette->range));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(mitraillette->cost));
-
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(hybrid->power));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(hybrid->rate));
-				fseek (file,7,SEEK_CUR); 
-				fscanf(file,"%d\n",&(hybrid->range));
-				fseek (file,6,SEEK_CUR); 
-				fscanf(file,"%d\n",&(hybrid->cost));
-			
 		printf("  ROCKET power : %d, rate : %d, range : %d, cost : %d \n", rocket->power, rocket->rate, rocket->range, rocket->cost);
 		printf("  LASER power : %d, rate : %d, range : %d, cost : %d \n", laser->power, laser->rate, laser->range, laser->cost);
 		printf("  MITRAILLETTE power : %d, rate : %d, range : %d, cost : %d \n", mitraillette->power, mitraillette->rate, mitraillette->range, mitraillette->cost);
 		printf("  HYBRID power : %d, rate : %d, range : %d, cost : %d \n", hybrid->power, hybrid->rate, hybrid->range, hybrid->cost);
 
-
+	*/
 		fflush(file);
 		fclose(file);
 		printf("carte chargée");
-		return 1;
-		}
-
+		return true;
 	}
 }
 

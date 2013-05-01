@@ -24,7 +24,7 @@ Tower* createRocketTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->cadence = 100;
+	newTower->rate = 100;
 	newTower->range = 50;
 	newTower->power = 10;
 	newTower->price = 100;
@@ -41,7 +41,7 @@ Tower* createLaserTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->cadence = 100;
+	newTower->rate = 100;
 	newTower->range = 50;
 	newTower->power = 10;
 	newTower->price = 100;
@@ -58,7 +58,7 @@ Tower* createGunTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->cadence = 100;
+	newTower->rate = 100;
 	newTower->range = 50;
 	newTower->power = 10;
 	newTower->price = 100;
@@ -75,7 +75,7 @@ Tower* createHybridTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->cadence = 100;
+	newTower->rate = 100;
 	newTower->range = 50;
 	newTower->power = 10;
 	newTower->price = 100;

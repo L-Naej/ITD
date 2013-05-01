@@ -1,18 +1,17 @@
 #ifndef ITD_MAP_H
 #define ITD_MAP_H
+#include <SDL/SDL.h>
 #include "list.h"
-#include "tower.h"
+#include "point3D.h"
+#include "utils.h"
+
+/** Note : les PathNodes sont implémentés par des Point3D **/
 
 typedef struct{
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
 }Color3u;
-
-typedef struct{
-	int x;
-	int y;
-}PathNode;
 
 typedef struct{
 	char* name;
@@ -25,7 +24,9 @@ typedef struct{
 	Color3u inAreaColor;
 	Color3u outAreaColor;
 	
-	List* nodeList;
+	List* pathNodeList;///Liste de Point3D
+	
+	SDL_Surface* image;
 }Map;
 
 /**
@@ -37,15 +38,40 @@ Map initMap();
 /**
  * charge les infos venant du .itd
  * dans la structure Map.
+ * Retourne vrai si le chargement a réussi, faux sinon.
  */
-int loadMap(Map* map, Tower* rocket, Tower* laser, Tower* mitraillette, Tower* hybrid);
-int testItdValid(unsigned char R,unsigned char V,unsigned char B);
+bool loadMap(Map* map, const char* pathToItdFile);
+
+int testItdValid(int R,int V,int B);
+
+int loadITD1 (Map* map, FILE* file);
 
 /**
  * Retourne une structure Color3u initialisée
  * (tous les membres à NULL/0).
  */
 Color3u initColor();
+
+/**
+ * Retourne le prochain Node devant être atteint
+ * à partir du Node passé en paramètre et de la liste de Node (le chemin
+ * à suivre).
+ * /!\ Si le point passé en paramètre ne correspond pas à un Node, quitte le programme
+ * avec un message d'erreur.
+ * /!\ Si la List passée en paramètre est NULL, quitte le programme avec message d'erreur.
+ */
+Point3D nextNode(List* pathNodeList, Point3D currentNode);
+
+/**
+ * Retourne le point de départ des monstres sur la map.
+ */
+Point3D getStartPoint(const Map* map);
+
+/**
+ * Retourne le point d'arrivée des monstres sur la map
+ * (celui qu'ils ne doivent pas atteindre si le joueur veut gagner). 
+ */
+Point3D getEndPoint(const Map* map);
 
 /**
  * Fonction de debug, affiche dans la

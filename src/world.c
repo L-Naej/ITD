@@ -170,7 +170,7 @@ void towersShoot(List* towersList, Monster* monsters){
 
 void towerShoots(Tower* tower, Monster* monsters){
 	if(tower == NULL || monsters == NULL) return;
-	if(tower->cadence < tower->nbTurnsSinceLastShoot) return;
+	if(tower->rate < tower->nbTurnsSinceLastShoot) return;
 	bool towerCanShoot = true;
 	int i; int lifeLosed = 0;
 	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 

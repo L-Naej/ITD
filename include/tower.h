@@ -10,7 +10,7 @@ typedef enum {
 
 typedef struct {
 	TowerType type;
-	int cadence;
+	int rate;
 	int nbTurnsSinceLastShoot;
 	int range;
 	int power;
