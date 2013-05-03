@@ -32,7 +32,7 @@ int main(int argc,  char* argv[]) {
 	}
 	
 	//Surtout à appeler APRES avoir initialisé la SDL
-	World world = initWorld("map/map1.itd");
+	World world = initWorld("map/map2.itd");
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
 	bool mapChosen = true;//Pour debug, à remettre à false pour de vrai
@@ -91,6 +91,7 @@ int main(int argc,  char* argv[]) {
 		
 		/* Boucle traitant les evenements */
 		askedForQuit = handleGameActions();
+
 	}
 
 	/* Liberation des ressources associées à la SDL */ 

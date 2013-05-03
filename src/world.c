@@ -1,4 +1,4 @@
-#include "World.h"
+#include "world.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <math.h>
@@ -22,6 +22,7 @@ World initWorld(const char* pathToItdFile){
 	
 	newWorld.map = initMap();
 	loadMap(&(newWorld.map), pathToItdFile);
+	dumpMap(newWorld.map);
 	
 	return newWorld;
 }

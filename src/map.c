@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "map.h"
+#include "tower.h"
 #include <SDL/SDL_image.h>
 
 #define MAX_LENGHT 30
@@ -29,6 +30,13 @@ Map initMap(void){
 		perror("Erreur fatale : Impossible d'allouer la mémoire pour le chemin des monstres.\n");
 		exit(-1);
 	}
+	
+	newMap.towerdatas = createEmptyTowerStat();
+		if(newMap.towerdatas == NULL){
+		perror("Erreur fatale : Impossible d'allouer la mémoire pour stocker les données des tours.\n");
+		exit(-1);
+	}
+
 	newMap.image = NULL;
 
 	return newMap;
@@ -104,10 +112,21 @@ int testItdValid(int R,int V,int B){
 
 }
 
-int loadITD1 (Map* map, FILE* file){
+int loadITD1 (Map* map, FILE* file, char* keyword){
 	/* nom de l'image*/
-	fseek (file,6,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"carte")!= 0){
+		printf("mot-clé 'carte' incorrect\n");
+		return -1;
+	}
+	memset (keyword,0,sizeof(keyword));
+
 	(map->name) = (char*)malloc(sizeof(char)*MAX_LENGHT);
+	if (map->name ==NULL){
+		printf("erreur d'allocation du nom de la map");
+		return -1;
+	}
  	/*  on a dit que le nom de la carte ferait 30 caractères maxi*/
 	fscanf(file,"%s \n",map->name);
 
@@ -116,7 +135,14 @@ int loadITD1 (Map* map, FILE* file){
 
 	int R,V,B;
 			
-	fseek (file,7,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"chemin")!= 0){
+		printf("mot-clé 'chemin' incorrect\n");
+		return -1;
+	}
+	memset (keyword,0,sizeof(keyword));
+
 	fscanf(file,"%d %d %d\n",&R,&V,&B);
 	map->pathColor.red =(unsigned char)R;
 	map->pathColor.green = (unsigned char)V;
@@ -127,7 +153,14 @@ int loadITD1 (Map* map, FILE* file){
 	}
 
 
-	fseek (file,6,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"noeud")!= 0){
+		printf("mot-clé 'noeud' incorrect\n");
+		return -1;
+	}
+	memset (keyword,0,sizeof(keyword));
+
 	fscanf(file,"%d %d %d\n",&R,&V,&B);
 	map->nodeColor.red = (unsigned char)R;
 	map->nodeColor.green = (unsigned char)V;
@@ -138,7 +171,14 @@ int loadITD1 (Map* map, FILE* file){
 	}
 
 
-	fseek (file,10,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"construct")!= 0){
+		printf("mot-clé 'construct' incorrect\n");
+		return -1;
+	}
+	memset (keyword,0,sizeof(keyword));
+
 	fscanf(file,"%d %d %d\n",&R,&V,&B);
 	map->constructAreaColor.red = (unsigned char)R;
 	map->constructAreaColor.green = (unsigned char)V;
@@ -149,7 +189,14 @@ int loadITD1 (Map* map, FILE* file){
 	}
 
 
-	fseek (file,3,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"in")!= 0){
+		printf("mot-clé'in' incorrect\n");
+		return -1;
+	} 
+	memset (keyword,0,sizeof(keyword));
+
 	fscanf(file,"%d %d %d\n",&R,&V,&B);
 	map->inAreaColor.red = (unsigned char)R;
 	map->inAreaColor.green = (unsigned char)V;
@@ -160,7 +207,14 @@ int loadITD1 (Map* map, FILE* file){
 	}
 
 
-	fseek (file,4,SEEK_CUR); 
+
+	fscanf(file,"%s \n",keyword);
+	if (strcmp(keyword,"out")!= 0){
+		printf("mot-clé'out' incorrect\n");
+		return -1;
+	} 
+	memset (keyword,0,sizeof(keyword));
+
 	fscanf(file,"%d %d %d\n",&R,&V,&B);
 	map->outAreaColor.red = (unsigned char)R;
 	map->outAreaColor.green = (unsigned char)V;
@@ -209,6 +263,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 
 	/* On ouvre le fichier */
 	FILE* file;
+	char* keyword = (char*) malloc (sizeof(char)*11);
 
 	file = fopen(pathToItdFile,"r");
 	if(file == NULL) return false;
@@ -222,14 +277,14 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	for (i=0; i< 6; i++){
 		fscanf(file,"%c",versionMap+i);
 	}
-	/*la je sais pas du tout si c'est comme ça qu'il faut faire*/
+	
 	if (strcmp(versionMap,"@ITD 1")!= 0 && strcmp(versionMap,"@ITD 2")!=0 ){
 		fprintf(stderr, "Fichier incompatible\n");
 		return false;
 	}
 	
 	if (strcmp(versionMap,"@ITD 1")==0){
-		if (loadITD1(map,file)==1){
+		if (loadITD1(map,file,keyword)==1){
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
@@ -241,51 +296,143 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	
 	
 	if (strcmp(versionMap,"@ITD 2")==0){	
-		if( loadITD1(map,file) !=1 ) return false;
-		/*
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(rocket->power));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(rocket->rate));
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(rocket->range));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(rocket->cost));
-
-
-		fseek (file,7,SEEK_CUR); 	
-		fscanf(file,"%d\n",&(laser->power));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(laser->rate));
-		fseek (file,7,SEEK_CUR);
-		fscanf(file,"%d\n",&(laser->range));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(laser->cost));
-
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(mitraillette->power));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(mitraillette->rate));
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(mitraillette->range));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(mitraillette->cost));
-
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(hybrid->power));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(hybrid->rate));
-		fseek (file,7,SEEK_CUR); 
-		fscanf(file,"%d\n",&(hybrid->range));
-		fseek (file,6,SEEK_CUR); 
-		fscanf(file,"%d\n",&(hybrid->cost));
+		if( loadITD1(map,file,keyword) !=1 ) return false;
 		
-		printf("  ROCKET power : %d, rate : %d, range : %d, cost : %d \n", rocket->power, rocket->rate, rocket->range, rocket->cost);
-		printf("  LASER power : %d, rate : %d, range : %d, cost : %d \n", laser->power, laser->rate, laser->range, laser->cost);
-		printf("  MITRAILLETTE power : %d, rate : %d, range : %d, cost : %d \n", mitraillette->power, mitraillette->rate, mitraillette->range, mitraillette->cost);
-		printf("  HYBRID power : %d, rate : %d, range : %d, cost : %d \n", hybrid->power, hybrid->rate, hybrid->range, hybrid->cost);
+	/*          données des tours ROCKETS         */
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"powerR")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->powerR));
 
-	*/
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rateR")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rateR));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rangeR")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rangeR));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"costR")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->costR));
+
+	/*          données des tours LASER         */
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"powerL")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->powerL));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rateL")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rateL));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rangeL")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rangeL));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"costL")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->costL));
+
+	/*          données des tours MITRAILLETTE         */
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"powerM")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->powerM));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rateM")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rateM));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rangeM")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rangeM));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"costM")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->costM));
+
+	/*          données des tours HYBRID         */
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"powerH")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->powerH));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rateH")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rateH));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"rangeH")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->rangeH));
+
+		fscanf(file,"%s \n",keyword);
+		if (strcmp(keyword,"costH")!= 0){
+			printf("mot-clé'in' incorrect\n");
+			return -1;
+		} 
+		memset (keyword,0,sizeof(keyword));
+		fscanf(file,"%d\n",&(map->towerdatas->costH));
+
+
 		fflush(file);
 		fclose(file);
 		printf("Carte chargée\n");
@@ -293,8 +440,9 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	}
 }
 
-/* Récupération de la couleur d'un pixel */
+			/* Récupération de la couleur d'un pixel */
 Uint32 recupColorPixel(SDL_Surface *surface, int x, int y){
+
     /*nbOctetsParPixel = nombre d'octets utilisés pour stocker un pixel.*/
     int nbOctetsParPixel = surface->format->BytesPerPixel;
     /*surface->pixels contient l'adresse du premier pixel de l'image*/

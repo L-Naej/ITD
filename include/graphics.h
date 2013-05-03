@@ -10,7 +10,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
-#include "Point3D.h"
+#include "point3D.h"
 
 typedef struct{
 	GLuint BLUE_OCTOPUS_ID;

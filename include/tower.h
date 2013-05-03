@@ -19,6 +19,30 @@ typedef struct {
 	Point3D position;
 }Tower;
 
+typedef struct {
+	int powerR;
+	int rateR;
+	int rangeR;
+	int costR;
+	int powerL;
+	int rateL;
+	int rangeL;
+	int costL;
+	int powerM;
+	int rateM;
+	int rangeM;
+	int costM;
+	int powerH;
+	int rateH;
+	int rangeH;
+	int costH;
+}TowerStat;
+
+/**
+ * initisalise une structure TowerStat qui permet d'avoir les données des différents types de tour.
+ **/
+TowerStat* createEmptyTowerStat();
+
 /**
  * Retourne une tour du type spécifié en paramètre.
  **/

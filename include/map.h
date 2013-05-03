@@ -3,6 +3,7 @@
 #include <SDL/SDL.h>
 #include "list.h"
 #include "point3D.h"
+#include "tower.h"
 #include "utils.h"
 
 /** Note : les PathNodes sont implémentés par des Point3D **/
@@ -25,6 +26,7 @@ typedef struct{
 	Color3u outAreaColor;
 	
 	List* pathNodeList;///Liste de Point3D
+	TowerStat* towerdatas;
 	
 	SDL_Surface* image;
 }Map;
@@ -44,7 +46,7 @@ bool loadMap(Map* map, const char* pathToItdFile);
 
 int testItdValid(int R,int V,int B);
 
-int loadITD1 (Map* map, FILE* file);
+int loadITD1 (Map* map, FILE* file, char* keyword);
 
 bool loadPpmMap(Map* map);
 
