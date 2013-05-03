@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "map.h"
+#include "world.h"
 #include <SDL/SDL_image.h>
 
 #define MAX_LENGHT 30
@@ -361,13 +362,20 @@ void modifColorPixel(SDL_Surface *surface, int x, int y, Uint32 pixel){
     }
 }
 
+	
+	
 
+/*Chargement de l'image ppm*/
 bool loadPpmMap(Map* map){
 	
-	/*Chargement de l'image*/
-      char chemin [38] = "images/";
+	/*initialisation construcZone 
+	ConstructZone* constructZone = (ConstructZone*) malloc(sizeof(ConstructZone));
+	if(constructZone == NULL){
+	    printf("Erreur lors de l'allocation du tableau de mémorisation des zones constructibles \n");
+            exit(EXIT_FAILURE);
+	}*/
+	char chemin [38] = "images/";
 	strcat(chemin,map->name);
-	/* J'ai pas réussi à concatener pour que le nom de la carte ne soit pas en dur >< */
   	map->image = IMG_Load(chemin);
   	
   	if(map->image == NULL) {
@@ -378,7 +386,8 @@ bool loadPpmMap(Map* map){
 	int i,j =0;
 	Color3u colorPixel;
 	Uint32 initColorPixel;
-	Uint32 newColorPixel; 
+	Uint32 newColorPixel;
+
 	for(i=0; i<map->image->w; i++) {		
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
@@ -387,14 +396,27 @@ bool loadPpmMap(Map* map){
 				colorPixel.red = map->constructAreaColor.red;
 				colorPixel.green = map->constructAreaColor.green;
 				colorPixel.blue = map->constructAreaColor.blue;	
-				
+				map->posXConstruct = (int*) malloc(1000*sizeof(int));
+				if(map->posXConstruct == NULL){
+	    				printf("Erreur lors de l'allocation du tableau de mémorisation des zones constructibles \n");
+           				 exit(EXIT_FAILURE);
+				} else
+				{
+					map->posXConstruct[j] = i;
+					map->posYConstruct[j] = j;
+							
+					/*printf("posXConstruct : %d \n",map->posXConstruct[j]);
+					printf("posYConstruct : %d \n",map->posYConstruct[j]);*/
+					canIPutATowerHere(i,j);
+					
+				}
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			} else if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
 				
 				colorPixel.red = map->pathColor.red;
 				colorPixel.green = map->pathColor.green;
-				colorPixel.blue = map->pathColor.blue;		
+				colorPixel.blue = map->pathColor.blue;	
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			}

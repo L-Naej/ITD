@@ -7,7 +7,7 @@ INCLUDES = include
 # Répertoire des librairies
 LIBDIR = ./lib
 # Librairies
-LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image
+LIBS = -lglut -lGL -lGLU -lm -lSDL -lSDL_image -lSDL_ttf 
 
 #MAC
 ifeq ($(shell uname),Darwin)

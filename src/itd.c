@@ -91,7 +91,7 @@ int main(int argc,  char* argv[]) {
 		
 		/* Boucle traitant les evenements */
 		askedForQuit = handleGameActions();
-	}
+   	} 
 
 	/* Liberation des ressources associées à la SDL */ 
 	SDL_Quit();

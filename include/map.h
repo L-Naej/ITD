@@ -27,7 +27,11 @@ typedef struct{
 	List* pathNodeList;///Liste de Point3D
 	
 	SDL_Surface* image;
+
+	int* posXConstruct;
+	int* posYConstruct;
 }Map;
+
 
 /**
  * Retourne une structure Map initialisée

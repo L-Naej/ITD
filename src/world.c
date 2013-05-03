@@ -1,4 +1,4 @@
-#include "World.h"
+#include "world.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <math.h>
@@ -66,10 +66,22 @@ bool worldNewStep(World* world){
 //TODO
 bool canIPutATowerHere(World* world, int posX, int posY){
 	if(world == NULL) return false;
+	while(world->map->posXConstruct) {	
+		if (posX == world->map->posXConstruct && posY == world->map->posYConstruct) {		
+			printf("Zone constructible \n");
+			printf("PosX : %d \n",world->map->posXConstruct);
+			return true;	
+		}
+		else 
+		{
+			printf("Zone non constructible \n");
+			return false;
+		}
+	}
 	return true;
 }
 
-void addTowerOnMap(World* world, int posX, int posY, TowerType type){
+/*void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	if(world == NULL || world->towersList == NULL) return;
 	//Si la zone où l'on veut construire la tour est non constructible, 
 	//on annule l'action.
@@ -82,7 +94,7 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	newTower->position = towerPosition;
 	
 	insertBottomCell(world->towersList, newTower);
-}
+}*/
 
 
 //---------------------- FONCTIONS PRIVEES ---------------------
