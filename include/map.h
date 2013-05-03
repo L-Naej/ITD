@@ -28,8 +28,8 @@ typedef struct{
 	
 	SDL_Surface* image;
 
-	int* posXConstruct;
-	int* posYConstruct;
+	Point3D* tabXYConstruct;
+	int nbPixelsConst;
 }Map;
 
 

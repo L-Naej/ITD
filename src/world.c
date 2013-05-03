@@ -65,11 +65,11 @@ bool worldNewStep(World* world){
 
 //TODO
 bool canIPutATowerHere(World* world, int posX, int posY){
+	int i;
 	if(world == NULL) return false;
-	while(world->map->posXConstruct) {	
-		if (posX == world->map->posXConstruct && posY == world->map->posYConstruct) {		
+	for(i=0; i < world->map.nbPixelsConst; i++) {	
+		if (posX == world->map.tabXYConstruct[i].x && posY == world->map.tabXYConstruct[i].y) {		
 			printf("Zone constructible \n");
-			printf("PosX : %d \n",world->map->posXConstruct);
 			return true;	
 		}
 		else 
