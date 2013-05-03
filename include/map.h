@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include "list.h"
 #include "point3D.h"
-#include "tower.h"
+
 #include "utils.h"
 
 /** Note : les PathNodes sont implémentés par des Point3D **/
@@ -14,10 +14,30 @@ typedef struct{
 	unsigned char blue;
 }Color3u;
 
+typedef struct {
+	int powerR;
+	int rateR;
+	int rangeR;
+	int costR;
+	int powerL;
+	int rateL;
+	int rangeL;
+	int costL;
+	int powerM;
+	int rateM;
+	int rangeM;
+	int costM;
+	int powerH;
+	int rateH;
+	int rangeH;
+	int costH;
+}TowerStat;
+
 typedef struct{
 	char* name;
 	int width;
 	int height;
+
 	
 	Color3u pathColor;
 	Color3u nodeColor;

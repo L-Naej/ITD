@@ -19,6 +19,7 @@ Map initMap(void){
 	newMap.width = 0;
 	newMap.height = 0;
 
+
 	newMap.pathColor = initColor();
 	newMap.nodeColor = initColor();
 	newMap.constructAreaColor = initColor();
@@ -249,11 +250,6 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		j++;
 	}
 
-	/*int nbNode = listCountElem(map->nodeList);
-	if (nbNode != map->nodeList->size){
-		printf("nombre de coordonnée de noeuds incorrect - error 2- \n");
-		return 0;
-	}*/
 	
 	loadPpmMap(map);
 
@@ -284,6 +280,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	}
 	
 	if (strcmp(versionMap,"@ITD 1")==0){
+
 		if (loadITD1(map,file,keyword)==1){
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
@@ -295,7 +292,8 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	}
 	
 	
-	if (strcmp(versionMap,"@ITD 2")==0){	
+	if (strcmp(versionMap,"@ITD 2")==0){
+
 		if( loadITD1(map,file,keyword) !=1 ) return false;
 		
 	/*          données des tours ROCKETS         */
@@ -515,7 +513,7 @@ bool loadPpmMap(Map* map){
 	/*Chargement de l'image*/
       char chemin [38] = "images/";
 	strcat(chemin,map->name);
-	/* J'ai pas réussi à concatener pour que le nom de la carte ne soit pas en dur >< */
+
   	map->image = IMG_Load(chemin);
   	
   	if(map->image == NULL) {

@@ -7,7 +7,7 @@ void initGameGraphics(const SDL_Surface* map){
 		fprintf(stderr, "Erreur : les graphismes du jeu ne peuvent être initialisés avant le chargement de la map.\n");
 		exit(-1);
 	}
-	printf("image : %p\n",map);
+
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1.png");
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2.png");
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID = makeTextureFromFile("images/monster3.png");
@@ -34,12 +34,15 @@ GLuint makeTextureFromFile(const char* imagePath){
 }
 
 GLuint makeTextureFromSurface(const SDL_Surface* image){
+
 	if(image == NULL) return -1;
 	GLuint textureId;
 	GLenum format;
 
 	glGenTextures(1,&textureId);
-	glBindTexture(GL_TEXTURE_2D,textureId); 
+
+	glBindTexture(GL_TEXTURE_2D,textureId);
+  
 	switch(image->format->BytesPerPixel) {
 		case 1:
 		format = GL_RED;
@@ -65,6 +68,7 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
 	glBindTexture(GL_TEXTURE_2D, 0);
+
 	
 	return textureId;
 }

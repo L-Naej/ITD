@@ -23,22 +23,22 @@ TowerStat* createEmptyTowerStat(){
 	towerstat->costH=90;
 }
 
-Tower* createTower(TowerType type){
+Tower* createTower(TowerType type,Map map){
 	switch(type){
-	case ROCKET : return createRocketTower();
+	case ROCKET : return createRocketTower(map);
 	break;
-	case LASER : return createLaserTower();
+	case LASER : return createLaserTower(map);
 	break;
-	case GUN : return createGunTower();
+	case GUN : return createGunTower(map);
 	break;
-	case HYBRID : return createHybridTower();
+	case HYBRID : return createHybridTower(map);
 	break;
-	default : return createRocketTower();
+	default : return createRocketTower(map);
 	}
 }
 
 //TODO
-Tower* createRocketTower(){
+Tower* createRocketTower(Map map){
 	Tower* newTower = (Tower*) malloc(sizeof(Tower));
 	if(newTower == NULL){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
@@ -46,33 +46,18 @@ Tower* createRocketTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->rate = 100;
-	newTower->range = 50;
-	newTower->power = 10;
-	newTower->price = 100;
 
-	newTower->position = PointXYZ(-1,-1,0);
-	return newTower;
-}
-//TODO
-Tower* createLaserTower(){
-	Tower* newTower = (Tower*) malloc(sizeof(Tower));
-	if(newTower == NULL){
-		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
-		exit(-1);
-	}
-	
-	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->rate = 100;
-	newTower->range = 50;
-	newTower->power = 10;
-	newTower->price = 100;
+	newTower->power = map.towerdatas->powerR;
+	newTower->rate = map.towerdatas->rateR;
+	newTower->range = map.towerdatas->rangeR;
+	newTower->cost = map.towerdatas->costR;
+
 
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }
 //TODO
-Tower* createGunTower(){
+Tower* createLaserTower(Map map){
 	Tower* newTower = (Tower*) malloc(sizeof(Tower));
 	if(newTower == NULL){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
@@ -80,16 +65,16 @@ Tower* createGunTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->rate = 100;
-	newTower->range = 50;
-	newTower->power = 10;
-	newTower->price = 100;
+	newTower->power = map.towerdatas->powerL;
+	newTower->rate = map.towerdatas->rateL;
+	newTower->range = map.towerdatas->rangeL;
+	newTower->cost = map.towerdatas->costL;
 
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }
 //TODO
-Tower* createHybridTower(){
+Tower* createGunTower(Map map){
 	Tower* newTower = (Tower*) malloc(sizeof(Tower));
 	if(newTower == NULL){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
@@ -97,10 +82,27 @@ Tower* createHybridTower(){
 	}
 	
 	newTower->nbTurnsSinceLastShoot = 0;
-	newTower->rate = 100;
-	newTower->range = 50;
-	newTower->power = 10;
-	newTower->price = 100;
+	newTower->power = map.towerdatas->powerM;
+	newTower->rate = map.towerdatas->rateM;
+	newTower->range = map.towerdatas->rangeM;
+	newTower->cost = map.towerdatas->costM;
+
+	newTower->position = PointXYZ(-1,-1,0);
+	return newTower;
+}
+//TODO
+Tower* createHybridTower(Map map){
+	Tower* newTower = (Tower*) malloc(sizeof(Tower));
+	if(newTower == NULL){
+		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
+		exit(-1);
+	}
+	
+	newTower->nbTurnsSinceLastShoot = 0;
+	newTower->power = map.towerdatas->powerH;
+	newTower->rate = map.towerdatas->rateH;
+	newTower->range = map.towerdatas->rangeH;
+	newTower->cost = map.towerdatas->costH;
 
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
