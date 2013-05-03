@@ -407,7 +407,7 @@ bool loadPpmMap(Map* map){
 							
 					/*printf("posXConstruct : %d \n",map->posXConstruct[j]);
 					printf("posYConstruct : %d \n",map->posYConstruct[j]);*/
-					canIPutATowerHere(i,j);
+					/*canIPutATowerHere(i,j);*/
 					
 				}
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
