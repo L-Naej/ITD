@@ -4,6 +4,7 @@
 #include "geometry.h"
 
 Monster createMonster(unsigned char wave, int nbMonstersCreated){
+
 	MonsterType type;
 	if(wave < 10) type = BLUE_OCTOPUS;
 	else if (wave < 15){
@@ -92,7 +93,7 @@ Monster createGreenOctopus(unsigned char wave){
  * Cette fonction a donc pour rôle de déplacer un monstre d'un pixel dans la bonne direction
  * (elle ne gère pas sa vitesse qui est gérée dans World.c).
  * On connait le point de départ du monstre qui est sa position actuelle, et son point
- * d'arrivée (qui est le prochaine PathNode). A partir de là on connait sa direction. Le calcul de la direction à chaque déplacement
+ * d'arrivée (qui est le prochain PathNode). A partir de là on connait sa direction. Le calcul de la direction à chaque déplacement
  * permet d'éviter la propagation des erreurs.
  * Il faut donc choisir s'il se déplace d'un pixel en X ou en Y.
  * Pour cela on regarde si la direction est plus proche de l'axe X ou de l'axe Y grâce au produit scalaire.
@@ -131,5 +132,6 @@ void moveMonster(Monster* monster){
 		else monster->position.x--;
 	}
 	
-	monster->nbTurnsSinceLastMove = 0;	
+	monster->nbTurnsSinceLastMove = 0;
+
 }

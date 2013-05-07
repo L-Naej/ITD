@@ -16,7 +16,7 @@ void drawMenu(){}
 
 
 
-
+extern char* rootPath;
 
 
 void drawButton(){
@@ -44,7 +44,11 @@ void drawCarre(){
 
 SDL_Surface* drawMapMenu(TTF_Font* police){
 	
-	police = TTF_OpenFont("/home/camarasa/Documents/ITD/font/lighthouse.ttf",1);
+	char* font = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
+	strcpy(font,rootPath);
+	font = strcat(font,"font/lighthouse.ttf");
+
+	police = TTF_OpenFont(font,1);
 
 	SDL_Color blanc = {255, 255, 255};
 

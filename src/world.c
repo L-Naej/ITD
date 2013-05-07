@@ -79,7 +79,7 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	Point3D towerPosition = PointXYZ(posX,posY,0);
 	//L'erreur d'allocation est gérée plus bas
 	//Le programme s'arrête si le malloc a échoué 
-	Tower* newTower = createTower(type);
+	Tower* newTower = createTower(type,world->map);
 	newTower->position = towerPosition;
 	
 	insertBottomCell(world->towersList, newTower);

@@ -57,9 +57,9 @@ void drawMonster(const Monster* monster){
 	switch(monster->type){
 		case BLUE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
 		break;
-		case ORANGE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+		case ORANGE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;
 		break;	
-		case GREEN_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+		case GREEN_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
 		break;	
 		default : return;
 		break;
@@ -71,8 +71,10 @@ void drawMonster(const Monster* monster){
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	
+	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, monsterTexture);
+	glAlphaFunc(GL_GREATER,0.0f);
 	glBegin(GL_QUADS);
 	
 	//Bottom left
@@ -88,9 +90,9 @@ void drawMonster(const Monster* monster){
 	//Top left
 	glTexCoord2f(0.0,0.0);
 	glVertex2f(-0.5, 0.5);
-
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
 }
 

@@ -11,7 +11,6 @@ void initGameGraphics(const SDL_Surface* map){
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1.png");
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2.png");
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID = makeTextureFromFile("images/monster3.png");
-	
 	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
 }
 
@@ -63,7 +62,7 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 
 	/*envoi de la texture à openGL*/
 
-	glTexImage2D(GL_TEXTURE_2D,0, GL_RGB, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
+	glTexImage2D(GL_TEXTURE_2D,0,4, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
