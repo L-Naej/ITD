@@ -69,6 +69,42 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 	return textureId;
 }
 
+void drawQuad(){
+	glBegin(GL_QUADS);
+	
+	//Bottom left
+	glVertex2f(-0.5,-0.5);
+	//Bottom right
+	glVertex2f(0.5,-0.5);
+
+	//Top right
+	glVertex2f(0.5,0.5);
+	//Top left
+	glVertex2f(-0.5, 0.5);
+
+	glEnd();
+}
+
+void drawTexturedQuad(){
+	glBegin(GL_QUADS);
+	
+	//Bottom left
+	glTexCoord2f(0.0,1.0);
+	glVertex2f(-0.5,-0.5);
+	//Bottom right
+	glTexCoord2f(1.0,1.0);
+	glVertex2f(0.5,-0.5);
+
+	//Top right
+	glTexCoord2f(1.0,0.0);
+	glVertex2f(0.5,0.5);
+	//Top left
+	glTexCoord2f(0.0,0.0);
+	glVertex2f(-0.5, 0.5);
+
+	glEnd();
+}
+
 Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
 	oglPoint.z = 0.0;
@@ -118,6 +154,7 @@ int initWindow(){
 
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
-	
+	SDL_WM_GrabInput(SDL_GRAB_ON);//On capture la souris
+	SDL_WarpMouse((Uint16)200, (Uint16)200);
 	return 0;
 }

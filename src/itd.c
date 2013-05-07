@@ -66,6 +66,13 @@ int main(int argc,  char* argv[]) {
 	//TODO
 	bool gameFinished = false, askedForQuit = false;
 	initGameGraphics(world.map.image);
+	
+	//Initialisation interface
+	float width = .1;//10% de largeur
+	float height = 1.; //Toute la hauteur
+	float positionX = 0.9; //A 90% de la largeur
+	float positionY = .0; //A 100% de la hauter
+	Interface interface = initGameInterface(width, height, positionX, positionY);
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -82,7 +89,7 @@ int main(int argc,  char* argv[]) {
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
 			 drawWorld(&world);
-			 drawInterface();
+			 drawInterface(&interface);
 			 /* Echange du front et du back buffer : mise à jour de la fenêtre */
 			SDL_GL_SwapBuffers();
       			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
@@ -90,7 +97,7 @@ int main(int argc,  char* argv[]) {
 		}
 		
 		/* Boucle traitant les evenements */
-		askedForQuit = handleGameActions();
+		askedForQuit = handleGameActions(&world, &interface);
 	}
 
 	/* Liberation des ressources associées à la SDL */ 

@@ -13,7 +13,7 @@ World initWorld(const char* pathToItdFile){
 	newWorld.isBetweenWaves = true;
 	newWorld.nbTurnsWaiting = 0;
 	newWorld.nbMonstersAlive = 0;//Pas de monstres au départ
-	
+	newWorld.cameraPosition = PointXYZ(0.,0.,0.);
 	newWorld.towersList = createEmptyList();
 	if(newWorld.towersList == NULL){
 		perror("Erreur fatale, impossible d'allouer l'espace mémoire nécessaire.\n");
@@ -83,7 +83,6 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	
 	insertBottomCell(world->towersList, newTower);
 }
-
 
 //---------------------- FONCTIONS PRIVEES ---------------------
 bool doTurn(World* world){

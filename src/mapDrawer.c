@@ -9,23 +9,26 @@ void drawWorld(const World* world){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	drawMap();
+	//Important car les textures sont multipliées par la couleur courante
+	glColor3ub(255,255,255);
+	glPushMatrix();
+	glTranslatef(world->cameraPosition.x, world->cameraPosition.y, world->cameraPosition.z);
+	drawMap(&(world->map));
 	
 	if( ! world->isBetweenWaves){
 		for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 			drawMonster(&(world->monsters[i]));
 		}
 	}
+	glPopMatrix();
 }
 
 //TODO (rajouter le chemin etc)
-void drawMap(){
+void drawMap(const Map* map){
 	
 	glPushMatrix();
-	glLoadIdentity();
 	
-	//La map prend toute la fenêtre
-	glScalef(WINDOW_WIDTH,WINDOW_HEIGHT,1.);
+	glScalef(map->width,map->height,1.);
 	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, GAME_TEXTURES_ID.MAP_ID);
@@ -57,17 +60,17 @@ void drawMonster(const Monster* monster){
 	switch(monster->type){
 		case BLUE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
 		break;
-		case ORANGE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+		case ORANGE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;
 		break;	
-		case GREEN_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+		case GREEN_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
 		break;	
 		default : return;
 		break;
 	}
 	Point3D oglPosition = sdlToOpenGL(monster->position);	
 	
-	glLoadIdentity();
-
+	glPushMatrix();
+	
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	
@@ -92,5 +95,7 @@ void drawMonster(const Monster* monster){
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
+	
+	glPopMatrix();
 }
 

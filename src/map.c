@@ -369,6 +369,8 @@ bool loadPpmMap(Map* map){
 	strcat(chemin,map->name);
 	/* J'ai pas réussi à concatener pour que le nom de la carte ne soit pas en dur >< */
   	map->image = IMG_Load(chemin);
+  	map->width = map->image->w;
+  	map->height = map->image->h;
   	
   	if(map->image == NULL) {
    		fprintf(stderr, "Impossible de charger le fichier %s.\n", map->name);

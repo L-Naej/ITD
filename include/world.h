@@ -32,6 +32,7 @@ typedef struct{
 	
 	Monster monsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
 	List* towersList;///Liste des tours actuellement sur la map.
+	Point3D cameraPosition;
 }World;
 
 
