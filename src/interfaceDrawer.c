@@ -53,11 +53,13 @@ Interface initGameInterface(float width, float height, float positionX, float po
 		exit(EXIT_FAILURE);
 	}
 	TTF_Font* police = NULL;
-	police = TTF_OpenFont("lighthouse.ttf", 16);
+	police = TTF_OpenFont("lighthouse.ttf", 100);
 	
 	//Création de l'espace pour dessiner l'argent restant
-	SDL_Color color = {0,0,255};	
+	SDL_Color color = {255,255,255};	
 	interface.panelMoney = TTF_RenderText_Blended(police, "TESTTESTEST", color);
+	interface.moneyTexture = makeTextureFromSurface(interface.panelMoney);
+	
 	TTF_CloseFont(police);
 	TTF_Quit();
 	
@@ -123,13 +125,27 @@ void drawInterface(const Interface* interface){
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
-	GLuint textureId = makeTextureFromSurface(interface->panelMoney);
-    
-	glScalef(interface->panelMoney->w,interface->panelMoney->h,1);
-	drawTexturedQuad(textureId);
-	glDeleteTextures(1, &textureId);
 	
+	glEnable(GL_ALPHA_TEST);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, interface->moneyTexture);
+	//glPushMatrix();
+	glAlphaFunc(GL_GREATER,0.0f);
+	glColor3ub(255,255,255);
+	glRotatef(180,0,0,1);
+	glScalef(300,300,1);
+	drawTexturedQuad(interface->moneyTexture);
 	glPopMatrix();
+
+	//glBindTexture(GL_TEXTURE_2D, 0);
+	//glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
+    
+	//glScalef(interface->panelMoney->w,interface->panelMoney->h,1);
+	//drawTexturedQuad(textureId);
+	//glDeleteTextures(1, &textureId);
+	
+	//glPopMatrix();
 	//Dessin des boutons
 	glColor3ub(255,255,255);
 	goToHeadList(interface->lstButtons);
@@ -141,7 +157,7 @@ void drawInterface(const Interface* interface){
 	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
 	
 	//Dessin d'une tour sur la souris si l'action courante est de poser une tour
-	textureId = 0;
+	GLuint textureId = 0;
 	bool drawUnderMouse = true;
 	//TODO
 	switch(interface->currentAction){

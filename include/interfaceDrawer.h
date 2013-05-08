@@ -39,6 +39,7 @@ typedef struct{
 	Point3D position;///Position du coin haut gauche de l'interface (coordonnées OpenGL)
 	List* lstButtons;
 	SDL_Surface* panelMoney;
+	GLuint moneyTexture;
 	SDL_Surface* panelInfo;
 	Action currentAction;
 }Interface;
