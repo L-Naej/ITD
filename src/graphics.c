@@ -85,7 +85,10 @@ void drawQuad(){
 	glEnd();
 }
 
-void drawTexturedQuad(){
+void drawTexturedQuad(GLuint textureId){
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	
 	glBegin(GL_QUADS);
 	
 	//Bottom left
@@ -103,6 +106,8 @@ void drawTexturedQuad(){
 	glVertex2f(-0.5, 0.5);
 
 	glEnd();
+	glBindTexture(GL_TEXTURE_2D,0);
+	glDisable(GL_TEXTURE_2D);
 }
 
 Point3D sdlToOpenGL(Point3D sdlPoint){

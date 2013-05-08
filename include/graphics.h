@@ -82,11 +82,10 @@ GLuint makeTextureFromSurface(const SDL_Surface* surface);
 void drawQuad();
 
 /*
- * Dessine un quad unitaire avec la texture actuellement chargée
- * par OpenGL. 
- * Attention : l'activation et le bindage d'une texture doit être fait avant !
+ * Dessine un quad unitaire avec la texture designée par l'id
+ * textureId passé en paramètre de la fonction.
  */
-void drawTexturedQuad();
+void drawTexturedQuad(GLuint textureId);
 
 /**
  * Appelée quand la fenêtre est redimensionnée.

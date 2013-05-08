@@ -8,12 +8,14 @@
 /**
  * L'interface contient l'ensemble des boutons nécessaires à l'interaction
  * avec le jeu. L'interface contient un ensemble de boutons sur lequel l'utilisateur peut cliquer.
- * ATTENTION : L'interface est dessinée en repère OpenGL.
- * Rappel : le repère OpenGL a comme unité le pixel.
+ * Elle contient aussi la somme d'argent restante au joueur ainsi qu'un panneau d'informations
+ * sur la tour sélectionnée par le joueur.
+ * ATTENTION : Les paramètres envoyés à initInterface travaillent en repère SDL.
+ * Rappel : le repère OpenGL a comme unité le pixel, tout comme le repère SDL.
  */
  
 typedef enum{
-	PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME
+	PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, NO_ACTION
 }Action;
 
 /**
@@ -26,8 +28,7 @@ typedef struct{
 	float width;///En pixels
 	float height;///En pixels
 }Button;
-
-
+	
 
 /**
  * Structure représentant l'interface du jeu.
@@ -37,6 +38,8 @@ typedef struct{
 	float height;///En pixels
 	Point3D position;///Position du coin haut gauche de l'interface (coordonnées OpenGL)
 	List* lstButtons;
+	SDL_Surface* panelMoney;
+	SDL_Surface* panelInfo;
 }Interface;
 
 /**

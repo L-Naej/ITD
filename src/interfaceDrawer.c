@@ -8,6 +8,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+#include <math.h>
 #include "interfaceDrawer.h"
 
 Button* createButton(Action action, Point3D position, float width, float height){
@@ -44,7 +45,20 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	interface.height = WINDOW_HEIGHT * height;
 	Point3D sdlPosition = PointXYZ(WINDOW_WIDTH *positionX, WINDOW_HEIGHT *positionY, 0.0);
 	interface.position = sdlToOpenGL(sdlPosition);
-
+	
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("lighthouse.ttf", 16);
+	
+	//Création de l'espace pour dessiner l'argent restant
+	SDL_Color color = {0,0,255};	
+	interface.panelMoney = TTF_RenderText_Blended(police, "TESTTESTEST", color);
+	TTF_CloseFont(police);
+	TTF_Quit();
+	
 	//Création des boutons 
 	List* lstButtons = createEmptyList();
 	if(lstButtons == NULL){
@@ -58,15 +72,15 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	float xStep = 0.0, yStep = 0.0;
 	//Horizontale
 	if(interface.width > interface.height){
-		buttonWidth = interface.width * 0.1;
-		buttonHeight = interface.height * 0.95;
+		buttonWidth = interface.width / 2.0 * 0.1;
+		buttonHeight = interface.height / 2.0 * 0.95;
 		xStep = buttonWidth + interface.width * 0.05;
 		yStep = 0.0;
 	}
 	//Verticale
 	else{ 
-		buttonWidth = interface.width * 0.95;
-		buttonHeight = interface.height * 0.1;
+		buttonWidth = interface.width / 2.0 * 0.95;
+		buttonHeight = interface.height / 2.0 * 0.1;
 		xStep = 0.0;
 		yStep = buttonHeight + interface.height * 0.05;
 	}
@@ -103,12 +117,26 @@ void drawInterface(const Interface* interface){
 	
 	glPopMatrix();
 	
+	//Dessin du texte argent
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3ub(255,255,255);
+	GLuint textureId = makeTextureFromSurface(interface->panelMoney);
+    
+	glScalef(interface->panelMoney->w,interface->panelMoney->h,1);
+	drawTexturedQuad(textureId);
+	glDeleteTextures(1, &textureId);
+	
+	glPopMatrix();
+	//Dessin des boutons
 	glColor3ub(255,255,255);
 	goToHeadList(interface->lstButtons);
 	Button* cur = NULL;
 	while( (cur = (Button*)nextData(interface->lstButtons) ) != NULL){
 		drawButton(cur);
 	}
+	
+	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
 	
 	
 }
@@ -138,12 +166,7 @@ void drawButton(const Button* button){
 	
 	glTranslatef(button->position.x + button->width / 2.0, button->position.y - button->height / 2.0, 0.0);
 	glScalef(button->width, button->height,1.);
-	
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	drawTexturedQuad();
-	glBindTexture(GL_TEXTURE_2D,0);
-	glDisable(GL_TEXTURE_2D);
+	drawTexturedQuad(textureId);
 	glPopMatrix();
 }
 

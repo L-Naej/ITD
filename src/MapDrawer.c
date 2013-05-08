@@ -25,32 +25,9 @@ void drawWorld(const World* world){
 
 //TODO (rajouter le chemin etc)
 void drawMap(const Map* map){
-	
 	glPushMatrix();
-	
 	glScalef(map->width,map->height,1.);
-	
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, GAME_TEXTURES_ID.MAP_ID);
-	glBegin(GL_QUADS);
-	
-	//Bottom left
-	glTexCoord2f(0.0,1.0);
-	glVertex2f(-0.5,-0.5);
-	//Bottom right
-	glTexCoord2f(1.0,1.0);
-	glVertex2f(0.5,-0.5);
-
-	//Top right
-	glTexCoord2f(1.0,0.0);
-	glVertex2f(0.5,0.5);
-	//Top left
-	glTexCoord2f(0.0,0.0);
-	glVertex2f(-0.5, 0.5);
-
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D,0);
-	glDisable(GL_TEXTURE_2D);
+	drawTexturedQuad(GAME_TEXTURES_ID.MAP_ID);
 	glPopMatrix();
 }
 
@@ -74,27 +51,7 @@ void drawMonster(const Monster* monster){
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, monsterTexture);
-	glBegin(GL_QUADS);
-	
-	//Bottom left
-	glTexCoord2f(0.0,1.0);
-	glVertex2f(-0.5,-0.5);
-	//Bottom right
-	glTexCoord2f(1.0,1.0);
-	glVertex2f(0.5,-0.5);
-
-	//Top right
-	glTexCoord2f(1.0,0.0);
-	glVertex2f(0.5,0.5);
-	//Top left
-	glTexCoord2f(0.0,0.0);
-	glVertex2f(-0.5, 0.5);
-
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D,0);
-	glDisable(GL_TEXTURE_2D);
+	drawTexturedQuad(monsterTexture);
 	
 	glPopMatrix();
 }
