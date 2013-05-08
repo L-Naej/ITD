@@ -17,7 +17,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
     		glMatrixMode(GL_MODELVIEW); 
     		glLoadIdentity();
 
-/* _________________ Dessin du sous-menu pour choisir la carte( qui marche pas )_______________*/
+/* _________________ Dessin du sous-menu pour choisir la carte______________*/
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, MapMenu);
