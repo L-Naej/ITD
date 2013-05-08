@@ -24,8 +24,7 @@
 #include "mapDrawer.h"
 #include "interfaceDrawer.h"
 
-/* pour avoir le chemin jusqu'à l'executable, pour avoir les chemins des polices*/
- char* rootPath = NULL;
+
 
 /**
  * Afficher menu
@@ -46,6 +45,7 @@ int main(int argc,  char* argv[]) {
 		exit(1);
 	}
 	/* initialisation du rootpath */
+	char* rootPath;
 	int taille = strlen(argv[0]);
 	argv[0][taille-7] = 0;
 	rootPath = argv[0];
@@ -55,24 +55,48 @@ int main(int argc,  char* argv[]) {
 
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool mapChosen = false;//Pour debug, à remettre à false pour de vrai
-	bool askedForQuit1=false;
+	bool play = false;//Pour debug, à remettre à false pour de vrai
 	char mapName[30]= "Not chosen";
+	int playIsPush = 0;
 	TTF_Font* police = NULL;
-	SDL_Surface* text=drawMapMenu(police); /* première carte */
+	int menuOpen = 0;
+
+
+	char nomcarte1[13]="carte marine";
+	SDL_Surface* text1=loadFont(police,nomcarte1,rootPath);
+	GLuint MapChoice1 = makeTextureFromSurface (text1);
+
+	char nomcarte2[15]="carte spatiale";
+	SDL_Surface* text2=loadFont(police,nomcarte2,rootPath);
+	GLuint MapChoice2 = makeTextureFromSurface (text2); 
+
+	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
+	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,rootPath);
+	GLuint Bienvenue = makeTextureFromSurface (bienvenue_surface);
+
+	char choix[18]="Choisir une carte";
+	SDL_Surface* choix_surface=loadFont(police,choix,rootPath);
+	GLuint Choix = makeTextureFromSurface (choix_surface);
+
+	char aide[15]="Besoin d'aide?";
+	SDL_Surface* aide_surface=loadFont(police,aide,rootPath);
+	GLuint Aide = makeTextureFromSurface (aide_surface);
 
 	GLuint helpButton = makeTextureFromFile("images/monstrehelp.png");
-	GLuint MapMenu = makeTextureFromSurface (text);
 	GLuint mapButton = makeTextureFromFile("images/monstrecarte.png");
+	GLuint casechecked = makeTextureFromFile("images/casechecked.png");
+	GLuint casevide = makeTextureFromFile("images/casevide.png");
+
+
 
 
 	
-	while(mapChosen == false || askedForQuit1 == false) {
+	while(play == true) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */
-		drawMenu(helpButton,MapMenu,mapButton);
+		drawMenu(helpButton,mapButton,casevide,casechecked,Bienvenue,Choix,Aide,MapChoice1,MapChoice2,&menuOpen,mapName);
 
 		TTF_CloseFont(police);
 
@@ -81,8 +105,9 @@ int main(int argc,  char* argv[]) {
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		handleMenuActions(mapName);
-		if(strcmp(mapName,"Not chosen") != 0) mapChosen = true;
+		handleMenuActions(mapName,&playIsPush, &menuOpen,casechecked);
+
+		if(playIsPush == 1) play = true;
 		
 		/* Calcul du temps écoulé */
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
@@ -91,7 +116,7 @@ int main(int argc,  char* argv[]) {
 			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
 		}
 
-		askedForQuit1 = handleGameActions();
+
 
 	}
 	

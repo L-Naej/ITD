@@ -22,7 +22,7 @@ World initWorld(const char* pathToItdFile){
 	
 	newWorld.map = initMap();
 	loadMap(&(newWorld.map), pathToItdFile);
-	dumpMap(newWorld.map);
+
 	
 	return newWorld;
 }
