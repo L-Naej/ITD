@@ -95,8 +95,7 @@ int main(int argc,  char* argv[]) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
-		/* Placer ici le code de dessin du menu */
-		drawMenu(helpButton,mapButton,casevide,casechecked,Bienvenue,Choix,Aide,MapChoice1,MapChoice2,&menuOpen,mapName);
+		/* Placer ici le code de dessin du menu */		drawMenu(helpButton,mapButton,casevide,casechecked,Bienvenue,Choix,Aide,MapChoice1,MapChoice2,&menuOpen,mapName);
 
 		TTF_CloseFont(police);
 
