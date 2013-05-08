@@ -38,9 +38,12 @@ typedef struct{
 	float height;///En pixels
 	Point3D position;///Position du coin haut gauche de l'interface (coordonnées OpenGL)
 	List* lstButtons;
-	SDL_Surface* panelMoney;
 	GLuint moneyTexture;
-	SDL_Surface* panelInfo;
+	float moneyWidth;
+	float moneyHeight;
+	Point3D moneyPosition;
+	bool moneyChanged;
+	GLuint infoTexture;
 	Action currentAction;
 }Interface;
 
@@ -54,14 +57,15 @@ typedef struct{
  */
 Interface initGameInterface(float width, float height, float positionX, float positionY);
 
-void drawInterface(const Interface* interface);
+void drawInterface(Interface* interface);
 void drawMenu();
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
 
 void drawButton(const Button* button);
-void drawCarre(void);
+
+void updateMoneyTexture(Interface* interface);
 SDL_Surface* drawMapMenu(TTF_Font*);
 
 #endif

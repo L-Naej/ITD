@@ -65,13 +65,37 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 
 	/*envoi de la texture à openGL*/
 
-	glTexImage2D(GL_TEXTURE_2D,0, GL_RGB, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
+	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	return textureId;
+}
+
+void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
+	GLenum format;
+	switch(surface->format->BytesPerPixel) {
+		case 1:
+		format = GL_RED;
+		break;
+
+		case 3:
+		format = GL_RGB;
+		break;
+
+		case 4:
+		format = GL_RGBA;
+		break;
+
+		default:
+		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
+		return EXIT_FAILURE;
+	}
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void drawQuad(){

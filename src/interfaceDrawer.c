@@ -41,25 +41,37 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	
 	interface.lstButtons = NULL;
 	interface.currentAction = NO_ACTION;
+	interface.moneyChanged = false;
 	
 	//Calcul des dimensions de l'interface
 	interface.width = WINDOW_WIDTH * width;
 	interface.height = WINDOW_HEIGHT * height;
 	Point3D sdlPosition = PointXYZ(WINDOW_WIDTH *positionX, WINDOW_HEIGHT *positionY, 0.0);
 	interface.position = sdlToOpenGL(sdlPosition);
-	
+	interface.moneyPosition = interface.position;
+
+	//On positionne en fonction du coin haut gauche
+	interface.position.x += interface.width / 2.0;
+	interface.position.y -= + interface.height / 2.0;
+	 
+	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
 		exit(EXIT_FAILURE);
 	}
 	TTF_Font* police = NULL;
-	police = TTF_OpenFont("lighthouse.ttf", 100);
+	police = TTF_OpenFont("font/Champagne.ttf", 40);
 	
 	//Création de l'espace pour dessiner l'argent restant
 	SDL_Color color = {255,255,255};	
-	interface.panelMoney = TTF_RenderText_Blended(police, "TESTTESTEST", color);
-	interface.moneyTexture = makeTextureFromSurface(interface.panelMoney);
+	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "12345", color);
+	interface.moneyTexture = makeTextureFromSurface(moneySurface);
+	interface.moneyWidth = moneySurface->w;
+	interface.moneyHeight = moneySurface->h;
+	interface.moneyPosition.y = interface.moneyPosition.y - interface.moneyHeight / 2.0;
+	interface.moneyPosition.x = interface.moneyPosition.x + interface.moneyWidth / 2.0;
 	
+	SDL_FreeSurface(moneySurface);
 	TTF_CloseFont(police);
 	TTF_Quit();
 	
@@ -74,12 +86,14 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	float buttonWidth = 0.0;
 	float buttonHeight = 0.0;
 	float xStep = 0.0, yStep = 0.0;
+	Point3D buttonStart; 
 	//Horizontale
 	if(interface.width > interface.height){
 		buttonWidth = interface.width / 2.0 * 0.1;
 		buttonHeight = interface.height / 2.0 * 0.95;
 		xStep = buttonWidth + interface.width * 0.05;
 		yStep = 0.0;
+		buttonStart = PointXYZ(interface.moneyPosition.x + interface.moneyWidth + buttonWidth / 2.0, interface.moneyPosition.y - buttonHeight / 2.0, 0.0); 
 	}
 	//Verticale
 	else{ 
@@ -87,13 +101,14 @@ Interface initGameInterface(float width, float height, float positionX, float po
 		buttonHeight = interface.height / 2.0 * 0.1;
 		xStep = 0.0;
 		yStep = buttonHeight + interface.height * 0.05;
+		buttonStart = PointXYZ(interface.moneyPosition.x, interface.moneyPosition.y - interface.moneyHeight - buttonHeight / 2.0, 0.0);
 	}
-
-	Button* btnLaser = createButton(PUT_LASER, PointXYZ(interface.position.x, interface.position.y, 0.0), buttonWidth, buttonHeight);
-	Button* btnGun = createButton(PUT_GUN, PointXYZ(interface.position.x + xStep, interface.position.y - yStep, 0.0), buttonWidth, buttonHeight);
-	Button* btnRocket = createButton(PUT_ROCKET, PointXYZ(interface.position.x + xStep*2, interface.position.y - yStep*2, 0.0), buttonWidth, buttonHeight);
-	Button* btnHybrid = createButton(PUT_HYBRID, PointXYZ(interface.position.x + xStep*3, interface.position.y - yStep*3, 0.0), buttonWidth, buttonHeight);
-	Button* btnQuit = createButton(QUIT_GAME, PointXYZ(interface.position.x + xStep*4, interface.position.y - yStep*4, 0.0), buttonWidth, buttonHeight);
+	
+	Button* btnLaser = createButton(PUT_LASER, PointXYZ(buttonStart.x , buttonStart.y, 0.0), buttonWidth, buttonHeight);
+	Button* btnGun = createButton(PUT_GUN, PointXYZ(buttonStart.x + xStep,  buttonStart.y - yStep, 0.0), buttonWidth, buttonHeight);
+	Button* btnRocket = createButton(PUT_ROCKET, PointXYZ(buttonStart.x + xStep*2,  buttonStart.y - yStep*2, 0.0), buttonWidth, buttonHeight);
+	Button* btnHybrid = createButton(PUT_HYBRID, PointXYZ(buttonStart.x + xStep*3,  buttonStart.y - yStep*3, 0.0), buttonWidth, buttonHeight);
+	Button* btnQuit = createButton(QUIT_GAME, PointXYZ(buttonStart.x + xStep*4,  buttonStart.y - yStep*4, 0.0), buttonWidth, buttonHeight);
 	
 	insertBottomCell(lstButtons, btnLaser);
 	insertBottomCell(lstButtons, btnGun);
@@ -106,7 +121,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 }
 
 //TODO
-void drawInterface(const Interface* interface){
+void drawInterface(Interface* interface){
 	if(interface == NULL) return;
 	
 	glLoadIdentity();
@@ -114,7 +129,7 @@ void drawInterface(const Interface* interface){
 	glColor3ub(0,0,0);
 	
 	glPushMatrix();
-	glTranslatef(interface->position.x + interface->width / 2.0, interface->position.y - interface->height / 2.0, interface->position.z);
+	glTranslatef(interface->position.x, interface->position.y, interface->position.z);
 	
 	glScalef(interface->width, interface->height, 1.0);
 	drawQuad();
@@ -122,30 +137,24 @@ void drawInterface(const Interface* interface){
 	glPopMatrix();
 	
 	//Dessin du texte argent
+	if(interface->moneyChanged){
+		updateMoneyTexture(interface);
+		interface->moneyChanged = false;
+	}
+	
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
 	
 	glEnable(GL_ALPHA_TEST);
-	//glEnable(GL_TEXTURE_2D);
-	//glBindTexture(GL_TEXTURE_2D, interface->moneyTexture);
-	//glPushMatrix();
 	glAlphaFunc(GL_GREATER,0.0f);
-	glColor3ub(255,255,255);
-	glRotatef(180,0,0,1);
-	glScalef(300,300,1);
-	drawTexturedQuad(interface->moneyTexture);
-	glPopMatrix();
-
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-    
-	//glScalef(interface->panelMoney->w,interface->panelMoney->h,1);
-	//drawTexturedQuad(textureId);
-	//glDeleteTextures(1, &textureId);
 	
-	//glPopMatrix();
+	glTranslatef(interface->moneyPosition.x, interface->moneyPosition.y, 0.);
+	glScalef(interface->moneyWidth,interface->moneyHeight,1);
+	drawTexturedQuad(interface->moneyTexture);
+	glDisable(GL_ALPHA_TEST);
+	
+	glPopMatrix();
 	//Dessin des boutons
 	glColor3ub(255,255,255);
 	goToHeadList(interface->lstButtons);
@@ -212,21 +221,31 @@ void drawButton(const Button* button){
 	}
 	
 	glPushMatrix();
-	
-	glTranslatef(button->position.x + button->width / 2.0, button->position.y - button->height / 2.0, 0.0);
+	glTranslatef(button->position.x , button->position.y , 0.0);
 	glScalef(button->width, button->height,1.);
 	drawTexturedQuad(textureId);
 	glPopMatrix();
 }
 
-void drawCarre(){
-	glBegin(GL_QUADS);
-	glVertex2f(-0.25,-0.15);
-	glVertex2f(-0.25,0.);
-	glVertex2f(0.,0.);
-	glVertex2f(0.,-0.15);
-	glEnd();
+void updateMoneyTexture(Interface* interface){
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 40);
+	
+	//Création de l'espace pour dessiner l'argent restant
+	SDL_Color color = {255,255,255};	
+	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "9999", color);
+	updateTextureFromSurface(interface->moneyTexture, moneySurface);
+	
+	SDL_FreeSurface(moneySurface);
+	TTF_CloseFont(police);
+	TTF_Quit();	
 }
+
 
 SDL_Surface* drawMapMenu(TTF_Font* police){
 	

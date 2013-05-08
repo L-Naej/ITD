@@ -28,7 +28,7 @@ bool handleGameActions(World* world, Interface* interface){
 		}
 		
 		else if(e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
-			askedForQuit = handleGameKeyboard(&(e.key), world);
+			askedForQuit = handleGameKeyboard(&(e.key), world, interface);
 		}	
 		
 		else askedForQuit = handleGameMouse(&e, world, interface);
@@ -43,7 +43,7 @@ bool handleGameActions(World* world, Interface* interface){
 	return askedForQuit;
 }
 
-bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world){
+bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* interface){
 	bool askedForQuit = false;
 	
 	switch((*e).keysym.sym){
@@ -148,9 +148,9 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
 	if(interface == NULL) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
-	inside = oglMouse.x >= interface->position.x && oglMouse.x <= interface->position.x + interface->width;
+	inside = oglMouse.x >= (interface->position.x - interface->width / 2.0) && oglMouse.x <= interface->position.x + (interface->width / 2.0);
 	if(!inside) return inside;
-	inside = oglMouse.y >= interface->position.y - interface->height && oglMouse.y <= interface->position.y;
+	inside = oglMouse.y >= interface->position.y - (interface->height / 2.0)  && oglMouse.y <= interface->position.y + interface->height / 2.0;
 	return inside;
 }
 
@@ -158,9 +158,9 @@ bool isMouseOnButton(Button* button, Uint16 x, Uint16 y){
 	if(button == NULL) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
-	inside = oglMouse.x >= button->position.x && oglMouse.x <= button->position.x + button->width;
+	inside = oglMouse.x >= button->position.x - button->width / 2.0 && oglMouse.x <= button->position.x + button->width / 2.0;
 	if(!inside) return inside;
-	inside = oglMouse.y >= button->position.y - button->height && oglMouse.y <= button->position.y;
+	inside = oglMouse.y >= button->position.y - button->height / 2.0 && oglMouse.y <= button->position.y + button->height;
 	return inside;
 }
 

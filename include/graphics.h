@@ -78,6 +78,13 @@ GLuint makeTextureFromFile(const char* imagePath);
 GLuint makeTextureFromSurface(const SDL_Surface* surface);
 
 /**
+ * Met à jour la texture pointée par l'identifiant passé
+ * en paramètre en remplacant son contenu par les pixels
+ * de la surface passée en paramètre.
+ */
+void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface);
+
+/**
  * Dessine un GL_QUAD unitaire.
  **/
 void drawQuad();
