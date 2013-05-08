@@ -65,8 +65,9 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	SDL_Color color = {255,255,255};	
 	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "00000", color);
 	interface.moneyTexture = makeTextureFromSurface(moneySurface);
-	interface.moneyWidth = moneySurface->w;
+	interface.moneyWidth = moneySurface->w > interface.width ? 0.9*interface.width : moneySurface->w;
 	interface.moneyHeight = moneySurface->h;
+	printf("%d\n", moneySurface->w);
 	interface.moneyPosition.y = interface.moneyPosition.y - interface.moneyHeight / 2.0;
 	interface.moneyPosition.x = interface.moneyPosition.x + interface.moneyWidth / 2.0;
 	
