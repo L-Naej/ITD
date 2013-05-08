@@ -19,6 +19,13 @@ bool isMouseExtremTop = false;
 bool isMouseExtremBottom = false;
 
 bool handleGameActions(World* world, Interface* interface){
+	//Gestion de l'évolution de l'argent
+	static int lastMoney = 0;
+	if(lastMoney != world->money){
+		updateMoneyTexture(interface, world->money);
+		lastMoney = world->money;
+	}
+	
 	SDL_Event e;
 	bool askedForQuit = false;
 	while(SDL_PollEvent(&e) && !askedForQuit) {

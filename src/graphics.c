@@ -91,7 +91,7 @@ void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
 
 		default:
 		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
-		return EXIT_FAILURE;
+		break;
 	}
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);

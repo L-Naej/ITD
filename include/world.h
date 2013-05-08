@@ -32,6 +32,7 @@ typedef struct{
 	
 	Monster monsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
 	List* towersList;///Liste des tours actuellement sur la map.
+	int money;
 	Point3D cameraPosition;
 }World;
 
@@ -61,8 +62,9 @@ bool canIPutATowerHere(World* world, int posX, int posY);
  * sur la carte du jeu.
  * Si la zone où la tour est posée n'est pas constructible,
  * ne pose pas la tour (fait appel à canIPutATowerHere).
+ * Renvoie si l'ajout a réussi ou non
  **/
-void addTowerOnMap(World* world, int posX, int posY, TowerType type);
+bool addTowerOnMap(World* world, int posX, int posY, TowerType type);
 
 
 // -------- FONCTIONS INTERNES, A NE PAS APPELER DE L'EXTERIEUR -----------
@@ -82,14 +84,16 @@ void startNewMonsterWave(World* world);
  * de toucher un monstre au moment où
  * cette fonction est appelée.
  * (appelée à chaque pas de temps).
+ * Renvoie l'argent gagné par les monstres tués.
  */
-void towersShoot(List* towerList, Monster* monsters);
+int towersShoot(List* towerList, Monster* monsters);
 
 /**
  * Fait tirer une tour (si elle le peut).
- * Appelée par towersShoot.
+ * Appelée par towersShoot. Renvoie l'argent gagné par les monstres
+ * tués.
  **/
-void towerShoots(Tower* tower, Monster* monsters);
+int towerShoots(Tower* tower, Monster* monsters);
 
 /**
  * Fait bouger tous les monstres à chaque pas de temps. 

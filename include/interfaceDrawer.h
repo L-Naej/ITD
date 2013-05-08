@@ -42,7 +42,6 @@ typedef struct{
 	float moneyWidth;
 	float moneyHeight;
 	Point3D moneyPosition;
-	bool moneyChanged;
 	GLuint infoTexture;
 	Action currentAction;
 }Interface;
@@ -57,15 +56,23 @@ typedef struct{
  */
 Interface initGameInterface(float width, float height, float positionX, float positionY);
 
+/**
+ * Dessine l'interface pointée par interface.
+ */
 void drawInterface(Interface* interface);
 void drawMenu();
+
+/** 
+  *Met à jour la texture affichant l'argent du joueur.
+  */
+void updateMoneyTexture(Interface* interface, int money);
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
 
 void drawButton(const Button* button);
 
-void updateMoneyTexture(Interface* interface);
+
 SDL_Surface* drawMapMenu(TTF_Font*);
 
 #endif

@@ -41,7 +41,6 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	
 	interface.lstButtons = NULL;
 	interface.currentAction = NO_ACTION;
-	interface.moneyChanged = false;
 	
 	//Calcul des dimensions de l'interface
 	interface.width = WINDOW_WIDTH * width;
@@ -64,7 +63,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	
 	//Création de l'espace pour dessiner l'argent restant
 	SDL_Color color = {255,255,255};	
-	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "12345", color);
+	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "00000", color);
 	interface.moneyTexture = makeTextureFromSurface(moneySurface);
 	interface.moneyWidth = moneySurface->w;
 	interface.moneyHeight = moneySurface->h;
@@ -122,6 +121,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 
 //TODO
 void drawInterface(Interface* interface){
+	
 	if(interface == NULL) return;
 	
 	glLoadIdentity();
@@ -137,11 +137,6 @@ void drawInterface(Interface* interface){
 	glPopMatrix();
 	
 	//Dessin du texte argent
-	if(interface->moneyChanged){
-		updateMoneyTexture(interface);
-		interface->moneyChanged = false;
-	}
-	
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
@@ -227,7 +222,10 @@ void drawButton(const Button* button){
 	glPopMatrix();
 }
 
-void updateMoneyTexture(Interface* interface){
+void updateMoneyTexture(Interface* interface, int money){
+	char text[6];
+	sprintf(text, "%5d", money);
+	
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
@@ -238,7 +236,7 @@ void updateMoneyTexture(Interface* interface){
 	
 	//Création de l'espace pour dessiner l'argent restant
 	SDL_Color color = {255,255,255};	
-	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "9999", color);
+	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, text, color);
 	updateTextureFromSurface(interface->moneyTexture, moneySurface);
 	
 	SDL_FreeSurface(moneySurface);

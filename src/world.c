@@ -13,6 +13,8 @@ World initWorld(const char* pathToItdFile){
 	newWorld.isBetweenWaves = true;
 	newWorld.nbTurnsWaiting = 0;
 	newWorld.nbMonstersAlive = 0;//Pas de monstres au départ
+	newWorld.money = 1000;
+	
 	newWorld.cameraPosition = PointXYZ(0.,0.,0.);
 	newWorld.towersList = createEmptyList();
 	if(newWorld.towersList == NULL){
@@ -68,20 +70,30 @@ bool canIPutATowerHere(World* world, int posX, int posY){
 	return true;
 }
 
-void addTowerOnMap(World* world, int posX, int posY, TowerType type){
-	if(world == NULL || world->towersList == NULL) return;
+bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
+	if(world == NULL || world->towersList == NULL) return false;
 	//Si la zone où l'on veut construire la tour est non constructible, 
 	//on annule l'action.
-	if(canIPutATowerHere(world, posX, posY) == false) return;
-	
-	//La "caméra" fausse les coordonnées de la tour il faut donc l'annuler
-	Point3D towerPosition = PointXYZ(posX - world->cameraPosition.x,posY + world->cameraPosition.y,0);
+	if(canIPutATowerHere(world, posX, posY) == false) return false;
 	
 	//L'erreur d'allocation est gérée plus bas
 	//Le programme s'arrête si le malloc a échoué 
 	Tower* newTower = createTower(type);
+	
+	//Si pas assez d'argent pour construire la tour, on annule !
+	if(world->money < newTower->price){
+		free(newTower);
+		return false;
+	}
+	
+	//La "caméra" fausse les coordonnées de la tour il faut donc l'annuler
+	Point3D towerPosition = PointXYZ(posX - world->cameraPosition.x,posY + world->cameraPosition.y,0);
 	newTower->position = towerPosition;
 	insertBottomCell(world->towersList, newTower);
+	
+	//La tour a un coût !
+	world->money -= newTower->price;
+	return true;
 }
 
 //---------------------- FONCTIONS PRIVEES ---------------------
@@ -102,7 +114,8 @@ bool doTurn(World* world){
 	}
 	
 	moveMonsters(world->monsters, world->map.pathNodeList);
-	towersShoot(world->towersList, world->monsters);
+	//Tuer des monstres ça fait gagner des sousous !
+	world->money += towersShoot(world->towersList, world->monsters);
 	
 	//Les monstres sont-ils tous morts ? 
 	//Un monstre a-t-il atteint l'arrivée ?
@@ -146,24 +159,26 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 	
 }
 
-void towersShoot(List* towersList, Monster* monsters){
-	if(towersList == NULL || monsters == NULL) return;
-
+int towersShoot(List* towersList, Monster* monsters){
+	if(towersList == NULL || monsters == NULL) return 0;
+	int moneyGained = 0;
 	Tower* curTower = NULL;	
 	goToHeadList(towersList);
 	
 	//Pour chaque tour on regarde si elle peut tirer sur un monstre
 	while( (curTower = (Tower*) nextData(towersList)) != NULL){
-		towerShoots(curTower, monsters);
+		moneyGained += towerShoots(curTower, monsters);
 	}
+	return moneyGained;
 }
 
-void towerShoots(Tower* tower, Monster* monsters){
-	if(tower == NULL || monsters == NULL) return;
+int towerShoots(Tower* tower, Monster* monsters){
+	if(tower == NULL || monsters == NULL) return 0;
 	tower->nbTurnsSinceLastShoot++;
-	if(tower->rate > tower->nbTurnsSinceLastShoot) return;
+	int moneyGained = 0;
+	if(tower->rate > tower->nbTurnsSinceLastShoot) return 0;
 	bool towerCanShoot = true;
-	int i; int lifeLosed = 0;
+	int i = 0; int lifeLosed = 0;
 	
 	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
 		if(monsters[i].life > 0
@@ -181,11 +196,16 @@ void towerShoots(Tower* tower, Monster* monsters){
 				break;
 			}
 			monsters[i].life -= lifeLosed;
+			//Argent gagné si monstre tué
+			if(monsters[i].life <= 0){
+				moneyGained += monsters[i].money;
+			}
 			towerCanShoot = tower->type == GUN;//Seul les GUN peuvent tirer sur tous les monstres en même temps
 			tower->nbTurnsSinceLastShoot = 0;
 		}
 		i++;
 	}
+	return moneyGained;
 }
 
 
