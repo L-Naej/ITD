@@ -8,6 +8,7 @@ void drawButton(void);
 void drawCarre(void);
 
 SDL_Surface* drawMapMenu(TTF_Font*);
+void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton);
 
 
 #endif

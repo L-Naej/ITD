@@ -61,8 +61,10 @@ int main(int argc,  char* argv[]) {
 	TTF_Font* police = NULL;
 	SDL_Surface* text=drawMapMenu(police); /* première carte */
 
-	GLuint helpButton = makeTextureFromFile("images/monstrecarte.png");
+	GLuint helpButton = makeTextureFromFile("images/monstrehelp.png");
 	GLuint MapMenu = makeTextureFromSurface (text);
+	GLuint mapButton = makeTextureFromFile("images/monstrecarte.png");
+
 
 	
 	while(mapChosen == false || askedForQuit1 == false) {
@@ -70,51 +72,9 @@ int main(int argc,  char* argv[]) {
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */
-		drawMenu();
+		drawMenu(helpButton,MapMenu,mapButton);
 
-		glClear(GL_COLOR_BUFFER_BIT);
-    		glMatrixMode(GL_MODELVIEW); 
-    		glLoadIdentity();
-
-		glColor3ub(255,255,255);
-		drawCarre();
-/* _________________ Dessin du sous-menu pour choisir la carte( qui marche pas )_______________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, MapMenu);
-
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		drawButton();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-		
 		TTF_CloseFont(police);
-
-/* _________________ Dessin du bouton d'aide_______________*/
-
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, helpButton);
-
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		drawButton();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-
 
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();

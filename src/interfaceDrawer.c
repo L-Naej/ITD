@@ -11,7 +11,71 @@
 #include "interfaceDrawer.h"
 //TODO
 void drawInterface(){}
-void drawMenu(){}
+
+void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
+		glClear(GL_COLOR_BUFFER_BIT);
+    		glMatrixMode(GL_MODELVIEW); 
+    		glLoadIdentity();
+
+/* _________________ Dessin du sous-menu pour choisir la carte( qui marche pas )_______________*/
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, MapMenu);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+/* _________________ Dessin du bouton d'aide_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, helpButton);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		glTranslatef(1,-0.5,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+/* _________________ Dessin du bouton d'aide_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mapButton);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		glTranslatef(-0.5,-0.5,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+}
 
 
 
@@ -46,9 +110,9 @@ SDL_Surface* drawMapMenu(TTF_Font* police){
 	
 	char* font = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
 	strcpy(font,rootPath);
-	font = strcat(font,"font/lighthouse.ttf");
+	font = strcat(font,"font/Champagne.ttf");
 
-	police = TTF_OpenFont(font,1);
+	police = TTF_OpenFont(font,100);
 
 	SDL_Color blanc = {255, 255, 255};
 
@@ -56,7 +120,7 @@ SDL_Surface* drawMapMenu(TTF_Font* police){
 
 
 
-	text = TTF_RenderText_Solid(police, "Coucou! Salut, blabla",blanc);
+	text = TTF_RenderText_Blended(police, "Marin",blanc);
 	if (text == NULL){
 		printf("error");
 	}
