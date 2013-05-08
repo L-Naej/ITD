@@ -54,7 +54,6 @@ bool worldNewStep(World* world){
 	//Tps écoulé depuis le dernier tour de jeu permet de savoir combien de tour jouer cette fois
 	int turnsRemaining = (now - world->worldTime) / ((int)TIMESTEP_MILLISECONDS);
 	if(turnsRemaining > 0) world->worldTime = SDL_GetTicks();
-	
 	while(i < turnsRemaining && !isGameFinished){
 		isGameFinished = doTurn(world);
 		i++;
@@ -75,20 +74,19 @@ void addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	//on annule l'action.
 	if(canIPutATowerHere(world, posX, posY) == false) return;
 	
-	Point3D towerPosition = PointXYZ(posX,posY,0);
+	//La "caméra" fausse les coordonnées de la tour il faut donc l'annuler
+	Point3D towerPosition = PointXYZ(posX - world->cameraPosition.x,posY + world->cameraPosition.y,0);
+	
 	//L'erreur d'allocation est gérée plus bas
 	//Le programme s'arrête si le malloc a échoué 
 	Tower* newTower = createTower(type);
 	newTower->position = towerPosition;
-	
 	insertBottomCell(world->towersList, newTower);
 }
 
 //---------------------- FONCTIONS PRIVEES ---------------------
 bool doTurn(World* world){
 	if(world == NULL) return false;
-	static int turnNumber = 0; //debug
-	turnNumber++;
 	
 	bool isGameFinished = false;
 	
@@ -109,13 +107,14 @@ bool doTurn(World* world){
 	//Les monstres sont-ils tous morts ? 
 	//Un monstre a-t-il atteint l'arrivée ?
 	//Tous les monstres sont morts et c'était la dernier vague => Le jeu est fini ?
-	int i = 0;
+	int i = 0, cptMonstersAlive = 0;
 	Point3D endPoint = getEndPoint(&(world->map));
 	while(i < MONSTERS_PER_WAVE && !isGameFinished){
 		isGameFinished = arePointsEquals(world->monsters[i].position, endPoint);
-		if(world->monsters[i].life <= 0) world->nbMonstersAlive--;
+		if(world->monsters[i].life > 0) cptMonstersAlive++;
 		++i;
 	}
+	world->nbMonstersAlive = cptMonstersAlive;
 	if(world->nbMonstersAlive <= 0){
 		if(world->currentMonstersWave >= NB_TOTAL_WAVES){
 			isGameFinished = true;
@@ -131,7 +130,6 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 	if(monsters == NULL) return;
 		
 	int i = 0;
-	bool monsterMove = false;
 	
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 		if(monsters[i].life <= 0) continue;
@@ -143,7 +141,7 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
 		}
-		monsterMove = false;
+		
 	}
 	
 }
@@ -156,16 +154,17 @@ void towersShoot(List* towersList, Monster* monsters){
 	
 	//Pour chaque tour on regarde si elle peut tirer sur un monstre
 	while( (curTower = (Tower*) nextData(towersList)) != NULL){
-		curTower->nbTurnsSinceLastShoot++;
 		towerShoots(curTower, monsters);
 	}
 }
 
 void towerShoots(Tower* tower, Monster* monsters){
 	if(tower == NULL || monsters == NULL) return;
-	if(tower->rate < tower->nbTurnsSinceLastShoot) return;
+	tower->nbTurnsSinceLastShoot++;
+	if(tower->rate > tower->nbTurnsSinceLastShoot) return;
 	bool towerCanShoot = true;
 	int i; int lifeLosed = 0;
+	
 	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
 		if(monsters[i].life > 0
 		&& Norm(Vector(monsters[i].position, tower->position)) <= tower->range){

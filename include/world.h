@@ -26,7 +26,7 @@ typedef struct{
 	Uint32 worldTime;///Temps actuel dans le tour de jeu
 	Map map;///Map chargée
 	unsigned char currentMonstersWave;///Vague de monstres en cours (sur 20)
-	unsigned char nbMonstersAlive;///Nombre de monstres encore en vie
+	char nbMonstersAlive;///Nombre de monstres encore en vie
 	bool isBetweenWaves;///Indique si l'on est entre deux vagues de monstres
 	Uint32 nbTurnsWaiting;///Nombre de tours restant à attendre avant la prochaine vague de monstres
 	

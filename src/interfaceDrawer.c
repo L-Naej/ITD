@@ -10,6 +10,7 @@
 #endif
 #include <math.h>
 #include "interfaceDrawer.h"
+#include "world.h"
 
 Button* createButton(Action action, Point3D position, float width, float height){
 	Button* button = (Button*) malloc(sizeof(Button));
@@ -39,6 +40,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Interface interface;
 	
 	interface.lstButtons = NULL;
+	interface.currentAction = NO_ACTION;
 	
 	//Calcul des dimensions de l'interface
 	interface.width = WINDOW_WIDTH * width;
@@ -138,6 +140,37 @@ void drawInterface(const Interface* interface){
 	
 	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
 	
+	//Dessin d'une tour sur la souris si l'action courante est de poser une tour
+	textureId = 0;
+	bool drawUnderMouse = true;
+	//TODO
+	switch(interface->currentAction){
+	case PUT_GUN : textureId = GAME_TEXTURES_ID.GUN_TOWER_ID;
+	break;
+	case PUT_HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_TOWER_ID;
+	break;
+	case PUT_LASER : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
+	break;
+	case PUT_ROCKET: textureId = GAME_TEXTURES_ID.ROCKET_TOWER_ID;
+	break;
+	case NO_ACTION : drawUnderMouse = false;
+	break;
+	case QUIT_GAME : drawUnderMouse = false;
+	break;
+	default : drawUnderMouse = false;
+	}
+	
+	if(drawUnderMouse){
+		int mouseX, mouseY;
+		SDL_GetMouseState(&mouseX, &mouseY);
+		Point3D oglMouse = sdlToOpenGL(PointXYZ(mouseX,mouseY, 0.0));
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
+		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
+		drawTexturedQuad(textureId);
+		glPopMatrix();
+	}
 	
 }
 
@@ -148,15 +181,15 @@ void drawButton(const Button* button){
 	GLuint textureId = 0;
 	
 	switch(button->action){
-	case PUT_GUN : textureId = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;//A CHANGER //TODO
+	case PUT_GUN : textureId = GAME_TEXTURES_ID.GUN_TOWER_ID;
 	break;
-	case PUT_HYBRID : textureId = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;//A CHANGER //TODO
+	case PUT_HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_TOWER_ID;
 	break;
-	case PUT_LASER : textureId = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;//A CHANGER //TODO
+	case PUT_LASER : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
 	break;
-	case PUT_ROCKET : textureId = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;//A CHANGER //TODO
+	case PUT_ROCKET : textureId = GAME_TEXTURES_ID.ROCKET_TOWER_ID;
 	break;
-	case QUIT_GAME : textureId = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;//A CHANGER //TODO
+	case QUIT_GAME : textureId = GAME_TEXTURES_ID.QUIT_GAME_ID;
 	break;
 	default : return;
 	break;

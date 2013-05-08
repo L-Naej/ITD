@@ -22,7 +22,7 @@ Tower* createRocketTower(){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
 		exit(-1);
 	}
-	
+	newTower->type = ROCKET;
 	newTower->nbTurnsSinceLastShoot = 0;
 	newTower->rate = 100;
 	newTower->range = 50;
@@ -39,10 +39,10 @@ Tower* createLaserTower(){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
 		exit(-1);
 	}
-	
+	newTower->type = LASER;
 	newTower->nbTurnsSinceLastShoot = 0;
 	newTower->rate = 100;
-	newTower->range = 50;
+	newTower->range = 150;
 	newTower->power = 10;
 	newTower->price = 100;
 
@@ -56,7 +56,7 @@ Tower* createGunTower(){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
 		exit(-1);
 	}
-	
+	newTower->type = GUN;
 	newTower->nbTurnsSinceLastShoot = 0;
 	newTower->rate = 100;
 	newTower->range = 50;
@@ -73,7 +73,7 @@ Tower* createHybridTower(){
 		fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire pour créer une tour.\n");
 		exit(-1);
 	}
-	
+	newTower->type = HYBRID;
 	newTower->nbTurnsSinceLastShoot = 0;
 	newTower->rate = 100;
 	newTower->range = 50;

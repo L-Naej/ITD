@@ -11,6 +11,11 @@ void initGameGraphics(const SDL_Surface* map){
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1.png");
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2.png");
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID = makeTextureFromFile("images/monster3.png");
+	GAME_TEXTURES_ID.LASER_TOWER_ID = makeTextureFromFile("images/monstrecarte.png");
+	GAME_TEXTURES_ID.ROCKET_TOWER_ID = makeTextureFromFile("images/tower.jpg");
+	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/tower.jpg");
+	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/tower.jpg");
+	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
 	
 	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
 }

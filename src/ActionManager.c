@@ -62,7 +62,6 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
-	
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
 		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < 2.* WINDOW_WIDTH / 100.0){
@@ -92,38 +91,57 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
 		Action action = detectAction(e->button.x, e->button.y, world, interface);
-		switch(action){
-		case PUT_GUN : printf("gun\n");
-		break;
-		case PUT_LASER : printf("laser\n");
-		break;
-		case PUT_ROCKET : printf("rocket\n");
-		break;
-		case PUT_HYBRID : printf("hybrid\n");
-		break;
-		case QUIT_GAME : printf("quit\n");
-		break;
-		case NO_ACTION : printf("no action\n");
-		break;
-		default: printf("caca\n"); break;
+		if(action == QUIT_GAME) return true;
+		if(action == CLICK_ON_MAP){
+		
+			switch(interface->currentAction){
+			case PUT_GUN : 
+				addTowerOnMap(world, e->button.x, e->button.y, GUN);
+				interface->currentAction = NO_ACTION;
+			
+			break;
+			case PUT_HYBRID :
+				addTowerOnMap(world, e->button.x, e->button.y, HYBRID);
+				interface->currentAction = NO_ACTION;
+			break;
+			case PUT_LASER :
+				addTowerOnMap(world, e->button.x, e->button.y, LASER);
+				interface->currentAction = NO_ACTION;
+			break;
+			case PUT_ROCKET :
+				addTowerOnMap(world, e->button.x, e->button.y, ROCKET);
+				interface->currentAction = NO_ACTION;
+			break;
+			case NO_ACTION : 
+			break;
+			case QUIT_GAME :
+			break;
+			case CLICK_ON_MAP:
+			break;
+			default :
+			break;
+			}
 		}
+		else interface->currentAction = action;
+		
 	}
 	
 	return false;
 }
 
 Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface){
+	//Inutile de tester tous les boutons si on n'est pas sur l'interface
 	if(isMouseOnInterface(x,y, interface)) {
 		goToHeadList(interface->lstButtons);
 		Button* cur = NULL;
 		bool actionDetected = false;
 		while( !actionDetected && (cur = (Button*) nextData(interface->lstButtons)) != NULL){
-			actionDetected = isOnButton(cur, x, y);	
+			actionDetected = isMouseOnButton(cur, x, y);	
 		}
 		if(cur == NULL) return NO_ACTION;
 		return cur->action;
 	}
-	else return NO_ACTION;
+	else return CLICK_ON_MAP;
 }
 
 bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
@@ -136,7 +154,7 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
 	return inside;
 }
 
-bool isOnButton(Button* button, Uint16 x, Uint16 y){
+bool isMouseOnButton(Button* button, Uint16 x, Uint16 y){
 	if(button == NULL) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));

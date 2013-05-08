@@ -15,7 +15,7 @@
  */
  
 typedef enum{
-	PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, NO_ACTION
+	CLICK_ON_MAP, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, NO_ACTION
 }Action;
 
 /**
@@ -40,6 +40,7 @@ typedef struct{
 	List* lstButtons;
 	SDL_Surface* panelMoney;
 	SDL_Surface* panelInfo;
+	Action currentAction;
 }Interface;
 
 /**

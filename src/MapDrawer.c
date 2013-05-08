@@ -17,9 +17,12 @@ void drawWorld(const World* world){
 	
 	if( ! world->isBetweenWaves){
 		for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-			drawMonster(&(world->monsters[i]));
+			if(world->monsters[i].life > 0)
+				drawMonster(&(world->monsters[i]));
 		}
 	}
+	
+	drawTowers(world->towersList);
 	glPopMatrix();
 }
 
@@ -54,5 +57,33 @@ void drawMonster(const Monster* monster){
 	drawTexturedQuad(monsterTexture);
 	
 	glPopMatrix();
+}
+
+void drawTowers(List* towersList){
+	if(towersList == NULL) return;
+	
+	Tower* cur = NULL;
+	GLuint textureId = -1;
+	goToHeadList(towersList);
+	while ( (cur = (Tower*) nextData(towersList)) != NULL){
+		switch(cur->type){
+		case GUN : textureId = GAME_TEXTURES_ID.GUN_TOWER_ID;
+		break;
+		case LASER : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
+		break;
+		case ROCKET : textureId = GAME_TEXTURES_ID.ROCKET_TOWER_ID;
+		break;
+		case HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_TOWER_ID;
+		break;
+		default : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
+		break;
+		}
+		glPushMatrix();
+		Point3D oglPosition = sdlToOpenGL(cur->position);
+		glTranslatef(oglPosition.x, oglPosition.y, oglPosition.z);
+		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
+		drawTexturedQuad(textureId);
+		glPopMatrix();
+	}	
 }
 

@@ -20,6 +20,7 @@ typedef struct{
 	GLuint LASER_TOWER_ID;
 	GLuint ROCKET_TOWER_ID;
 	GLuint HYBRID_TOWER_ID;
+	GLuint QUIT_GAME_ID;
 	GLuint MAP_ID;
 }ITD_Game_Textures;
 
