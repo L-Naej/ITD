@@ -78,6 +78,7 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 }
 
 void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
+	if(surface == NULL) return;
 	GLenum format;
 	switch(surface->format->BytesPerPixel) {
 		case 1:

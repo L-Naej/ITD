@@ -130,9 +130,17 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
-		Action action = detectAction(e->button.x, e->button.y, world, interface);
+		Tower* pointedTower = NULL;
+		Action action = detectAction(e->button.x, e->button.y, world, interface, &pointedTower);
 		if(action == QUIT_GAME) return true;
-		if(action == CLICK_ON_MAP){
+		if(action == CLICK_ON_TOWER) {
+			if(pointedTower == NULL) fprintf(stderr, "Impossible d'obtenir les infos sur la tour sélectionnée.\n");
+			else {
+				updateInfoTexture(interface, pointedTower->power, pointedTower->rate, pointedTower->range);
+				printf("Tower power : %d\n", pointedTower->power);
+			}
+		}
+		else if(action == CLICK_ON_MAP){
 		
 			switch(interface->currentAction){
 			case PUT_GUN : 
@@ -175,19 +183,32 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	return false;
 }
 
-Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface){
+Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface, Tower** pointedTower){
+	bool actionDetected = false;
+	
 	//Inutile de tester tous les boutons si on n'est pas sur l'interface
 	if(isMouseOnInterface(x,y, interface)) {
 		goToHeadList(interface->lstButtons);
 		Button* cur = NULL;
-		bool actionDetected = false;
 		while( !actionDetected && (cur = (Button*) nextData(interface->lstButtons)) != NULL){
 			actionDetected = isMouseOnButton(cur, x, y);	
 		}
 		if(cur == NULL) return NO_ACTION;
 		return cur->action;
 	}
-	else return CLICK_ON_MAP;
+	else{
+	//On check le click sur une tour
+		Tower* cur = NULL;
+		goToHeadList(world->towersList);
+		while(!actionDetected && (cur = (Tower*) nextData(world->towersList)) != NULL ){
+			actionDetected = isMouseOnTower(cur, world->cameraPosition, x, y);
+		}
+		if(actionDetected){
+			*pointedTower = cur;
+			return CLICK_ON_TOWER;
+		}
+		else return CLICK_ON_MAP;
+	}
 }
 
 bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
@@ -207,6 +228,24 @@ bool isMouseOnButton(Button* button, Uint16 x, Uint16 y){
 	inside = oglMouse.x >= button->position.x - button->width / 2.0 && oglMouse.x <= button->position.x + button->width / 2.0;
 	if(!inside) return inside;
 	inside = oglMouse.y >= button->position.y - button->height / 2.0 && oglMouse.y <= button->position.y + button->height;
+	return inside;
+}
+
+//ATTENTION : la caméra est à prendre en compte dans la détection d'un clic sur une tour
+bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
+	if(tower == NULL) return false;
+	bool inside = false;
+	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
+	Point3D oglTower = sdlToOpenGL(tower->position);
+	//Il faut appliquer la translation de la caméra à la position
+	//"sdl to opengl" de la tour pour avoir sa position dans le monde
+	oglTower.x += cameraPosition.x;
+	oglTower.y += cameraPosition.y;
+	oglTower.z += cameraPosition.z;
+	
+	inside = oglMouse.x >= oglTower.x - TOWER_WIDTH_PX / 2.0 && oglMouse.x <= oglTower.x + TOWER_HEIGHT_PX / 2.0;
+	if(!inside) return inside;
+	inside = oglMouse.y >= oglTower.y - TOWER_HEIGHT_PX / 2.0 && oglMouse.y <= oglTower.y + TOWER_HEIGHT_PX;
 	return inside;
 }
 

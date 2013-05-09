@@ -26,7 +26,7 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	return button;
 }
 
-void drawButton2(){
+void drawButtonMenu(){
 	glBegin(GL_QUADS);
  	glTexCoord2f(1, 0);
     	glVertex2f(-0.15,-0.15);
@@ -55,7 +55,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
-		drawButton2();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -75,7 +75,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
 		glTranslatef(1,-0.5,0);
-		drawButton2();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -95,7 +95,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
 		glTranslatef(-0.5,-0.5,0);
-		drawButton2();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -153,6 +153,14 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	SDL_Surface* pauseSurface = TTF_RenderText_Blended(police, "PAUSE", colorPause);
 	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID = makeTextureFromSurface(pauseSurface);
 	
+	//Création de la texture contenant les informations
+	SDL_Surface* infoSurface = TTF_RenderText_Blended(police, "IMAC ITD", color);
+	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurface(infoSurface);
+	interface.infoWidth = infoSurface->w;
+	interface.infoHeight = infoSurface->h;
+	//La position du panel d'info est déterminée après que les boutons ait été créés
+	
+	SDL_FreeSurface(infoSurface);
 	SDL_FreeSurface(pauseSurface);
 	SDL_FreeSurface(moneySurface);
 	TTF_CloseFont(police);
@@ -174,14 +182,16 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	if(interface.width > interface.height){
 		buttonWidth = interface.width / 2.0 * 0.1;
 		buttonHeight = interface.height / 2.0 * 0.95;
+		interface.infoHeight = interface.infoHeight > interface.height ? interface.height : interface.infoHeight;
 		xStep = buttonWidth + interface.width * 0.05;
 		yStep = 0.0;
 		buttonStart = PointXYZ(interface.moneyPosition.x + interface.moneyWidth + buttonWidth / 2.0, interface.moneyPosition.y - buttonHeight / 2.0, 0.0); 
 	}
 	//Verticale
 	else{ 
-		buttonWidth = interface.width / 2.0 * 0.95;
+		buttonWidth = interface.width / 2.0 * 0.70;
 		buttonHeight = interface.height / 2.0 * 0.1;
+		interface.infoWidth = interface.infoWidth > interface.width ? interface.width : interface.infoWidth;
 		xStep = 0.0;
 		yStep = buttonHeight + interface.height * 0.05;
 		buttonStart = PointXYZ(interface.moneyPosition.x, interface.moneyPosition.y - interface.moneyHeight - buttonHeight / 2.0, 0.0);
@@ -193,6 +203,8 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Button* btnHybrid = createButton(PUT_HYBRID, PointXYZ(buttonStart.x + xStep*3,  buttonStart.y - yStep*3, 0.0), buttonWidth, buttonHeight);
 	Button* btnQuit = createButton(QUIT_GAME, PointXYZ(buttonStart.x + xStep*4,  buttonStart.y - yStep*4, 0.0), buttonWidth, buttonHeight);
 	
+	interface.infoPosition.x = buttonStart.x + xStep * 5 +buttonWidth / 2.0 ;
+	interface.infoPosition.y = buttonStart.y - yStep * 5;
 	insertBottomCell(lstButtons, btnLaser);
 	insertBottomCell(lstButtons, btnGun);
 	insertBottomCell(lstButtons, btnRocket);
@@ -229,7 +241,7 @@ void drawInterface(Interface* interface){
 	glAlphaFunc(GL_GREATER,0.0f);
 	
 	glTranslatef(interface->moneyPosition.x, interface->moneyPosition.y, 0.);
-	glScalef(interface->moneyWidth,interface->moneyHeight,1);
+	glScalef(interface->moneyWidth,interface->moneyHeight,1.);
 	drawTexturedQuad(GAME_TEXTURES_ID.MONEY_ID);
 	glDisable(GL_ALPHA_TEST);
 	
@@ -243,6 +255,20 @@ void drawInterface(Interface* interface){
 	}
 	
 	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)//TODO
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3ub(255,255,255);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER,0.0f);
+	
+	glTranslatef(interface->infoPosition.x, interface->infoPosition.y, 0.);
+	glScalef(interface->infoWidth,interface->infoHeight,1.);
+
+	drawTexturedQuad(GAME_TEXTURES_ID.INFO_PANEL_ID);
+	glDisable(GL_ALPHA_TEST);
+	
+	glPopMatrix();
 	
 	//Dessin d'une tour sur la souris si l'action courante est de poser une tour
 	GLuint textureId = 0;
@@ -345,6 +371,55 @@ void updateMoneyTexture(Interface* interface, int money){
 	TTF_Quit();	
 }
 
+void updateInfoTexture(Interface* interface, int power, int rate, int range){
+	/*
+	char* phrases [3];
+	
+	int nbPhrases;
+	if(interface->width > interface->height){
+		phrases[0] = (char*) malloc(40*sizeof(char));
+		sprintf(phrases[0], "P:%4d Rt:%4d Rg:%4d", power, rate, range);
+		nbPhrases = 1;
+	}
+	else{
+		phrases[0] = (char*) malloc(10*sizeof(char));
+		phrases[1] = (char*) malloc(10*sizeof(char));
+		phrases[2] = (char*) malloc(10*sizeof(char));
+		sprintf(phrases[0], "P:%4d", power);
+		sprintf(phrases[1], "Rt:%4d", rate);
+		sprintf(phrases[2], "Rg:%4d", range);
+		nbPhrases = 3;
+	}
+	*/
+	char text[50];
+	sprintf(text, "P :%4d Rt :%4d Rg :%4d", power, rate, range);
+	
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 45);
+	
+	//Création de l'espace pour dessiner l'argent restant
+	SDL_Color color = {255,255,255};	
+	
+	SDL_Surface* infoSurface = TTF_RenderText_Blended(police, text, color);//PrintStringsOnSurface(police, phrases, nbPhrases, color);
+	
+	
+	updateTextureFromSurface(GAME_TEXTURES_ID.INFO_PANEL_ID, infoSurface);
+	//gestion basique de la taille du texte
+	if(interface->width > interface->height)
+		interface->infoHeight = interface->infoHeight > interface->height ? interface->height : interface->infoHeight;
+	else{
+		interface->infoWidth = interface->infoWidth > interface->width ? interface->width : interface->infoWidth;
+	}
+	
+	SDL_FreeSurface(infoSurface);
+	TTF_CloseFont(police);
+	TTF_Quit();	
+}
 
 extern char* rootPath;
 

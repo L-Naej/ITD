@@ -15,7 +15,7 @@
  */
  
 typedef enum{
-	CLICK_ON_MAP, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
+	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
 }Action;
 
 /**
@@ -23,7 +23,7 @@ typedef enum{
  * sa position (position du coin haut gautche) ainsi que sa taille.
  */
 typedef struct{
-	Action action;
+	Action action;///Action déclenchée par le bouton
 	Point3D position;///Position du coin haut gauche
 	float width;///En pixels
 	float height;///En pixels
@@ -36,19 +36,22 @@ typedef struct{
 typedef struct{
 	float width;///En pixels
 	float height;///En pixels
-	Point3D position;///Position du coin haut gauche de l'interface (coordonnées OpenGL)
-	List* lstButtons;
-	float moneyWidth;
-	float moneyHeight;
-	Point3D moneyPosition;
-	Action currentAction;
+	Point3D position;///Position du milieu de l'interface (coordonnées OpenGL)
+	List* lstButtons;///Liste des boutons que contient l'interface
+	float moneyWidth;///Largeur de la surface affichant l'argent (en px)
+	float moneyHeight;///Hauteur de la surface affichant l'argent (en px)
+	Point3D moneyPosition;///Position du milieu de la surface affichant l'argent
+	float infoWidth;
+	float infoHeight;
+	Point3D infoPosition;
+	Action currentAction;///L'action en cours du joueur suite à une interaction sur l'interface
 }Interface;
 
 /**
  * Initialise la liste des boutons contenus dans l'interface.
  * Attention : la largeur, la hauteur, la positionX et la positionY doivent être un pourcentage 
  * de la taille de la fenêtre. Les valeurs non comprises entre 0 et 1.
- * Le positionnement se fait par rapport au coin haut gauche de l'élément.
+ * Le positionnement se fait par rapport au coin haut gauche de l'interface.
  * Le pourcentage de la position prend comme origine le repère SDL.
  * seront taillées pour être adaptées.
  */
@@ -64,6 +67,12 @@ void drawMenu();
   *Met à jour la texture affichant l'argent du joueur.
   */
 void updateMoneyTexture(Interface* interface, int money);
+
+/**
+ * Met à jour la texture affichant les informations sur 
+ * une tour.
+ */
+void updateInfoTexture(Interface* interface, int power, int rate, int range);
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
