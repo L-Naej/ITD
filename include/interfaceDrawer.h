@@ -38,11 +38,9 @@ typedef struct{
 	float height;///En pixels
 	Point3D position;///Position du coin haut gauche de l'interface (coordonnées OpenGL)
 	List* lstButtons;
-	GLuint moneyTexture;
 	float moneyWidth;
 	float moneyHeight;
 	Point3D moneyPosition;
-	GLuint infoTexture;
 	Action currentAction;
 }Interface;
 

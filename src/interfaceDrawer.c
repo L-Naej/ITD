@@ -139,16 +139,21 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	TTF_Font* police = NULL;
 	police = TTF_OpenFont("font/Champagne.ttf", 40);
 	
-	//Création de l'espace pour dessiner l'argent restant
+	//Création de l'espace et de la texture pour dessiner l'argent restant
 	SDL_Color color = {255,255,255};	
 	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, "00000", color);
-	interface.moneyTexture = makeTextureFromSurface(moneySurface);
+	GAME_TEXTURES_ID.MONEY_ID = makeTextureFromSurface(moneySurface);
 	interface.moneyWidth = moneySurface->w > interface.width ? 0.9*interface.width : moneySurface->w;
 	interface.moneyHeight = moneySurface->h;
-	printf("%d\n", moneySurface->w);
 	interface.moneyPosition.y = interface.moneyPosition.y - interface.moneyHeight / 2.0;
 	interface.moneyPosition.x = interface.moneyPosition.x + interface.moneyWidth / 2.0;
 	
+	//Création de la texture affichant le message "Pause"
+	SDL_Color colorPause = {255,0,0};
+	SDL_Surface* pauseSurface = TTF_RenderText_Blended(police, "PAUSE", colorPause);
+	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID = makeTextureFromSurface(pauseSurface);
+	
+	SDL_FreeSurface(pauseSurface);
 	SDL_FreeSurface(moneySurface);
 	TTF_CloseFont(police);
 	TTF_Quit();
@@ -225,7 +230,7 @@ void drawInterface(Interface* interface){
 	
 	glTranslatef(interface->moneyPosition.x, interface->moneyPosition.y, 0.);
 	glScalef(interface->moneyWidth,interface->moneyHeight,1);
-	drawTexturedQuad(interface->moneyTexture);
+	drawTexturedQuad(GAME_TEXTURES_ID.MONEY_ID);
 	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
@@ -237,7 +242,7 @@ void drawInterface(Interface* interface){
 		drawButton(cur);
 	}
 	
-	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
+	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)//TODO
 	
 	//Dessin d'une tour sur la souris si l'action courante est de poser une tour
 	GLuint textureId = 0;
@@ -259,6 +264,22 @@ void drawInterface(Interface* interface){
 	default : drawUnderMouse = false;
 	}
 	
+	//Si le jeu est mis en pause
+	if(interface->currentAction == PAUSE_GAME){
+		glPushMatrix();
+		glLoadIdentity();
+		glColor3ub(255,255,255);
+	
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER,0.0f);
+	
+		glScalef(WINDOW_WIDTH / 5.0,WINDOW_HEIGHT / 10.0,1.);
+		drawTexturedQuad(GAME_TEXTURES_ID.PAUSE_MESSAGE_ID);
+		glDisable(GL_ALPHA_TEST);
+	
+		glPopMatrix();
+		
+	}
 	if(drawUnderMouse){
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
@@ -317,7 +338,7 @@ void updateMoneyTexture(Interface* interface, int money){
 	//Création de l'espace pour dessiner l'argent restant
 	SDL_Color color = {255,255,255};	
 	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, text, color);
-	updateTextureFromSurface(interface->moneyTexture, moneySurface);
+	updateTextureFromSurface(GAME_TEXTURES_ID.MONEY_ID, moneySurface);
 	
 	SDL_FreeSurface(moneySurface);
 	TTF_CloseFont(police);

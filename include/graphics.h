@@ -22,6 +22,8 @@ typedef struct{
 	GLuint HYBRID_TOWER_ID;
 	GLuint QUIT_GAME_ID;
 	GLuint MAP_ID;
+	GLuint MONEY_ID;
+	GLuint PAUSE_MESSAGE_ID;
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;
