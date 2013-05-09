@@ -39,12 +39,15 @@ GLuint makeTextureFromFile(const char* imagePath){
 }
 
 GLuint makeTextureFromSurface(const SDL_Surface* image){
+
 	if(image == NULL) return -1;
 	GLuint textureId;
 	GLenum format;
 
 	glGenTextures(1,&textureId);
-	glBindTexture(GL_TEXTURE_2D,textureId); 
+
+	glBindTexture(GL_TEXTURE_2D,textureId);
+  
 	switch(image->format->BytesPerPixel) {
 		case 1:
 		format = GL_RED;

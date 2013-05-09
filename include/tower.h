@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "point3D.h"
+#include "map.h"
 
 static const int TOWER_WIDTH_PX = 30;
 static const int TOWER_HEIGHT_PX = 30;
@@ -17,21 +18,28 @@ typedef struct {
 	int nbTurnsSinceLastShoot;
 	int range;
 	int power;
-	float price;
+	float cost;
 
 	Point3D position;
 }Tower;
 
+
+
+/**
+ * initisalise une structure TowerStat qui permet d'avoir les données des différents types de tour.
+ **/
+TowerStat* createEmptyTowerStat();
+
 /**
  * Retourne une tour du type spécifié en paramètre.
  **/
-Tower* createTower(TowerType type);
+Tower* createTower(TowerType type,Map map);
 
 /**
  * Fonctions appelées par createTower.
  **/
-Tower* createRocketTower();
-Tower* createLaserTower();
-Tower* createGunTower();
-Tower* createHybridTower();
+Tower* createRocketTower(Map map);
+Tower* createLaserTower(Map map);
+Tower* createGunTower(Map map);
+Tower* createHybridTower(Map map);
 #endif

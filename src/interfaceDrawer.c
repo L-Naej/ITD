@@ -25,6 +25,70 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	button->height = height;
 	return button;
 }
+void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
+		glClear(GL_COLOR_BUFFER_BIT);
+    		glMatrixMode(GL_MODELVIEW); 
+    		glLoadIdentity();
+
+/* _________________ Dessin du sous-menu pour choisir la carte______________*/
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, MapMenu);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+/* _________________ Dessin du bouton d'aide_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, helpButton);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		glTranslatef(1,-0.5,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+/* _________________ Dessin du bouton d'aide_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mapButton);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(300,300,1);
+		glTranslatef(-0.5,-0.5,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+
+}
 
 Interface initGameInterface(float width, float height, float positionX, float positionY){
 	//Vérif des paramètres
@@ -195,8 +259,6 @@ void drawInterface(Interface* interface){
 	
 }
 
-void drawMenu(){}
-
 void drawButton(const Button* button){
 	if(button == NULL) return;
 	GLuint textureId = 0;
@@ -246,9 +308,52 @@ void updateMoneyTexture(Interface* interface, int money){
 }
 
 
+extern char* rootPath;
+
+
+void drawButton(){
+	glBegin(GL_QUADS);
+ 	glTexCoord2f(1, 0);
+    	glVertex2f(-0.15,-0.15);
+ 	glTexCoord2f(1, 1);
+    	glVertex2f(-0.15,0.15);
+ 	glTexCoord2f(0, 1);
+    	glVertex2f(0.15,0.15);
+ 	glTexCoord2f(0, 0);
+    	glVertex2f(0.15,-0.15);
+    glEnd();
+}
+
+void updateMoneyTexture(Interface* interface, int money){
+	char text[6];
+	sprintf(text, "%5d", money);
+	
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 40);
+	
+	//Création de l'espace pour dessiner l'argent restant
+	SDL_Color color = {255,255,255};	
+	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, text, color);
+	updateTextureFromSurface(interface->moneyTexture, moneySurface);
+	
+	SDL_FreeSurface(moneySurface);
+	TTF_CloseFont(police);
+	TTF_Quit();	
+}
+
+
 SDL_Surface* drawMapMenu(TTF_Font* police){
 	
-	police = TTF_OpenFont("lighthouse.ttf",1);
+	char* font = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
+	strcpy(font,rootPath);
+	font = strcat(font,"font/Champagne.ttf");
+
+	police = TTF_OpenFont(font,100);
 
 	SDL_Color blanc = {255, 255, 255};
 
@@ -256,7 +361,7 @@ SDL_Surface* drawMapMenu(TTF_Font* police){
 
 
 
-	text = TTF_RenderText_Solid(police, "Coucou! Salut, blabla",blanc);
+	text = TTF_RenderText_Blended(police, "Marin",blanc);
 	if (text == NULL){
 		printf("error");
 	}
@@ -264,3 +369,5 @@ SDL_Surface* drawMapMenu(TTF_Font* police){
 
 	return text;
 }
+
+

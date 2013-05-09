@@ -1,4 +1,4 @@
-#include "World.h"
+#include "world.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <math.h>

@@ -75,4 +75,5 @@ void drawButton(const Button* button);
 
 SDL_Surface* drawMapMenu(TTF_Font*);
 
+
 #endif

@@ -1,13 +1,15 @@
 #ifdef MAC
-#include <SDL/SDL.h>
-#include <SDL/SDL_main.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else 
-#include <SDL/SDL.h>
+#include <unistd.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <SDL/SDL_ttf.h>
 #endif
+#include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -19,39 +21,65 @@
 #include "mapDrawer.h"
 #include "interfaceDrawer.h"
 
+/* pour avoir le chemin jusqu'à l'executable, pour avoir les chemins des polices*/
+ char* rootPath = NULL;
+
 /**
  * Afficher menu
  * Initialiser la map demandée
  * Lancer la boucle de jeu
  */
+
 int main(int argc,  char* argv[]) {
 	/*Initialisation SDL, OpenGL etc */
 	if( initWindow() == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
 		exit(-1);
 	}
-	
+
+	/* initialisation de SDL_TTF*/
+	if(TTF_Init()== -1){
+		printf("Error loading TTF: %s\n",TTF_GetError());
+		exit(1);
+	}
+	/* initialisation du rootpath */
+	int taille = strlen(argv[0]);
+	argv[0][taille-7] = 0;
+	rootPath = argv[0];
+
 	//Surtout à appeler APRES avoir initialisé la SDL
 	World world = initWorld("map/map1.itd");
+
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool mapChosen = true;//Pour debug, à remettre à false pour de vrai
-	char mapName[MAX_FILE_LENGTH];
+	bool mapChosen = false;//Pour debug, à remettre à false pour de vrai
+	bool askedForQuit=false;
+	char mapName[30]= "Not chosen";
+	TTF_Font* police = NULL;
+	SDL_Surface* text=drawMapMenu(police); /* première carte */
+
+	GLuint helpButton = makeTextureFromFile("images/monstrehelp.png");
+	GLuint MapMenu = makeTextureFromSurface (text);
+	GLuint mapButton = makeTextureFromFile("images/monstrecarte.png");
+
+
 	
-	while(mapChosen == false) {
+	while(mapChosen == false || askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */
-		drawMenu();
-		
+		drawMenu(helpButton,MapMenu,mapButton);
+
+		TTF_CloseFont(police);
+
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
 		handleMenuActions(mapName);
-		if(mapName != NULL) mapChosen = true;
+		if(strcmp(mapName,"Not chosen") != 0) mapChosen = true;
 		
 		/* Calcul du temps écoulé */
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
@@ -59,20 +87,23 @@ int main(int argc,  char* argv[]) {
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
 			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
 		}
+
+		askedForQuit = handleGameActions();
+
 	}
 	
 
 /*-------------- GESTION DU JEU --------------------*/
 	//TODO
-	bool gameFinished = false, askedForQuit = false;
+	bool gameFinished = false;
 	initGameGraphics(world.map.image);
-	
 	//Initialisation interface
 	float width = .10;//10% de largeur
 	float height = 1.; //Toute la hauteur
 	float positionX = 0.90; //A 90% de la largeur
 	float positionY = .0; //A 100% de la hauter
 	Interface interface = initGameInterface(width, height, positionX, positionY);
+
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -101,6 +132,7 @@ int main(int argc,  char* argv[]) {
 	}
 
 	/* Liberation des ressources associées à la SDL */ 
+	TTF_Quit;	
 	SDL_Quit();
 
 	return EXIT_SUCCESS;
