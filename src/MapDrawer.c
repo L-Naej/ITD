@@ -53,9 +53,12 @@ void drawMonster(const Monster* monster){
 	
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
-	
-<<<<<<< HEAD
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glAlphaFunc(GL_GREATER,0.0f);
 	drawTexturedQuad(monsterTexture);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 }
@@ -86,30 +89,5 @@ void drawTowers(List* towersList){
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 	}	
-=======
-	glEnable(GL_ALPHA_TEST);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, monsterTexture);
-	glAlphaFunc(GL_GREATER,0.0f);
-	glBegin(GL_QUADS);
-	
-	//Bottom left
-	glTexCoord2f(0.0,1.0);
-	glVertex2f(-0.5,-0.5);
-	//Bottom right
-	glTexCoord2f(1.0,1.0);
-	glVertex2f(0.5,-0.5);
-
-	//Top right
-	glTexCoord2f(1.0,0.0);
-	glVertex2f(0.5,0.5);
-	//Top left
-	glTexCoord2f(0.0,0.0);
-	glVertex2f(-0.5, 0.5);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D,0);
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
->>>>>>> alizee
 }
 

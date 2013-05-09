@@ -78,10 +78,10 @@ bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	
 	//L'erreur d'allocation est gérée plus bas
 	//Le programme s'arrête si le malloc a échoué 
-	Tower* newTower = createTower(type);
+	Tower* newTower = createTower(type, world->map);
 	
 	//Si pas assez d'argent pour construire la tour, on annule !
-	if(world->money < newTower->price){
+	if(world->money < newTower->cost){
 		free(newTower);
 		return false;
 	}
@@ -92,7 +92,7 @@ bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	insertBottomCell(world->towersList, newTower);
 	
 	//La tour a un coût !
-	world->money -= newTower->price;
+	world->money -= newTower->cost;
 	return true;
 }
 

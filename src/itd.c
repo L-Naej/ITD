@@ -57,28 +57,23 @@ int main(int argc,  char* argv[]) {
 	char mapName[30]= "Not chosen";
 	TTF_Font* police = NULL;
 	SDL_Surface* text=drawMapMenu(police); /* première carte */
-
+	TTF_CloseFont(police);
 	GLuint helpButton = makeTextureFromFile("images/monstrehelp.png");
 	GLuint MapMenu = makeTextureFromSurface (text);
 	GLuint mapButton = makeTextureFromFile("images/monstrecarte.png");
 
-
-	
-	while(mapChosen == false || askedForQuit == false) {
+	while(mapChosen == false && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */
 		drawMenu(helpButton,MapMenu,mapButton);
-
-		TTF_CloseFont(police);
-
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		handleMenuActions(mapName);
+		askedForQuit = handleMenuActions(mapName);
 		if(strcmp(mapName,"Not chosen") != 0) mapChosen = true;
 		
 		/* Calcul du temps écoulé */
@@ -87,9 +82,7 @@ int main(int argc,  char* argv[]) {
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
 			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
 		}
-
-		askedForQuit = handleGameActions();
-
+	
 	}
 	
 
@@ -113,14 +106,15 @@ int main(int argc,  char* argv[]) {
 		 joués d'affilé. */
 		gameFinished = worldNewStep(&world);
 		 
+		drawWorld(&world);
+		drawInterface(&interface);
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
 		au tour suivant.
 		 */
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;
 		/* Si trop peu de temps s'est écoulé, on ne dessine rien. */
 		if(elapsedTime < FRAMERATE_MILLISECONDS) {
-			 drawWorld(&world);
-			 drawInterface(&interface);
+
 			 /* Echange du front et du back buffer : mise à jour de la fenêtre */
 			SDL_GL_SwapBuffers();
       			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
@@ -132,7 +126,7 @@ int main(int argc,  char* argv[]) {
 	}
 
 	/* Liberation des ressources associées à la SDL */ 
-	TTF_Quit;	
+	TTF_Quit();	
 	SDL_Quit();
 
 	return EXIT_SUCCESS;

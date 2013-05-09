@@ -10,7 +10,19 @@
 #include <math.h>
 #include "graphics.h"
 
-void handleMenuActions(char* mapName){}
+//TODO
+bool handleMenuActions(char* mapName){ 
+	SDL_Event e;
+	bool askedForQuit = false;
+	while(SDL_PollEvent(&e) && !askedForQuit) {
+		/* L'utilisateur ferme la fenêtre : */
+		if(e.type == SDL_QUIT) {
+			askedForQuit = true;
+		}
+	}
+		
+	return askedForQuit;
+}
 
 //Variables globales pour la gestion de la caméra
 bool isMouseExtremRight = false;

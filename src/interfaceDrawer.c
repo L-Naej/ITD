@@ -25,6 +25,20 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	button->height = height;
 	return button;
 }
+
+void drawButton2(){
+	glBegin(GL_QUADS);
+ 	glTexCoord2f(1, 0);
+    	glVertex2f(-0.15,-0.15);
+ 	glTexCoord2f(1, 1);
+    	glVertex2f(-0.15,0.15);
+ 	glTexCoord2f(0, 1);
+    	glVertex2f(0.15,0.15);
+ 	glTexCoord2f(0, 0);
+    	glVertex2f(0.15,-0.15);
+    glEnd();
+}
+
 void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glClear(GL_COLOR_BUFFER_BIT);
     		glMatrixMode(GL_MODELVIEW); 
@@ -41,7 +55,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
-		drawButton();
+		drawButton2();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -61,7 +75,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
 		glTranslatef(1,-0.5,0);
-		drawButton();
+		drawButton2();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -81,7 +95,7 @@ void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton){
 		glRotatef(180,0,0,1);
 		glScalef(300,300,1);
 		glTranslatef(-0.5,-0.5,0);
-		drawButton();
+		drawButton2();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -309,42 +323,6 @@ void updateMoneyTexture(Interface* interface, int money){
 
 
 extern char* rootPath;
-
-
-void drawButton(){
-	glBegin(GL_QUADS);
- 	glTexCoord2f(1, 0);
-    	glVertex2f(-0.15,-0.15);
- 	glTexCoord2f(1, 1);
-    	glVertex2f(-0.15,0.15);
- 	glTexCoord2f(0, 1);
-    	glVertex2f(0.15,0.15);
- 	glTexCoord2f(0, 0);
-    	glVertex2f(0.15,-0.15);
-    glEnd();
-}
-
-void updateMoneyTexture(Interface* interface, int money){
-	char text[6];
-	sprintf(text, "%5d", money);
-	
-	//Création des textures affichant du texte
-	if(TTF_Init() == -1){
-		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
-		exit(EXIT_FAILURE);
-	}
-	TTF_Font* police = NULL;
-	police = TTF_OpenFont("font/Champagne.ttf", 40);
-	
-	//Création de l'espace pour dessiner l'argent restant
-	SDL_Color color = {255,255,255};	
-	SDL_Surface* moneySurface = TTF_RenderText_Blended(police, text, color);
-	updateTextureFromSurface(interface->moneyTexture, moneySurface);
-	
-	SDL_FreeSurface(moneySurface);
-	TTF_CloseFont(police);
-	TTF_Quit();	
-}
 
 
 SDL_Surface* drawMapMenu(TTF_Font* police){

@@ -5,7 +5,7 @@
 #include "world.h"
 #include "interfaceDrawer.h"
 	
-void handleMenuActions(char* mapName);
+bool handleMenuActions(char* mapName);
 
 
 bool handleGameActions(World* world, Interface* interface);

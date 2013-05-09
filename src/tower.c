@@ -21,6 +21,8 @@ TowerStat* createEmptyTowerStat(){
 	towerstat->rateH=80;
 	towerstat->rangeH=100;
 	towerstat->costH=90;
+	
+	return towerstat;
 }
 
 Tower* createTower(TowerType type,Map map){
