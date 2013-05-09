@@ -52,7 +52,7 @@ int main(int argc,  char* argv[]) {
 
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool mapChosen = false;//Pour debug, à remettre à false pour de vrai
+	bool mapChosen = true;//Pour debug, à remettre à false pour de vrai
 	bool askedForQuit=false;
 	char mapName[30]= "Not chosen";
 	TTF_Font* police = NULL;

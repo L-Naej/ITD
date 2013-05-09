@@ -267,7 +267,10 @@ void drawInterface(Interface* interface){
 		glLoadIdentity();
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER,0.0f);
 		drawTexturedQuad(textureId);
+		glDisable(GL_ALPHA_TEST);
 		glPopMatrix();
 	}
 	

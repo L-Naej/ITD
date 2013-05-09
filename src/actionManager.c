@@ -19,6 +19,16 @@ bool handleMenuActions(char* mapName){
 		if(e.type == SDL_QUIT) {
 			askedForQuit = true;
 		}
+		else if(e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
+			switch(e.key.keysym.sym){
+			case 'q' : 
+			case SDLK_ESCAPE : 
+			askedForQuit = true;
+			break;
+			default : break;
+			}
+		}
+		
 	}
 		
 	return askedForQuit;
