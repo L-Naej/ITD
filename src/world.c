@@ -14,6 +14,7 @@ World initWorld(const char* pathToItdFile){
 	newWorld.nbTurnsWaiting = 0;
 	newWorld.nbMonstersAlive = 0;//Pas de monstres au départ
 	newWorld.money = 1000;
+	newWorld.paused = false;
 	
 	newWorld.cameraPosition = PointXYZ(0.,0.,0.);
 	newWorld.towersList = createEmptyList();
@@ -56,7 +57,8 @@ bool worldNewStep(World* world){
 	//Tps écoulé depuis le dernier tour de jeu permet de savoir combien de tour jouer cette fois
 	int turnsRemaining = (now - world->worldTime) / ((int)TIMESTEP_MILLISECONDS);
 	if(turnsRemaining > 0) world->worldTime = SDL_GetTicks();
-	while(i < turnsRemaining && !isGameFinished){
+	//Si le jeu est en pause on ne fait rien !
+	while(i < turnsRemaining && !isGameFinished && !world->paused){
 		isGameFinished = doTurn(world);
 		i++;
 	}

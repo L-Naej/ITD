@@ -29,7 +29,7 @@ typedef struct{
 	char nbMonstersAlive;///Nombre de monstres encore en vie
 	bool isBetweenWaves;///Indique si l'on est entre deux vagues de monstres
 	Uint32 nbTurnsWaiting;///Nombre de tours restant à attendre avant la prochaine vague de monstres
-	
+	bool paused; //Indique si le jeu est en pause ou non
 	Monster monsters[MONSTERS_PER_WAVE];///Tableau des monstres actuellement sur la map.
 	List* towersList;///Liste des tours actuellement sur la map.
 	int money;

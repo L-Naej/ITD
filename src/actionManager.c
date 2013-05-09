@@ -80,6 +80,17 @@ bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* int
 		case SDLK_ESCAPE : 
 		askedForQuit = true;
 		break;
+		case ' ' : 
+			if((*e).type != SDL_KEYDOWN) break;//Sinon met pause et l'enlève dès qu'on retire espace
+			if(world->paused){
+				world->paused = false;
+				interface->currentAction = NO_ACTION;
+			}
+			else{
+				world->paused = true;
+				interface->currentAction = PAUSE_GAME;
+			}
+		break;
 		default : break;
 	}
 	
@@ -147,11 +158,17 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 			break;
 			case CLICK_ON_MAP:
 			break;
+			case PAUSE_GAME : 
 			default :
 			break;
 			}
 		}
-		else interface->currentAction = action;
+		else{
+			//Pour l'instant quand le jeu est en pause on ne peut que quitter (à modifier)
+			if(interface->currentAction != PAUSE_GAME){
+				interface->currentAction = action;
+			}
+		}
 		
 	}
 	
