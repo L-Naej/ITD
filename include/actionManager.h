@@ -2,6 +2,13 @@
 #define ITD_ACTION_MANAGER_H
 #include "utils.h"
 #include <SDL/SDL.h>
+#ifdef MAC
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
 #include "world.h"
 #include "interfaceDrawer.h"
 
@@ -28,6 +35,7 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface);
 bool isMouseOnButton(Button* button, Uint16 x, Uint16 y);
 bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y);
 
-void clicButton (SDL_Event e);
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char* mapName, GLuint casechecked );
+
 
 #endif

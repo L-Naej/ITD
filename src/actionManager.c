@@ -1,5 +1,6 @@
 #include "actionManager.h"
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #ifdef MAC
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
@@ -9,17 +10,50 @@
 #endif
 #include <math.h>
 #include "graphics.h"
+#include "interfaceDrawer.h"
 
-//TODO
-bool handleMenuActions(char* mapName){ 
+bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked){
+	SDL_Event e;
+	while(SDL_PollEvent(&e) && !askedForQuit) {
+		switch(e.type) {
+		 	case SDL_MOUSEBUTTONDOWN:
+         			if (e.button.button==SDL_BUTTON_LEFT){
+					float x = 800.0*(e.button.x/(float)WINDOW_WIDTH)-400.0;
+					float y = 600.0*(e.button.y/(float)WINDOW_HEIGHT)-300.0;
+		printf(" x : %f, y : %f\n",x, y);
+				clicButton (e, playIsPush, x ,y, menuOpen,aideOpen, mapName, casechecked);
+					
+				}
+			break;
+			case SDL_QUIT : askedForQuit = true;
+			break;
+			case SDL_KEYDOWN :
+				switch(e.key.keysym.sym){
+					case 'q' : 
+					case SDLK_ESCAPE : 
+					askedForQuit = true;
+					break;
+					default : break;
+				}
+			break;
+			default : break;
+		}
+	}
+	return askedForQuit;
+
+}
+
+bool handleGameActions(){
 	SDL_Event e;
 	bool askedForQuit = false;
-	while(SDL_PollEvent(&e) && !askedForQuit) {
+	while(SDL_PollEvent(&e)) {
 		/* L'utilisateur ferme la fenêtre : */
 		if(e.type == SDL_QUIT) {
 			askedForQuit = true;
+			break;
 		}
-		else if(e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
+		switch(e.type) {
+		case SDL_KEYDOWN:
 			switch(e.key.keysym.sym){
 			case 'q' : 
 			case SDLK_ESCAPE : 
@@ -270,7 +304,37 @@ void clicButton (SDL_Event e){
 				printf("coucou\n");
 			}
 
-				  
+		  
 	}
+
+}
+
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName, GLuint casechecked){
+
+			if (x >= 60. && x <= 178. && y >= -180. && y <= -60. && *aideOpen ==0){
+				*menuOpen = 1;
+			}
+
+			if (x >= 194. && x <= 363. && y >= -135. && y <= -105. && *menuOpen ==1){
+				strcpy(mapName, "map1");
+
+
+			}
+			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
+				strcpy(mapName, "map2");
+
+			}
+			if (x >= -180. && x <= -60. && y >= -181. && y <= -60.){
+				*aideOpen =1;
+			}
+			if (x >= 190. && x <= 212. && y >= -212. && y <= -194. && *aideOpen==1 ){
+				*aideOpen =0;
+			}
+			if (x >= -61. && x <= 58. && y >= 60. && y <= 178. ){
+				*playIsPush =1;
+			}
+
+				  
+	
 
 }
