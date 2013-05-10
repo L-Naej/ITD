@@ -5,8 +5,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-void handleMenuActions(char* mapName,int* playIsPush,  int* menuOpen, GLuint casechecked);
+void handleMenuActions(char* mapName,int* playIsPush,  int* menuOpen,int* aideOpen, GLuint casechecked);
 bool handleGameActions();
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen, char* mapName, GLuint casechecked );
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char* mapName, GLuint casechecked );
 
 #endif

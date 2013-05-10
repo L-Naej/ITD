@@ -12,7 +12,7 @@
 //TODO
 void drawInterface(){}
 
-void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint Choix,GLuint Play,GLuint Regles, GLuint carteMarine,GLuint carteSpatiale,  int* menuOpen, char* mapName){
+void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint ChoixLegend,GLuint PlayLegend,GLuint ReglesLegend,GLuint regles,GLuint bulle, GLuint carteMarine,GLuint carteSpatiale,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -29,7 +29,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glAlphaFunc(GL_GREATER,0.0f);
 		glColor3ub(0,204,204);
 		glRotatef(180,0,0,1);
-		glScalef(1200,150,1);
+		glScalef(1300,150,1);
 		glTranslatef(0,-1.7,0);
 		drawButton();
 		glPopMatrix();
@@ -38,10 +38,12 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 
+
+
 /*______________Choix____________________________________*/
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, Choix);
+		glBindTexture(GL_TEXTURE_2D, ChoixLegend);
 
 		
 		glPushMatrix();
@@ -63,7 +65,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 /*______________PLay !____________________________________*/
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, Play);
+		glBindTexture(GL_TEXTURE_2D, PlayLegend);
 
 		
 		glPushMatrix();
@@ -79,6 +81,24 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 
+/*______________Règles____________________________________*/
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,ReglesLegend);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(0.,204.,204.);
+		glRotatef(180.,0.,0.,1.);
+		glScalef(400.,100.,1.);
+		glTranslatef(0.3,-0.1,0.);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
 
 /* _________________ Dessin du bouton d'aide_______________*/
 
@@ -141,8 +161,57 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glDisable(GL_ALPHA_TEST);
 
 
+
 		if (*menuOpen == 1){
 			drawMapMenu(carteMarine,carteSpatiale,casevide,casechecked, mapName);
+		}
+
+		if (*aideOpen == 1){
+		/*______________Règles____________________________________*/
+			glEnable(GL_ALPHA_TEST);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, regles);
+
+		
+			glPushMatrix();
+			glAlphaFunc(GL_GREATER,0.0f);
+			glColor3ub(255,255,255);
+			glRotatef(180,0,0,1);
+			glScalef(1500,1500,1);
+			glTranslatef(0,0,0);
+			drawButton();
+			glPopMatrix();
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_ALPHA_TEST);
+
+		}
+
+		if (*playIsPush == 1){
+			if (strcmp(mapName,"Not chosen")==0){
+				/*dessin de la bulle */
+				glEnable(GL_ALPHA_TEST);
+				glEnable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, bulle);
+
+		
+				glPushMatrix();
+				glAlphaFunc(GL_GREATER,0.0f);
+				glColor3ub(255,255,255);
+				glRotatef(180,0,0,1);
+				glScalef(700,700,1);
+				glTranslatef(-0.2,0.15,0);
+				drawButton();
+				glPopMatrix();
+
+				glBindTexture(GL_TEXTURE_2D, 0);
+				glDisable(GL_TEXTURE_2D);
+				glDisable(GL_ALPHA_TEST);
+			}
+			else{
+				*playIsPush =2;
+			}
 		}
 
 }

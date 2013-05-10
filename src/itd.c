@@ -68,6 +68,7 @@ int main(int argc,  char* argv[]) {
 	font2 = strcat(font2,"font/lighthouse.ttf");
 
 	int menuOpen = 0;
+	int aideOpen = 0;
 
 
 	char nomcarte1[13]="carte marine";
@@ -84,15 +85,16 @@ int main(int argc,  char* argv[]) {
 
 	char choix[18]="Choisir une carte";
 	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
-	GLuint Choix = makeTextureFromSurface (choix_surface);
+	GLuint ChoixLegend = makeTextureFromSurface (choix_surface);
 
-	char aide[15]="Besoin d'aide?";
+	char aide[16]="Lire les regles";
+	printf(" %s\n",aide);
 	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
-	GLuint Aide = makeTextureFromSurface (aide_surface);
+	GLuint ReglesLegend = makeTextureFromSurface (aide_surface);
 
 	char playLegend[7]="Play !";
 	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
-	GLuint Play = makeTextureFromSurface (play_surface);
+	GLuint PlayLegend = makeTextureFromSurface (play_surface);
 
 
 
@@ -101,6 +103,8 @@ int main(int argc,  char* argv[]) {
 	GLuint playButton = makeTextureFromFile("images/monstreplay.png");
 	GLuint casechecked = makeTextureFromFile("images/casechecked.png");
 	GLuint casevide = makeTextureFromFile("images/casevide.png");
+	GLuint regles = makeTextureFromFile("images/regles.png");
+	GLuint bulle = makeTextureFromFile("images/bulle.png");
 
 
 
@@ -111,7 +115,7 @@ int main(int argc,  char* argv[]) {
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */		
-		drawMenu(helpButton,mapButton,playButton,casevide,casechecked,Bienvenue,Choix,Aide,Play,MapChoice1,MapChoice2,&menuOpen,mapName);
+		drawMenu(helpButton,mapButton,playButton,casevide,casechecked,Bienvenue,ChoixLegend,PlayLegend,ReglesLegend,regles,bulle,MapChoice1,MapChoice2,&menuOpen,&aideOpen,&playIsPush,mapName);
 
 		TTF_CloseFont(police);
 
@@ -120,9 +124,9 @@ int main(int argc,  char* argv[]) {
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		handleMenuActions(mapName,&playIsPush, &menuOpen,casechecked);
+		handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen, casechecked);
 
-		if(playIsPush == 1) play = true;
+		if(playIsPush == 2) play = true;
 		
 		/* Calcul du temps écoulé */
 		Uint32 elapsedTime = SDL_GetTicks() - startTime;

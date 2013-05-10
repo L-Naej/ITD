@@ -12,7 +12,7 @@
 #include "graphics.h"
 #include "interfaceDrawer.h"
 
-void handleMenuActions(char* mapName,int* playIsPush, int* menuOpen, GLuint casechecked){
+void handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked){
 	SDL_Event e;
 	while(SDL_PollEvent(&e)) {
 		switch(e.type) {
@@ -21,7 +21,7 @@ void handleMenuActions(char* mapName,int* playIsPush, int* menuOpen, GLuint case
 					float x = 800.0*(e.button.x/(float)WINDOW_WIDTH)-400.0;
 					float y = 600.0*(e.button.y/(float)WINDOW_HEIGHT)-300.0;
 		printf(" x : %f, y : %f\n",x, y);
-				clicButton (e, playIsPush, x ,y, menuOpen, mapName, casechecked);
+				clicButton (e, playIsPush, x ,y, menuOpen,aideOpen, mapName, casechecked);
 					
 				}
 			break;
@@ -57,9 +57,9 @@ bool handleGameActions(){
 	return askedForQuit;
 }
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,char* mapName, GLuint casechecked){
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName, GLuint casechecked){
 
-			if (x >= 60. && x <= 178. && y >= -180. && y <= -60.){
+			if (x >= 60. && x <= 178. && y >= -180. && y <= -60. && *aideOpen ==0){
 				*menuOpen = 1;
 			}
 
@@ -71,6 +71,15 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,ch
 			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
 				strcpy(mapName, "map2");
 
+			}
+			if (x >= -180. && x <= -60. && y >= -181. && y <= -60.){
+				*aideOpen =1;
+			}
+			if (x >= 190. && x <= 212. && y >= -212. && y <= -194. && *aideOpen==1 ){
+				*aideOpen =0;
+			}
+			if (x >= -61. && x <= 58. && y >= 60. && y <= 178. ){
+				*playIsPush =1;
 			}
 
 				  
