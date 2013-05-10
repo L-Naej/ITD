@@ -148,6 +148,8 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	interface.moneyPosition.y = interface.moneyPosition.y - interface.moneyHeight / 2.0;
 	interface.moneyPosition.x = interface.moneyPosition.x + interface.moneyWidth / 2.0;
 	
+	interface.infoPosition.z = interface.position.z;
+	
 	//Création de la texture affichant le message "Pause"
 	SDL_Color colorPause = {255,0,0};
 	SDL_Surface* pauseSurface = TTF_RenderText_Blended(police, "PAUSE", colorPause);
@@ -203,8 +205,27 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Button* btnHybrid = createButton(PUT_HYBRID, PointXYZ(buttonStart.x + xStep*3,  buttonStart.y - yStep*3, 0.0), buttonWidth, buttonHeight);
 	Button* btnQuit = createButton(QUIT_GAME, PointXYZ(buttonStart.x + xStep*4,  buttonStart.y - yStep*4, 0.0), buttonWidth, buttonHeight);
 	
-	interface.infoPosition.x = buttonStart.x + xStep * 5 +buttonWidth / 2.0 ;
-	interface.infoPosition.y = buttonStart.y - yStep * 5;
+	if(interface.width > interface.height){
+		Point3D droiteInterface;
+		droiteInterface.x = interface.position.x + interface.width / 2.0;
+		droiteInterface.y = interface.position.y;
+		Point3D droiteBouton;
+		droiteBouton.x = btnQuit->position.x + buttonWidth / 2.0;
+		droiteBouton.y = btnQuit->position.y;
+		interface.infoPosition.y = interface.position.y;
+		interface.infoPosition.x = droiteInterface.x - fabs(droiteInterface.x - droiteBouton.x) /2.0;
+	}
+	else{
+		Point3D basInterface;
+		basInterface.x = interface.position.x;
+		basInterface.y = interface.position.y - interface.height / 2.0;
+		Point3D basBouton;
+		basBouton.x = interface.position.x;
+		basBouton.y = btnQuit->position.y - buttonHeight / 2.0;
+		interface.infoPosition.y = basInterface.y + fabs(basInterface.y - basBouton.y) / 2.0;
+		interface.infoPosition.x = interface.position.x;
+	}
+
 	insertBottomCell(lstButtons, btnLaser);
 	insertBottomCell(lstButtons, btnGun);
 	insertBottomCell(lstButtons, btnRocket);
@@ -223,13 +244,10 @@ void drawInterface(Interface* interface){
 	glLoadIdentity();
 	//Dessin du fond de l'interface
 	glColor3ub(0,0,0);
-	
 	glPushMatrix();
 	glTranslatef(interface->position.x, interface->position.y, interface->position.z);
-	
 	glScalef(interface->width, interface->height, 1.0);
 	drawQuad();
-	
 	glPopMatrix();
 	
 	//Dessin du texte argent
@@ -306,6 +324,7 @@ void drawInterface(Interface* interface){
 		glPopMatrix();
 		
 	}
+	
 	if(drawUnderMouse){
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
@@ -374,21 +393,16 @@ void updateMoneyTexture(Interface* interface, int money){
 void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range){
 	
 	char* phrases [3];
-	
+	int phraseLength = 30;
 	int nbPhrases = 3, alignement = 0, i = 0;
-	phrases[0] = (char*) calloc(10,sizeof(char));
-	phrases[1] = (char*) calloc(10,sizeof(char));
-	phrases[2] = (char*) calloc(10,sizeof(char));
-	sprintf(phrases[0], "P:%4d", power);
-	sprintf(phrases[1], "Rt:%4d", rate);
-	sprintf(phrases[2], "Rg:%4d", range);
+	phrases[0] = (char*) calloc(phraseLength,sizeof(char));
+	phrases[1] = (char*) calloc(phraseLength,sizeof(char));
+	phrases[2] = (char*) calloc(phraseLength,sizeof(char));
+	sprintf(phrases[0], "Power:%4d", power);
+	sprintf(phrases[1], "Rate:%4d", rate);
+	sprintf(phrases[2], "Range:%4d", range);
 	
-	if(interface->width > interface->height){
-		alignement = 0;
-	}
-	else{
-		alignement = 1;
-	}
+	alignement = 1;
 	
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
@@ -396,36 +410,28 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 		exit(EXIT_FAILURE);
 	}
 	TTF_Font* police = NULL;
-	police = TTF_OpenFont("font/Champagne.ttf", 45);
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
 	SDL_Color color = {255,255,255};
 	
 	SDL_Surface* surfaces[4];
 	surfaces[0] = TTF_RenderText_Blended(police, name, color);
-	//surfaces[0] = IMG_Load("images/monster1.png");
+
 	for(i = 0; i < nbPhrases; ++i){
 		surfaces[i+1] = TTF_RenderText_Blended(police, phrases[i], color);
 	}
 	int width, height;
 	glDeleteTextures(1, &(GAME_TEXTURES_ID.INFO_PANEL_ID));
 	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurfaces(surfaces, 4, alignement, &width, &height);
-	//char text[50];
-	//sprintf(text, "P :%4d Rt :%4d Rg :%4d", power, rate, range);
-	//SDL_Surface* infoSurface = TTF_RenderText_Blended(police, text, color);//PrintStringsOnSurface(police, phrases, nbPhrases, color);
-	//updateTextureFromSurface(GAME_TEXTURES_ID.INFO_PANEL_ID, infoSurface);
 	
-	interface->infoPosition.y = interface->position.y - 100;
-	printf("w %d, h%d\n", width, height);
 	interface->infoHeight = height;
 	interface->infoWidth = width;
 	
 	//gestion basique de la taille du texte
 	if(interface->width > interface->height)
-		interface->infoHeight = interface->infoHeight > interface->height ? interface->height : interface->infoHeight;
+		interface->infoHeight = interface->infoHeight > interface->height ? interface->height * 0.9 : interface->infoHeight;
 	else{
-		interface->infoWidth = interface->infoWidth > interface->width ? interface->width : interface->infoWidth;
+		interface->infoWidth = interface->infoWidth > interface->width ? interface->width * 0.9 : interface->infoWidth;
 	}
-	
-	//SDL_FreeSurface(infoSurface);
 	
 	for(i = 0; i < 4; ++i){
 		SDL_FreeSurface(surfaces[i]);

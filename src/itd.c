@@ -91,9 +91,9 @@ int main(int argc,  char* argv[]) {
 	bool gameFinished = false;
 	initGameGraphics(world.map.image);
 	//Initialisation interface
-	float width = .20;//10% de largeur
+	float width = .15;//10% de largeur
 	float height = 1.; //Toute la hauteur
-	float positionX = 0.80; //A 90% de la largeur
+	float positionX = 0.85; //A 90% de la largeur
 	float positionY = .0; //A 100% de la hauter
 	Interface interface = initGameInterface(width, height, positionX, positionY);
 
