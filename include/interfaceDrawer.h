@@ -7,8 +7,9 @@ void drawMenu();
 void drawButton(void);
 void drawCarre(void);
 
-SDL_Surface* drawMapMenu(TTF_Font*);
-void drawMenu(GLuint helpButton,GLuint MapMenu,GLuint mapButton);
+SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
+void drawMenu(GLuint ,GLuint,GLuint ,GLuint , GLuint,GLuint,GLuint,GLuint,GLuint,GLuint,GLuint, GLuint,GLuint, int*,int*,int*, char*);
+void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide, GLuint casechecked, char* mapName);
 
 
 #endif
