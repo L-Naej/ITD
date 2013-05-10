@@ -43,7 +43,7 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 	if(image == NULL) return -1;
 	GLuint textureId;
 	GLenum format;
-
+	glEnable(GL_TEXTURE_2D);	
 	glGenTextures(1,&textureId);
 
 	glBindTexture(GL_TEXTURE_2D,textureId);
@@ -73,7 +73,7 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+	glDisable(GL_TEXTURE_2D);	
 	return textureId;
 }
 
@@ -97,9 +97,79 @@ void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
 		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
 		break;
 	}
+	glEnable(GL_TEXTURE_2D);	
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);	
+}
+
+GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int alignement, int*width, int* height){
+	if(surfaces == NULL || nbSurfaces <= 0 || width == NULL || height == NULL) return 0;
+	int i = 0;
+	int HORIZONTAL = 0, VERTICAL = 1;
+	int totalWidth = 0, totalHeight = 0, tmp = 0;
+	GLuint textureId;
+
+	
+	//On calcule la taille globale de la texture
+	for(i = 0; i < nbSurfaces; ++i){
+		if(alignement == HORIZONTAL){
+			totalWidth += surfaces[i]->w;
+			tmp = surfaces[i]->h;
+			if(totalHeight < tmp) totalHeight = tmp;
+		}
+		else if(alignement == VERTICAL){
+			totalHeight += surfaces[i]->h;
+			tmp = surfaces[i]->w;
+			if(totalWidth < tmp) totalWidth = tmp;
+		}
+	}
+	
+	glEnable(GL_TEXTURE_2D);	
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	//On créé la texture contenant l'ensemble des surfaces, pour l'instant vide 
+	SDL_Surface* black = SDL_CreateRGBSurface(SDL_HWSURFACE, totalWidth, totalHeight, 32, 0, 0, 0, 0);
+	Uint32 color = SDL_MapRGB(black->format, 0, 0, 0);
+	SDL_FillRect(black, NULL, color);
+	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, black->pixels);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	int xOffset = 0, yOffset = 0;
+	//On ajoute les surfaces à la texture
+	for(i = 0; i < nbSurfaces; ++i){
+	
+		GLenum format;
+		switch(surfaces[i]->format->BytesPerPixel) {
+			case 1:
+			format = GL_RED;
+			break;
+
+			case 3:
+			format = GL_RGB;
+			break;
+
+			case 4:
+			format = GL_RGBA;
+			break;
+
+			default:
+			fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
+			break;
+		}
+		glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, surfaces[i]->w, surfaces[i]->h, format, GL_UNSIGNED_BYTE, surfaces[i]->pixels);
+		printf("printtexture at x=%d y=%d\n", xOffset*i, yOffset*i);
+		if(alignement == HORIZONTAL) xOffset += surfaces[i]->w;
+		else yOffset += surfaces[i]->h;
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+	
+	*width = totalWidth;
+	*height = totalHeight;
+	return textureId;
 }
 
 void drawQuad(){

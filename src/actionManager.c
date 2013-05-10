@@ -136,8 +136,19 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		if(action == CLICK_ON_TOWER) {
 			if(pointedTower == NULL) fprintf(stderr, "Impossible d'obtenir les infos sur la tour sélectionnée.\n");
 			else {
-				updateInfoTexture(interface, pointedTower->power, pointedTower->rate, pointedTower->range);
-				printf("Tower power : %d\n", pointedTower->power);
+				char towerName[20];
+				switch(pointedTower->type){
+					case LASER : sprintf(towerName, "LASER");
+					break;
+					case GUN : sprintf(towerName, "GUN");
+					break;
+					case HYBRID : sprintf(towerName, "HYBRID");
+					break;
+					case ROCKET : sprintf(towerName, "ROCKET");
+					break;
+				}
+					
+				updateInfoTexture(interface, towerName, pointedTower->power, pointedTower->rate, pointedTower->range);
 			}
 		}
 		else if(action == CLICK_ON_MAP){

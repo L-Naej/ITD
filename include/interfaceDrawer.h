@@ -72,7 +72,7 @@ void updateMoneyTexture(Interface* interface, int money);
  * Met à jour la texture affichant les informations sur 
  * une tour.
  */
-void updateInfoTexture(Interface* interface, int power, int rate, int range);
+void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range);
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);

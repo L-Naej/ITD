@@ -371,28 +371,24 @@ void updateMoneyTexture(Interface* interface, int money){
 	TTF_Quit();	
 }
 
-void updateInfoTexture(Interface* interface, int power, int rate, int range){
-	/*
+void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range){
+	
 	char* phrases [3];
 	
-	int nbPhrases;
+	int nbPhrases = 3, alignement = 0, i = 0;
+	phrases[0] = (char*) calloc(10,sizeof(char));
+	phrases[1] = (char*) calloc(10,sizeof(char));
+	phrases[2] = (char*) calloc(10,sizeof(char));
+	sprintf(phrases[0], "P:%4d", power);
+	sprintf(phrases[1], "Rt:%4d", rate);
+	sprintf(phrases[2], "Rg:%4d", range);
+	
 	if(interface->width > interface->height){
-		phrases[0] = (char*) malloc(40*sizeof(char));
-		sprintf(phrases[0], "P:%4d Rt:%4d Rg:%4d", power, rate, range);
-		nbPhrases = 1;
+		alignement = 0;
 	}
 	else{
-		phrases[0] = (char*) malloc(10*sizeof(char));
-		phrases[1] = (char*) malloc(10*sizeof(char));
-		phrases[2] = (char*) malloc(10*sizeof(char));
-		sprintf(phrases[0], "P:%4d", power);
-		sprintf(phrases[1], "Rt:%4d", rate);
-		sprintf(phrases[2], "Rg:%4d", range);
-		nbPhrases = 3;
+		alignement = 1;
 	}
-	*/
-	char text[50];
-	sprintf(text, "P :%4d Rt :%4d Rg :%4d", power, rate, range);
 	
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
@@ -401,14 +397,27 @@ void updateInfoTexture(Interface* interface, int power, int rate, int range){
 	}
 	TTF_Font* police = NULL;
 	police = TTF_OpenFont("font/Champagne.ttf", 45);
+	SDL_Color color = {255,255,255};
 	
-	//Création de l'espace pour dessiner l'argent restant
-	SDL_Color color = {255,255,255};	
+	SDL_Surface* surfaces[4];
+	surfaces[0] = TTF_RenderText_Blended(police, name, color);
+	//surfaces[0] = IMG_Load("images/monster1.png");
+	for(i = 0; i < nbPhrases; ++i){
+		surfaces[i+1] = TTF_RenderText_Blended(police, phrases[i], color);
+	}
+	int width, height;
+	glDeleteTextures(1, &(GAME_TEXTURES_ID.INFO_PANEL_ID));
+	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurfaces(surfaces, 4, alignement, &width, &height);
+	//char text[50];
+	//sprintf(text, "P :%4d Rt :%4d Rg :%4d", power, rate, range);
+	//SDL_Surface* infoSurface = TTF_RenderText_Blended(police, text, color);//PrintStringsOnSurface(police, phrases, nbPhrases, color);
+	//updateTextureFromSurface(GAME_TEXTURES_ID.INFO_PANEL_ID, infoSurface);
 	
-	SDL_Surface* infoSurface = TTF_RenderText_Blended(police, text, color);//PrintStringsOnSurface(police, phrases, nbPhrases, color);
+	interface->infoPosition.y = interface->position.y - 100;
+	printf("w %d, h%d\n", width, height);
+	interface->infoHeight = height;
+	interface->infoWidth = width;
 	
-	
-	updateTextureFromSurface(GAME_TEXTURES_ID.INFO_PANEL_ID, infoSurface);
 	//gestion basique de la taille du texte
 	if(interface->width > interface->height)
 		interface->infoHeight = interface->infoHeight > interface->height ? interface->height : interface->infoHeight;
@@ -416,7 +425,12 @@ void updateInfoTexture(Interface* interface, int power, int rate, int range){
 		interface->infoWidth = interface->infoWidth > interface->width ? interface->width : interface->infoWidth;
 	}
 	
-	SDL_FreeSurface(infoSurface);
+	//SDL_FreeSurface(infoSurface);
+	
+	for(i = 0; i < 4; ++i){
+		SDL_FreeSurface(surfaces[i]);
+	}
+	
 	TTF_CloseFont(police);
 	TTF_Quit();	
 }

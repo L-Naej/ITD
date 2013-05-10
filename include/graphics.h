@@ -88,6 +88,15 @@ GLuint makeTextureFromSurface(const SDL_Surface* surface);
 void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface);
 
 /**
+ * Créé une texture à partir de plusieurs surfaces. Ces surfaces seront alignées en
+ * fonction du paramètre "alignement".
+ * 0 => HORIZONTAL
+ * 1 => VERTICAL
+ * Retourne l'id de la texture générée ainsi que sa largeur et sa hauteur.
+ */
+GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int alignement, int* width, int* height);
+
+/**
  * Dessine un GL_QUAD unitaire.
  **/
 void drawQuad();
