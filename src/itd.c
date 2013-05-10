@@ -47,9 +47,6 @@ int main(int argc,  char* argv[]) {
 	argv[0][taille-7] = 0;
 	rootPath = argv[0];
 
-	//Surtout à appeler APRES avoir initialisé la SDL
-	World world = initWorld("map/map1.itd");
-
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
 	bool play = false;//Pour debug, à remettre à false pour de vrai
@@ -100,8 +97,8 @@ int main(int argc,  char* argv[]) {
 	GLuint casevide = makeTextureFromFile("images/casevide.png");
 	GLuint regles = makeTextureFromFile("images/regles.png");
 	GLuint bulle = makeTextureFromFile("images/bulle.png");
-	
-	while(play == false) {
+	bool askedForQuit = false;
+	while(play == false && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
@@ -115,7 +112,7 @@ int main(int argc,  char* argv[]) {
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen, casechecked);
+		askedForQuit = handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen, casechecked);
 
 		if(playIsPush == 2) play = true;
 		
@@ -126,22 +123,27 @@ int main(int argc,  char* argv[]) {
 			SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
 		}
 
-
-
 	}
 	
 
 /*-------------- GESTION DU JEU --------------------*/
 	//TODO
 	bool gameFinished = false;
+	
+	//Surtout à appeler APRES avoir initialisé la SDL
+	char mapPath[50] = "map/";
+	strcat(mapPath, mapName);
+	World world = initWorld(mapPath);
 	initGameGraphics(world.map.image);
-	//Initialisation interface
+	
 	float width = .15;//10% de largeur
 	float height = 1.; //Toute la hauteur
 	float positionX = 0.85; //A 90% de la largeur
 	float positionY = .0; //A 100% de la hauter
+	//Initialisation interface
 	Interface interface = initGameInterface(width, height, positionX, positionY);
-
+	
+	startWorld(&world);
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();

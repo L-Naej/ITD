@@ -45,6 +45,11 @@ typedef struct{
 World initWorld(const char* pathToItdFile);
 
 /**
+ * Initialise le timer du monde qui gère les tours de jeu.
+ */
+void startWorld(World* world);
+
+/**
  * Fait avancer le monde d'un ou plusieurs pas de temps.
  * Appelée à chaque nouveau tour de boucle de 
  * jeu. Renvoie si le jeu est terminé ou non.

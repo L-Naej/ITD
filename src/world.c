@@ -24,9 +24,18 @@ World initWorld(const char* pathToItdFile){
 	}
 	
 	newWorld.map = initMap();
-	loadMap(&(newWorld.map), pathToItdFile);
+	bool loadSucceed = loadMap(&(newWorld.map), pathToItdFile);
+	if(!loadSucceed){
+		fprintf(stderr, "Erreur fatale : impossible de charger la carte %s.\n", pathToItdFile);
+		exit(EXIT_FAILURE);
+	}
 	
 	return newWorld;
+}
+
+void startWorld(World* world){
+	if(world == NULL) return;
+	world->worldTime = SDL_GetTicks();
 }
 
 void startNewMonsterWave(World* world){
@@ -62,7 +71,7 @@ bool worldNewStep(World* world){
 		isGameFinished = doTurn(world);
 		i++;
 	}
-
+	
 	return isGameFinished;
 }
 
@@ -127,12 +136,14 @@ bool doTurn(World* world){
 	while(i < MONSTERS_PER_WAVE && !isGameFinished){
 		isGameFinished = arePointsEquals(world->monsters[i].position, endPoint);
 		if(world->monsters[i].life > 0) cptMonstersAlive++;
+		if(isGameFinished) printf("Un monstre a atteint la sortie, vous avez perdu !\n");
 		++i;
 	}
 	world->nbMonstersAlive = cptMonstersAlive;
 	if(world->nbMonstersAlive <= 0){
 		if(world->currentMonstersWave >= NB_TOTAL_WAVES){
 			isGameFinished = true;
+			printf("Vous avez tué tous les monstres, vous avez gagné !\n");
 		}
 		world->isBetweenWaves = true;
 	}
@@ -155,6 +166,7 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+			printf("Le monstre : \"Vers une nouvelle destination !\"\n");
 		}
 		
 	}

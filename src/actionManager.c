@@ -14,6 +14,7 @@
 
 bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked){
 	SDL_Event e;
+	bool askedForQuit = false;
 	while(SDL_PollEvent(&e) && !askedForQuit) {
 		switch(e.type) {
 		 	case SDL_MOUSEBUTTONDOWN:
@@ -39,32 +40,6 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 			default : break;
 		}
 	}
-	return askedForQuit;
-
-}
-
-bool handleGameActions(){
-	SDL_Event e;
-	bool askedForQuit = false;
-	while(SDL_PollEvent(&e)) {
-		/* L'utilisateur ferme la fenêtre : */
-		if(e.type == SDL_QUIT) {
-			askedForQuit = true;
-			break;
-		}
-		switch(e.type) {
-		case SDL_KEYDOWN:
-			switch(e.key.keysym.sym){
-			case 'q' : 
-			case SDLK_ESCAPE : 
-			askedForQuit = true;
-			break;
-			default : break;
-			}
-		}
-		
-	}
-		
 	return askedForQuit;
 }
 
@@ -294,21 +269,6 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	return inside;
 }
 
-void clicButton (SDL_Event e){
-	if (e.button.button==SDL_BUTTON_LEFT){
-		/*printf(" x : %f, y : %f\n",(8.0*(e.button.x/(float)WINDOW_WIDTH)-4.0),(8.0*(e.button.y/(float)WINDOW_WIDTH)-4.0));*/
-			if ((8.0*(e.button.x/(float)WINDOW_WIDTH)-4.0) >= -0.6 && 
-			(8.0*(e.button.x/(float)WINDOW_WIDTH)-4.0) <= 0.6 && 
-			(8.0*(e.button.y/(float)WINDOW_WIDTH)-4.0) >= -0.6 && 
-			(8.0*(e.button.y/(float)WINDOW_WIDTH)-4.0) <= 0.6){
-				printf("coucou\n");
-			}
-
-		  
-	}
-
-}
-
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName, GLuint casechecked){
 
 			if (x >= 60. && x <= 178. && y >= -180. && y <= -60. && *aideOpen ==0){
@@ -316,12 +276,12 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 			}
 
 			if (x >= 194. && x <= 363. && y >= -135. && y <= -105. && *menuOpen ==1){
-				strcpy(mapName, "map1");
+				strcpy(mapName, "map1.itd");
 
 
 			}
 			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
-				strcpy(mapName, "map2");
+				strcpy(mapName, "map2.itd");
 
 			}
 			if (x >= -180. && x <= -60. && y >= -181. && y <= -60.){

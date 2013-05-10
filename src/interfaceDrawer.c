@@ -58,7 +58,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180,0,0,1);
 		glScalef(1300,150,1);
 		glTranslatef(0,-1.7,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -79,7 +79,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180,0,0,1);
 		glScalef(400,100,1);
 		glTranslatef(-0.4,-0.1,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -101,7 +101,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180.,0.,0.,1.);
 		glScalef(300.,100.,1.);
 		glTranslatef(0.,2.,0.);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -120,7 +120,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180.,0.,0.,1.);
 		glScalef(400.,100.,1.);
 		glTranslatef(0.3,-0.1,0.);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -140,7 +140,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180,0,0,1);
 		glScalef(400,400,1);
 		glTranslatef(0.3,-0.3,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -160,7 +160,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180,0,0,1);
 		glScalef(400,400,1);
 		glTranslatef(-0.3,-0.3,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -180,7 +180,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 		glRotatef(180,0,0,1);
 		glScalef(400,400,1);
 		glTranslatef(0,0.3,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -206,7 +206,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 			glRotatef(180,0,0,1);
 			glScalef(1500,1500,1);
 			glTranslatef(0,0,0);
-			drawButton();
+			drawButtonMenu();
 			glPopMatrix();
 
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -229,7 +229,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 				glRotatef(180,0,0,1);
 				glScalef(700,700,1);
 				glTranslatef(-0.2,0.15,0);
-				drawButton();
+				drawButtonMenu();
 				glPopMatrix();
 
 				glBindTexture(GL_TEXTURE_2D, 0);
@@ -257,7 +257,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(300,100,1);
 		glTranslatef(-0.8,-1.2,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -276,7 +276,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(400,100,1);
 		glTranslatef(-0.65,-0.8,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -296,7 +296,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(100,100,1);
 		glTranslatef(-3.5,-1.2,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -316,7 +316,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(100,100,1);
 		glTranslatef(-3.7,-0.8,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -325,7 +325,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 
 /* _________________ check de la case 1_______________*/
 
-		if (strcmp(mapName,"map1")==0){
+		if (strcmp(mapName,"map1.itd")==0){
 
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
@@ -338,7 +338,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(100,100,1);
 		glTranslatef(-3.5,-1.2,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -348,7 +348,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 
 /* _________________ check de la case 2_______________*/
 
-		if (strcmp(mapName,"map2")==0){
+		if (strcmp(mapName,"map2.itd")==0){
 
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
@@ -361,7 +361,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glRotatef(180,0,0,1);
 		glScalef(100,100,1);
 		glTranslatef(-3.7,-0.8,0);
-		drawButton();
+		drawButtonMenu();
 		glPopMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -370,24 +370,6 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 	}
 
 
-}
-
-
-
-
-
-
-void drawButton(){
-	glBegin(GL_QUADS);
- 	glTexCoord2f(1, 0);
-    	glVertex2f(-0.15,-0.15);
- 	glTexCoord2f(1, 1);
-    	glVertex2f(-0.15,0.15);
- 	glTexCoord2f(0, 1);
-    	glVertex2f(0.15,0.15);
- 	glTexCoord2f(0, 0);
-    	glVertex2f(0.15,-0.15);
-    glEnd();
 }
 
 void drawCarre(){

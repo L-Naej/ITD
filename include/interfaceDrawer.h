@@ -78,11 +78,8 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
-
+void drawButtonMenu();
 void drawButton(const Button* button);
-
-
-SDL_Surface* drawMapMenu(TTF_Font*);
-
+void drawCarre();
 
 #endif
