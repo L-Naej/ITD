@@ -12,7 +12,7 @@
 //TODO
 void drawInterface(){}
 
-void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint Choix,GLuint Aide,GLuint carteMarine,GLuint carteSpatiale,  int* menuOpen, char* mapName){
+void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint Choix,GLuint Play,GLuint Regles, GLuint carteMarine,GLuint carteSpatiale,  int* menuOpen, char* mapName){
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -29,8 +29,8 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechec
 		glAlphaFunc(GL_GREATER,0.0f);
 		glColor3ub(0,204,204);
 		glRotatef(180,0,0,1);
-		glScalef(1000,100,1);
-		glTranslatef(0,-2.3,0);
+		glScalef(1200,150,1);
+		glTranslatef(0,-1.7,0);
 		drawButton();
 		glPopMatrix();
 
@@ -57,18 +57,21 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechec
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 	
-/*______________Aide____________________________________*/
+
+
+
+/*______________PLay !____________________________________*/
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, Aide);
+		glBindTexture(GL_TEXTURE_2D, Play);
 
 		
 		glPushMatrix();
 		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(0,204,204);
-		glRotatef(180,0,0,1);
-		glScalef(400,100,1);
-		glTranslatef(0.4,-0.1,0);
+		glColor3ub(0.,204.,204.);
+		glRotatef(180.,0.,0.,1.);
+		glScalef(300.,100.,1.);
+		glTranslatef(0.,2.,0.);
 		drawButton();
 		glPopMatrix();
 
@@ -88,8 +91,8 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechec
 		glAlphaFunc(GL_GREATER,0.0f);
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
-		glScalef(300,300,1);
-		glTranslatef(0.5,-0.3,0);
+		glScalef(400,400,1);
+		glTranslatef(0.3,-0.3,0);
 		drawButton();
 		glPopMatrix();
 
@@ -108,8 +111,8 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechec
 		glAlphaFunc(GL_GREATER,0.0f);
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
-		glScalef(300,300,1);
-		glTranslatef(-0.5,-0.3,0);
+		glScalef(400,400,1);
+		glTranslatef(-0.3,-0.3,0);
 		drawButton();
 		glPopMatrix();
 
@@ -117,6 +120,25 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint casevide,GLuint casechec
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 
+/* _________________ Dessin du bouton play_______________*/
+
+		glEnable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, playButton);
+
+		
+		glPushMatrix();
+		glAlphaFunc(GL_GREATER,0.0f);
+		glColor3ub(255,255,255);
+		glRotatef(180,0,0,1);
+		glScalef(400,400,1);
+		glTranslatef(0,0.3,0);
+		drawButton();
+		glPopMatrix();
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
 
 
 		if (*menuOpen == 1){
@@ -138,7 +160,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
 		glScalef(300,100,1);
-		glTranslatef(-0.9,-1.2,0);
+		glTranslatef(-0.8,-1.2,0);
 		drawButton();
 		glPopMatrix();
 
@@ -157,7 +179,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
 		glScalef(400,100,1);
-		glTranslatef(-0.7,-0.8,0);
+		glTranslatef(-0.65,-0.8,0);
 		drawButton();
 		glPopMatrix();
 
@@ -282,13 +304,11 @@ void drawCarre(){
 }
 
 
-SDL_Surface* loadFont(TTF_Font* police, char* str, char* rootPath){
+SDL_Surface* loadFont(TTF_Font* police, char* str, char* font, int taille){
 	
-	char* font = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
-	strcpy(font,rootPath);
-	font = strcat(font,"font/Champagne.ttf");
+	
 
-	police = TTF_OpenFont(font,100);
+	police = TTF_OpenFont(font,taille);
 
 	SDL_Color blanc = {255, 255, 255};
 

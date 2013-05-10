@@ -58,32 +58,47 @@ int main(int argc,  char* argv[]) {
 	bool play = false;//Pour debug, à remettre à false pour de vrai
 	char mapName[30]= "Not chosen";
 	int playIsPush = 0;
+
 	TTF_Font* police = NULL;
+	char* font1 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
+	strcpy(font1,rootPath);
+	font1 = strcat(font1,"font/Champagne.ttf");
+	char* font2 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
+	strcpy(font2,rootPath);
+	font2 = strcat(font2,"font/lighthouse.ttf");
+
 	int menuOpen = 0;
 
 
 	char nomcarte1[13]="carte marine";
-	SDL_Surface* text1=loadFont(police,nomcarte1,rootPath);
+	SDL_Surface* text1=loadFont(police,nomcarte1,font1,100);
 	GLuint MapChoice1 = makeTextureFromSurface (text1);
 
 	char nomcarte2[15]="carte spatiale";
-	SDL_Surface* text2=loadFont(police,nomcarte2,rootPath);
+	SDL_Surface* text2=loadFont(police,nomcarte2,font1,100);
 	GLuint MapChoice2 = makeTextureFromSurface (text2); 
 
 	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
-	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,rootPath);
+	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
 	GLuint Bienvenue = makeTextureFromSurface (bienvenue_surface);
 
 	char choix[18]="Choisir une carte";
-	SDL_Surface* choix_surface=loadFont(police,choix,rootPath);
+	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
 	GLuint Choix = makeTextureFromSurface (choix_surface);
 
 	char aide[15]="Besoin d'aide?";
-	SDL_Surface* aide_surface=loadFont(police,aide,rootPath);
+	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
 	GLuint Aide = makeTextureFromSurface (aide_surface);
+
+	char playLegend[7]="Play !";
+	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
+	GLuint Play = makeTextureFromSurface (play_surface);
+
+
 
 	GLuint helpButton = makeTextureFromFile("images/monstrehelp.png");
 	GLuint mapButton = makeTextureFromFile("images/monstrecarte.png");
+	GLuint playButton = makeTextureFromFile("images/monstreplay.png");
 	GLuint casechecked = makeTextureFromFile("images/casechecked.png");
 	GLuint casevide = makeTextureFromFile("images/casevide.png");
 
@@ -91,11 +106,12 @@ int main(int argc,  char* argv[]) {
 
 
 	
-	while(play == true) {
+	while(play == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
-		/* Placer ici le code de dessin du menu */		drawMenu(helpButton,mapButton,casevide,casechecked,Bienvenue,Choix,Aide,MapChoice1,MapChoice2,&menuOpen,mapName);
+		/* Placer ici le code de dessin du menu */		
+		drawMenu(helpButton,mapButton,playButton,casevide,casechecked,Bienvenue,Choix,Aide,Play,MapChoice1,MapChoice2,&menuOpen,mapName);
 
 		TTF_CloseFont(police);
 

@@ -59,16 +59,16 @@ bool handleGameActions(){
 
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,char* mapName, GLuint casechecked){
 
-			if (x >= 103. && x <= 195. && y >= -137. && y <= -46.){
+			if (x >= 60. && x <= 178. && y >= -180. && y <= -60.){
 				*menuOpen = 1;
 			}
 
-			if (x >= 225. && x <= 314. && y >= -135. && y <= -107. && *menuOpen ==1){
+			if (x >= 194. && x <= 363. && y >= -135. && y <= -105. && *menuOpen ==1){
 				strcpy(mapName, "map1");
 
 
 			}
-			if (x >= 220. && x <= 340. && y >= -97. && y <= -66. && *menuOpen ==1){
+			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
 				strcpy(mapName, "map2");
 
 			}
