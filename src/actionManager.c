@@ -21,7 +21,6 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
          			if (e.button.button==SDL_BUTTON_LEFT){
 					float x = 800.0*(e.button.x/(float)WINDOW_WIDTH)-400.0;
 					float y = 600.0*(e.button.y/(float)WINDOW_HEIGHT)-300.0;
-		printf(" x : %f, y : %f\n",x, y);
 				clicButton (e, playIsPush, x ,y, menuOpen,aideOpen, mapName, casechecked);
 					
 				}

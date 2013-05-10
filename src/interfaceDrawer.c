@@ -431,6 +431,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	interface.position.x += interface.width / 2.0;
 	interface.position.y -= + interface.height / 2.0;
 	 
+	dumpPoint(interface.position);
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());

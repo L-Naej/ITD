@@ -54,6 +54,9 @@ void startNewMonsterWave(World* world){
 		world->monsters[i] = createMonster(world->currentMonstersWave, i);
 		world->monsters[i].destination = startPoint;
 		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX)*i));
+		//--- VERY IMPORTANT SINON BUG DE DEPLACEMENT ==> On veut des valeurs entières qui correspondent à un pixel
+		world->monsters[i].position.x = floor(world->monsters[i].position.x);
+		world->monsters[i].position.y = floor(world->monsters[i].position.y);
 	}
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
 }
@@ -166,7 +169,6 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
-			printf("Le monstre : \"Vers une nouvelle destination !\"\n");
 		}
 		
 	}

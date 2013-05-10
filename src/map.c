@@ -242,6 +242,7 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 
 		Point3D* node = (Point3D*)malloc (sizeof(Point3D));		
 		fscanf(file,"%f %f\n",&(node->x),&(node->y));
+		node->z = 0.0;
 		if ((node->x)==0 && (node->y)==0){
 			printf("nombre de coordonnée de noeuds incorrect - error 1- \n");
 			return 0;
@@ -300,7 +301,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerR")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->powerR));
@@ -308,7 +309,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateR")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rateR));
@@ -316,7 +317,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeR")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rangeR));
@@ -324,7 +325,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costR")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->costR));
@@ -334,7 +335,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerL")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->powerL));
@@ -342,7 +343,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateL")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rateL));
@@ -350,7 +351,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeL")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rangeL));
@@ -358,7 +359,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costL")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->costL));
@@ -367,7 +368,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerM")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->powerM));
@@ -375,7 +376,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateM")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rateM));
@@ -391,7 +392,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costM")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->costM));
@@ -401,7 +402,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerH")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->powerH));
@@ -409,7 +410,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateH")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rateH));
@@ -417,7 +418,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeH")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->rangeH));
@@ -425,7 +426,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costH")!= 0){
 			printf("mot-clé'in' incorrect\n");
-			return -1;
+			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
 		fscanf(file,"%d\n",&(map->towerdatas->costH));
@@ -436,6 +437,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 		printf("Carte chargée\n");
 		return true;
 	}
+	return true;
 }
 
 			/* Récupération de la couleur d'un pixel */
