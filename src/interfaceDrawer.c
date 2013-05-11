@@ -39,7 +39,7 @@ void drawButtonMenu(){
     glEnd();
 }
 
-void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint ChoixLegend,GLuint PlayLegend,GLuint ReglesLegend,GLuint regles,GLuint bulle, GLuint carteMarine,GLuint carteSpatiale,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
+void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint ChoixLegend,GLuint PlayLegend,GLuint ReglesLegend,GLuint regles,GLuint bulle, GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -190,7 +190,7 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 
 
 		if (*menuOpen == 1){
-			drawMapMenu(carteMarine,carteSpatiale,casevide,casechecked, mapName);
+			drawMapMenu(cartes,nb_cartes,casevide,casechecked, mapName);
 		}
 
 		if (*aideOpen == 1){
@@ -243,12 +243,18 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 
 }
 
-void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuint casechecked, char* mapName){
+void drawMapMenu (GLuint* cartes,int nb_cartes, GLuint casevide,GLuint casechecked, char* mapName){
+
+		int i;
+		float x=-0.8;
+		float y=-1.2;
+		for (i=1; i<=nb_cartes;i++){
+
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
 		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, carteMarine);
+		glBindTexture(GL_TEXTURE_2D, cartes[i]);
 
 		
 		glPushMatrix();
@@ -256,7 +262,7 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glColor3ub(255,255,255);
 		glRotatef(180,0,0,1);
 		glScalef(300,100,1);
-		glTranslatef(-0.8,-1.2,0);
+		glTranslatef(x,y,0);
 		drawButtonMenu();
 		glPopMatrix();
 
@@ -264,9 +270,11 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_ALPHA_TEST);
 
+		y+=0.3;
+
 	/*_______________________________________________________*/
 	
-		glEnable(GL_ALPHA_TEST);
+		/*glEnable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, carteSpatiale);
 
@@ -281,7 +289,9 @@ void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide,GLuin
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_ALPHA_TEST);*/
+
+		}
 
 /* _________________ Dessin de la case vide 1_______________*/
 

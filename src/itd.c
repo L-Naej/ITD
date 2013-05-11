@@ -7,11 +7,14 @@
 #include <GL/glu.h>
 #include <SDL/SDL_ttf.h>
 #endif
+
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <dirent.h>
+#include <sys/types.h>
 
 #include "itd.h"
 #include "graphics.h"
@@ -21,7 +24,7 @@
 #include "mapDrawer.h"
 #include "interfaceDrawer.h"
 
-
+#define MAX_LENGHT 30
 
 /**
  * Afficher menu
@@ -49,10 +52,11 @@ int main(int argc,  char* argv[]) {
 
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool play = false;//Pour debug, à remettre à false pour de vrai
+	bool play = false;
 	char mapName[30]= "Not chosen";
-	int playIsPush = 0;
 
+
+	/* chargement des polices */
 	TTF_Font* police = NULL;
 	char* font1 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
 	strcpy(font1,rootPath);
@@ -61,17 +65,57 @@ int main(int argc,  char* argv[]) {
 	strcpy(font2,rootPath);
 	font2 = strcat(font2,"font/lighthouse.ttf");
 
+	int playIsPush = 0;
 	int menuOpen = 0;
 	int aideOpen = 0;
 
+	/* ouverture du répertoire data */
+	char* dataPath = (char*)malloc(sizeof(char)*(strlen(rootPath)+5));
+	strcpy(dataPath,rootPath);
+	dataPath = strcat(dataPath,"data");
+	DIR* dataRep = opendir(dataPath);
+	if (dataRep ==NULL){
+		perror("");
+		exit(1);
+	}
 
-	char nomcarte1[13]="carte marine";
-	SDL_Surface* text1=loadFont(police,nomcarte1,font1,100);
-	GLuint MapChoice1 = makeTextureFromSurface (text1);
+	struct dirent* fichierLu =NULL;
+	
+	int i=1;
+	char* map[4];
 
-	char nomcarte2[15]="carte spatiale";
-	SDL_Surface* text2=loadFont(police,nomcarte2,font1,100);
-	GLuint MapChoice2 = makeTextureFromSurface (text2); 
+	while((fichierLu = readdir(dataRep))!=NULL && i<= 5){
+		if (strcmp(fichierLu->d_name,".")!=0 && strcmp(fichierLu->d_name,"..")!=0){
+
+			if (strlen(fichierLu->d_name)>  MAX_LENGHT)
+				printf("Désolé, le nom de la map dépasse 30 caractères\n");
+			else{
+				map[i]=(char*)malloc(sizeof(char)*strlen(fichierLu->d_name));
+				strcpy(map[i],fichierLu->d_name);
+
+				i++;
+			}
+		}
+	}
+	printf("1 = %s\n",map[1]);
+	printf("2 = %s\n",map[2]);
+	printf("3 = %s\n",map[3]);
+	printf("4 = %s\n",map[4]);
+	printf("5 = %s\n",map[5]);
+	printf("6 = %s\n",map[6]);
+	int nb_cartes = i-1;
+	printf("%d\n",nb_cartes);
+	if (closedir(dataRep)!=0){
+		printf("erreur dans la fermeture du repertoire\n");
+	}
+
+	int j;
+	GLuint MapChoice[nb_cartes];
+	for (j=1;j<=nb_cartes;j++){
+		printf(" %s\n",map[j]);
+		SDL_Surface* text=loadFont(police,map[j],font1,100);
+		MapChoice[j] = makeTextureFromSurface (text);
+	}
 
 	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
 	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
@@ -82,7 +126,6 @@ int main(int argc,  char* argv[]) {
 	GLuint ChoixLegend = makeTextureFromSurface (choix_surface);
 
 	char aide[16]="Lire les regles";
-	printf(" %s\n",aide);
 	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
 	GLuint ReglesLegend = makeTextureFromSurface (aide_surface);
 
@@ -103,7 +146,7 @@ int main(int argc,  char* argv[]) {
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */		
-		drawMenu(helpButton,mapButton,playButton,casevide,casechecked,Bienvenue,ChoixLegend,PlayLegend,ReglesLegend,regles,bulle,MapChoice1,MapChoice2,&menuOpen,&aideOpen,&playIsPush,mapName);
+		drawMenu(helpButton,mapButton,playButton,casevide,casechecked,Bienvenue,ChoixLegend,PlayLegend,ReglesLegend,regles,bulle,MapChoice,nb_cartes,&menuOpen,&aideOpen,&playIsPush,mapName);
 
 		TTF_CloseFont(police);
 
