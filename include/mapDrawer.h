@@ -7,4 +7,5 @@ void drawWorld(const World* world);
 void drawMap(const Map* map);
 void drawMonster(const Monster* monster);
 void drawTowers(List* towersList);
+void drawPath(const Map* map);
 #endif

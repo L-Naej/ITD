@@ -52,6 +52,7 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	
 	Point3D* tmpNode = NULL;
 	bool pointIsNode = false;
+	ListState* state = saveListState(pathNodeList);
 	
 	goToHeadList(pathNodeList);
 	//On cherche le node courant
@@ -69,6 +70,9 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	//Puis on retourne celui qui le suit.
 	//La liste gère toute seule si elle est en fin de liste et ne "dépasse" pas (reste sur le dernier node)
 	tmpNode = (Point3D*) nextData(pathNodeList);
+	
+	restoreListState(state);
+	free(state);
 	//Si on est sur le dernier point on le retourne lui même
 	if(tmpNode == NULL) return currentNode;
 
@@ -78,6 +82,8 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 Point3D getStartPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
 	
+	ListState* state = saveListState(map->pathNodeList);
+	
 	goToHeadList(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) nextData(map->pathNodeList);
 	if(tmpPtr == NULL){
@@ -86,11 +92,14 @@ Point3D getStartPoint(const Map* map){
 	}
 	Point3D startPoint = *tmpPtr;
 	
+	restoreListState(state);
+	free(state);
 	return startPoint;
 }
 
 Point3D getEndPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
+	ListState* state = saveListState(map->pathNodeList);
 	
 	goToBottomCell(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) currentData(map->pathNodeList);
@@ -100,6 +109,8 @@ Point3D getEndPoint(const Map* map){
 	}
 	Point3D endPoint = *tmpPtr;
 	
+	restoreListState(state);
+	free(state);
 	return endPoint;
 }
 

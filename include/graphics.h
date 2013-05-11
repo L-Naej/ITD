@@ -108,6 +108,12 @@ void drawQuad();
 void drawTexturedQuad(GLuint textureId);
 
 /**
+ * Dessine un cercle unitaire.
+ * full = 1 : cercle rempli (disque), sinon cercle vide
+ */
+void drawCircle(int full);
+
+/**
  * Appelée quand la fenêtre est redimensionnée.
  */
 void reshape();

@@ -1,5 +1,7 @@
 #include "graphics.h"
 #include <SDL/SDL_image.h>
+#include <math.h>
+#define CIRCLE_PRECISION 100
 
 //TODO
 void initGameGraphics(const SDL_Surface* map){
@@ -210,6 +212,22 @@ void drawTexturedQuad(GLuint textureId){
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
+}
+
+void drawCircle(int full){
+	float anglePrecision = 2*M_PI / CIRCLE_PRECISION;
+	int i = 0;
+
+	//y = 1 - x²
+	if(full) glBegin(GL_POLYGON);
+	else glBegin(GL_LINE_LOOP);
+	for(i = 0; i < CIRCLE_PRECISION; ++i){
+		glVertex2f(cos(i*anglePrecision), sin(i*anglePrecision));
+		
+	}
+	glEnd();
+	
+
 }
 
 Point3D sdlToOpenGL(Point3D sdlPoint){
