@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "point3D.h"
+#include "vector3D.h"
 #include "list.h"
 
 /* Largeur d'un sprite de monstre en pixels (ca respecte pas trop 
@@ -28,7 +29,9 @@ typedef struct{
 	int speed;
 	
 	Point3D position;
+	Point3D realPosition;
 	Point3D destination;
+	Vector3D direction;
 	
 	//Nombre de tours depuis le dernier mouvement
 	int nbTurnsSinceLastMove;

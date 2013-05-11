@@ -57,6 +57,8 @@ void startNewMonsterWave(World* world){
 		//--- VERY IMPORTANT SINON BUG DE DEPLACEMENT ==> On veut des valeurs entières qui correspondent à un pixel
 		world->monsters[i].position.x = floor(world->monsters[i].position.x);
 		world->monsters[i].position.y = floor(world->monsters[i].position.y);
+		world->monsters[i].direction = Vector(world->monsters[i].position, startPoint);
+		world->monsters[i].realPosition = world->monsters[i].position;
 	}
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
 }
@@ -161,6 +163,7 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 	int i = 0;
 	
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
+		//Inutile de faire bouger un monstre mort !
 		if(monsters[i].life <= 0) continue;
 		monsters[i].nbTurnsSinceLastMove++;
 		
@@ -169,6 +172,7 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+			monsters[i].direction = Vector(monsters[i].position, monsters[i].destination);
 		}
 		
 	}
