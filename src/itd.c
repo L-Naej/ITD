@@ -66,6 +66,8 @@ int main(int argc,  char* argv[]) {
 	//TODO
 	bool gameFinished = false, askedForQuit = false;
 	initGameGraphics(world.map.image);
+	if(canIPutATowerHere(&world, 800, 600)) printf("lalala\n");
+	exit(0);
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();

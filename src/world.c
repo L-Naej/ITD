@@ -66,19 +66,20 @@ bool worldNewStep(World* world){
 //TODO
 bool canIPutATowerHere(World* world, int posX, int posY){
 	int i;
+	Uint32 time = SDL_GetTicks();
+	Point3D position = PointXYZ(posX, posY, 0.);
 	if(world == NULL) return false;
 	for(i=0; i < world->map.nbPixelsConst; i++) {	
-		if (posX == world->map.tabXYConstruct[i].x && posY == world->map.tabXYConstruct[i].y) {		
-			printf("Zone constructible \n");
+		if (arePointsEquals(position, world->map.tabXYConstruct[i])) {
+			time = SDL_GetTicks() - time;		
+			printf("Zone constructible temps de recherche : %d, iteration %d\n", time, i);
 			return true;	
 		}
-		else 
-		{
-			printf("Zone non constructible \n");
-			return false;
-		}
+			
 	}
-	return true;
+	time = SDL_GetTicks() - time;
+	printf("Zone non constructible, temps de recherche : %d \n", time);
+	return false;
 }
 
 /*void addTowerOnMap(World* world, int posX, int posY, TowerType type){
