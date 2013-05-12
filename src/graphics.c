@@ -1,5 +1,7 @@
 #include "graphics.h"
+#include "interfaceDrawer.h"
 #include <SDL/SDL_image.h>
+
 
 //TODO
 void initGameGraphics(const SDL_Surface* map){
@@ -18,6 +20,49 @@ void initGameGraphics(const SDL_Surface* map){
 	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
 	
 	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
+}
+
+void initMenuGraphics(char* font1,char* font2, char* rootPath){
+	
+	TTF_Font* police = NULL;
+	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
+	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
+	MENU_TEXTURES_ID.BIENVENUE = makeTextureFromSurface (bienvenue_surface);
+
+	char choix[18]="Choisir une carte";
+	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
+	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND =  makeTextureFromSurface (choix_surface);
+
+	char aide[16]="Lire les regles";
+	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
+	MENU_TEXTURES_ID.AIDE_LEGEND=makeTextureFromSurface (aide_surface);
+
+	char playLegend[7]="Play !";
+	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
+	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
+
+
+	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
+	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
+	MENU_TEXTURES_ID.CASE_CHECKED = makeTextureFromFile("images/casechecked.png");
+	MENU_TEXTURES_ID.CASE_VIDE = makeTextureFromFile("images/casevide.png");
+	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
+	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
+
+	
+	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName,rootPath);
+
+	int j;
+
+	for (j=1;j<=MENU_TEXTURES_ID.nb_cartes;j++){
+		printf(" %s\n",BUTTON_OF_MENU.tabMapName[j]);
+		SDL_Surface* text=loadFont(police,BUTTON_OF_MENU.tabMapName[j],font1,100);
+		MENU_TEXTURES_ID.MAPS[j] = makeTextureFromSurface (text);
+	}
+	
+			TTF_CloseFont(police);
+
 }
 
 GLuint makeTextureFromFile(const char* imagePath){
@@ -188,8 +233,10 @@ void drawQuad(){
 }
 
 void drawTexturedQuad(GLuint textureId){
+	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureId);
+	glAlphaFunc(GL_GREATER,0.0f);
 	
 	glBegin(GL_QUADS);
 	
@@ -210,6 +257,7 @@ void drawTexturedQuad(GLuint textureId){
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
 }
 
 Point3D sdlToOpenGL(Point3D sdlPoint){

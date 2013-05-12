@@ -35,7 +35,7 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface);
 bool isMouseOnButton(Button* button, Uint16 x, Uint16 y);
 bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y);
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char* mapName, GLuint casechecked );
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char* mapName);
 
 
 #endif

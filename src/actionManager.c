@@ -19,9 +19,9 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 		switch(e.type) {
 		 	case SDL_MOUSEBUTTONDOWN:
          			if (e.button.button==SDL_BUTTON_LEFT){
-					float x = 800.0*(e.button.x/(float)WINDOW_WIDTH)-400.0;
-					float y = 600.0*(e.button.y/(float)WINDOW_HEIGHT)-300.0;
-				clicButton (e, playIsPush, x ,y, menuOpen,aideOpen, mapName, casechecked);
+					Point3D sdl = PointXYZ(e.button.x,e.button.y,0.);
+					Point3D oGL = sdlToOpenGL(sdl);
+				clicButton (e, playIsPush, e.button.x ,e.button.y, menuOpen,aideOpen, mapName);
 					
 				}
 			break;
@@ -268,28 +268,35 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	return inside;
 }
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName, GLuint casechecked){
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName){
 
-			if (x >= 60. && x <= 178. && y >= -180. && y <= -60. && *aideOpen ==0){
+			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
-			}
-
-			if (x >= 194. && x <= 363. && y >= -135. && y <= -105. && *menuOpen ==1){
-				strcpy(mapName, "map1.itd");
-
 
 			}
-			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
-				strcpy(mapName, "map2.itd");
+			int i;
+			for (i=1;i<=5;i++){
+				if(BUTTON_OF_MENU.carte[i]!=NULL){
+					if (isMouseOnButton(BUTTON_OF_MENU.carte[i],x, y) ==true){
+								printf("map name %s\n",mapName);
+										printf("map name %s\n", BUTTON_OF_MENU.tabMapName[i]);
 
+						strcpy(mapName, BUTTON_OF_MENU.tabMapName[i]);
+								printf("map name %s\n",mapName);
+
+
+					}
+				}
 			}
-			if (x >= -180. && x <= -60. && y >= -181. && y <= -60.){
+
+
+			if (isMouseOnButton(BUTTON_OF_MENU.regles,x, y) ==true){
 				*aideOpen =1;
 			}
 			if (x >= 190. && x <= 212. && y >= -212. && y <= -194. && *aideOpen==1 ){
 				*aideOpen =0;
 			}
-			if (x >= -61. && x <= 58. && y >= 60. && y <= 178. ){
+			if (isMouseOnButton(BUTTON_OF_MENU.jouer,x, y) ){
 				*playIsPush =1;
 			}
 

@@ -15,7 +15,7 @@
  */
  
 typedef enum{
-	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
+	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION, AIDE_MENU,CHOIX_MENU,PLAY_MENU,MAP_MENU,MAP_MENU_CASE
 }Action;
 
 /**
@@ -28,7 +28,19 @@ typedef struct{
 	float width;///En pixels
 	float height;///En pixels
 }Button;
-	
+
+typedef struct{
+	Button* regles;
+	Button* jouer;
+	Button* choix_carte;
+	Button* carte[5];
+	Button* cases[5];
+	int cmp;
+	char* tabMapName[4];
+
+}ButtonOfMenu;
+
+ButtonOfMenu BUTTON_OF_MENU;	
 
 /**
  * Structure représentant l'interface du jeu.
@@ -62,8 +74,8 @@ Interface initGameInterface(float width, float height, float positionX, float po
  */
 void drawInterface(Interface* interface);
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
-void drawMenu(GLuint ,GLuint,GLuint ,GLuint , GLuint,GLuint,GLuint,GLuint,GLuint,GLuint,GLuint, GLuint*,int, int*,int*,int*, char*);
-void drawMapMenu (GLuint* cartes,int nb_cartes, GLuint casevide, GLuint casechecked, char* mapName);
+void drawMenu(GLuint*,int, int*,int*,int*, char*);
+void drawMapMenu (char* mapName);
 
 /** 
   *Met à jour la texture affichant l'argent du joueur.

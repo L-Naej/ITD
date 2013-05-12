@@ -12,6 +12,9 @@
 #endif
 #include "point3D.h"
 
+
+
+
 typedef struct{
 	GLuint BLUE_OCTOPUS_ID;
 	GLuint ORANGE_OCTOPUS_ID;
@@ -28,6 +31,24 @@ typedef struct{
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;
+
+typedef struct menu_text{
+	GLuint AIDE_BUTTON;
+	GLuint MAP_CHOICE_BUTTON;
+	GLuint PLAY_BUTTON;
+	GLuint AIDE_LEGEND;
+	GLuint MAP_CHOICE_LEGEND;
+	GLuint PLAY_LEGEND;
+	GLuint BIENVENUE;
+	GLuint RULES;
+	GLuint BULLE;
+	GLuint CASE_CHECKED;
+	GLuint CASE_VIDE;
+	GLuint MAPS[5];
+	int nb_cartes;
+}ITD_Menu_Textures;
+
+ITD_Menu_Textures MENU_TEXTURES_ID;
 
 /* Dimensions de la fenêtre */
 unsigned int WINDOW_WIDTH;
@@ -51,6 +72,13 @@ static const unsigned int BIT_PER_PIXEL = 32;
  * GAME_TEXTURES_ID.
  */
 void initGameGraphics(const SDL_Surface* map);
+/**
+ * Charge les textures du menu dans la carte
+ * graphique et récupère les textures id qui leurs
+ * sont liés. Les stocke dans la variable globale 
+ * MENU_TEXTURES_ID.
+ */
+void initMenuGraphics(char* font1,char* font2,char* rootPath);
 
 /**
  * Initialise la fenêtre SDL du

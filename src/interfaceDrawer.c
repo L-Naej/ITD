@@ -11,6 +11,7 @@
 #include <math.h>
 #include "interfaceDrawer.h"
 #include "world.h"
+#include "graphics.h"
 
 Button* createButton(Action action, Point3D position, float width, float height){
 	Button* button = (Button*) malloc(sizeof(Button));
@@ -39,202 +40,124 @@ void drawButtonMenu(){
     glEnd();
 }
 
-void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevide,GLuint casechecked, GLuint Bienvenue,GLuint ChoixLegend,GLuint PlayLegend,GLuint ReglesLegend,GLuint regles,GLuint bulle, GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
+void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
     		glMatrixMode(GL_MODELVIEW); 
     		glLoadIdentity();
 
-/*______________Bienvenue____________________________________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, Bienvenue);
 
+/*______________Bienvenue____________________________________*/
+		
 		
 		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
+		
 		glColor3ub(0,204,204);
-		glRotatef(180,0,0,1);
-		glScalef(1300,150,1);
-		glTranslatef(0,-1.7,0);
-		drawButtonMenu();
+		glScalef(400,70,1);
+		glTranslatef(0,3.5,0);
+		drawTexturedQuad(MENU_TEXTURES_ID.BIENVENUE);
 		glPopMatrix();
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+		
 
 
 
 /*______________Choix____________________________________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, ChoixLegend);
 
-		
 		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
+		
 		glColor3ub(0,204,204);
-		glRotatef(180,0,0,1);
-		glScalef(400,100,1);
-		glTranslatef(-0.4,-0.1,0);
-		drawButtonMenu();
+		glScalef(150,40,1);
+		glTranslatef(0.6,0,0);
+		drawTexturedQuad(MENU_TEXTURES_ID.MAP_CHOICE_LEGEND);
 		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
 	
 
 
 
 /*______________PLay !____________________________________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, PlayLegend);
-
-		
 		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(0.,204.,204.);
-		glRotatef(180.,0.,0.,1.);
-		glScalef(300.,100.,1.);
-		glTranslatef(0.,2.,0.);
-		drawButtonMenu();
+		
+		glColor3ub(0,204,204);
+		glScalef(140,40,1);
+		glTranslatef(0,-5,0);
+		drawTexturedQuad(MENU_TEXTURES_ID.PLAY_LEGEND);
 		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
 
 /*______________Règles____________________________________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,ReglesLegend);
-
-		
 		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(0.,204.,204.);
-		glRotatef(180.,0.,0.,1.);
-		glScalef(400.,100.,1.);
-		glTranslatef(0.3,-0.1,0.);
-		drawButtonMenu();
+		
+		glColor3ub(0,204,204);
+		glScalef(150,40,1);
+		glTranslatef(-1,0.2,0);
+		drawTexturedQuad(MENU_TEXTURES_ID.AIDE_LEGEND);
 		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+	
 
 /* _________________ Dessin du bouton d'aide_______________*/
+		Point3D aidePosition = PointXYZ(-150.,100.,0.);
 
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, helpButton);
+		Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
 
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(400,400,1);
-		glTranslatef(0.3,-0.3,0);
-		drawButtonMenu();
-		glPopMatrix();
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+			glColor3ub(255,255,255);
+
+			drawButton(aideButton);
+			
+		BUTTON_OF_MENU.regles=aideButton;
 
 /* _________________ Dessin du bouton pour choisir la carte_______________*/
 
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, mapButton);
+		Point3D choixPosition = PointXYZ(140.,100.,0.);
 
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(400,400,1);
-		glTranslatef(-0.3,-0.3,0);
-		drawButtonMenu();
-		glPopMatrix();
+		Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
 
+			glColor3ub(255,255,255);
+
+			drawButton(choixButton);
+
+		BUTTON_OF_MENU.choix_carte=choixButton;
 /* _________________ Dessin du bouton play_______________*/
 
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, playButton);
+		Point3D playPosition = PointXYZ(0.,-100.,0.);
 
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(400,400,1);
-		glTranslatef(0,0.3,0);
-		drawButtonMenu();
-		glPopMatrix();
+		Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
 
+			glColor3ub(255,255,255);
+
+			drawButton(playButton);
+		BUTTON_OF_MENU.jouer=playButton;
 
 
 		if (*menuOpen == 1){
-			drawMapMenu(cartes,nb_cartes,casevide,casechecked, mapName);
+			drawMapMenu(mapName);
 		}
 
 		if (*aideOpen == 1){
 		/*______________Règles____________________________________*/
-			glEnable(GL_ALPHA_TEST);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, regles);
-
+		glPushMatrix();
 		
-			glPushMatrix();
-			glAlphaFunc(GL_GREATER,0.0f);
-			glColor3ub(255,255,255);
-			glRotatef(180,0,0,1);
-			glScalef(1500,1500,1);
-			glTranslatef(0,0,0);
-			drawButtonMenu();
-			glPopMatrix();
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glDisable(GL_TEXTURE_2D);
-			glDisable(GL_ALPHA_TEST);
+		glColor3ub(255,255,255);
+		glScalef(500,500,1);
+		glTranslatef(0,0,0);
+		drawTexturedQuad(MENU_TEXTURES_ID.RULES);
+		glPopMatrix();
 
 		}
 
 		if (*playIsPush == 1){
 			if (strcmp(mapName,"Not chosen")==0){
 				/*dessin de la bulle */
-				glEnable(GL_ALPHA_TEST);
-				glEnable(GL_TEXTURE_2D);
-				glBindTexture(GL_TEXTURE_2D, bulle);
-
-		
 				glPushMatrix();
-				glAlphaFunc(GL_GREATER,0.0f);
+		
 				glColor3ub(255,255,255);
-				glRotatef(180,0,0,1);
-				glScalef(700,700,1);
-				glTranslatef(-0.2,0.15,0);
-				drawButtonMenu();
+				glScalef(250,250,1);
+				glTranslatef(0.7,-0.5,0);
+				drawTexturedQuad(MENU_TEXTURES_ID.BULLE);
 				glPopMatrix();
-
-				glBindTexture(GL_TEXTURE_2D, 0);
-				glDisable(GL_TEXTURE_2D);
-				glDisable(GL_ALPHA_TEST);
 			}
 			else{
 				*playIsPush =2;
@@ -243,144 +166,36 @@ void drawMenu(GLuint helpButton,GLuint mapButton,GLuint playButton,GLuint casevi
 
 }
 
-void drawMapMenu (GLuint* cartes,int nb_cartes, GLuint casevide,GLuint casechecked, char* mapName){
+void drawMapMenu (char* mapName){
 
 		int i;
-		float x=-0.8;
-		float y=-1.2;
-		for (i=1; i<=nb_cartes;i++){
+		float xText=270.;
+		float yText=110.;
+	
+
+		Button* tabMap[MENU_TEXTURES_ID.nb_cartes];
+
+
+		for (i=1; i<=MENU_TEXTURES_ID.nb_cartes;i++){
 
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, cartes[i]);
+		Point3D mapPosition = PointXYZ(xText,yText,0.);
+		BUTTON_OF_MENU.cmp=i;
+		tabMap[i] = createButton(MAP_MENU,mapPosition,60,60);
+		if (strcmp(BUTTON_OF_MENU.tabMapName[i],mapName)==0)
+			glColor3ub(0,204,204);
+		else
+			glColor3ub(255,255,255);
 
+		drawButton(tabMap[i]);
+		BUTTON_OF_MENU.carte[i]=tabMap[i];
 		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(300,100,1);
-		glTranslatef(x,y,0);
-		drawButtonMenu();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-
-		y+=0.3;
-
-	/*_______________________________________________________*/
-	
-		/*glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, carteSpatiale);
-
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(400,100,1);
-		glTranslatef(-0.65,-0.8,0);
-		drawButtonMenu();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);*/
-
-		}
-
-/* _________________ Dessin de la case vide 1_______________*/
-
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, casevide);
-
 		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(100,100,1);
-		glTranslatef(-3.5,-1.2,0);
-		drawButtonMenu();
-		glPopMatrix();
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-
-/* _________________ Dessin de la case vide 2_______________*/
-
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, casevide);
-
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(100,100,1);
-		glTranslatef(-3.7,-0.8,0);
-		drawButtonMenu();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-
-/* _________________ check de la case 1_______________*/
-
-		if (strcmp(mapName,"map1.itd")==0){
-
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, casechecked);
-
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(100,100,1);
-		glTranslatef(-3.5,-1.2,0);
-		drawButtonMenu();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
+		yText-=70.;
 	}
-
-/* _________________ check de la case 2_______________*/
-
-		if (strcmp(mapName,"map2.itd")==0){
-
-		glEnable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, casechecked);
-
-		
-		glPushMatrix();
-		glAlphaFunc(GL_GREATER,0.0f);
-		glColor3ub(255,255,255);
-		glRotatef(180,0,0,1);
-		glScalef(100,100,1);
-		glTranslatef(-3.7,-0.8,0);
-		drawButtonMenu();
-		glPopMatrix();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-	}
-
-
-}
+}	
 
 void drawCarre(){
 	glBegin(GL_QUADS);
@@ -668,13 +483,24 @@ void drawButton(const Button* button){
 	break;
 	case QUIT_GAME : textureId = GAME_TEXTURES_ID.QUIT_GAME_ID;
 	break;
+	case AIDE_MENU : textureId = MENU_TEXTURES_ID.AIDE_BUTTON;
+	break;
+	case CHOIX_MENU : textureId = MENU_TEXTURES_ID.MAP_CHOICE_BUTTON;
+	break;
+	case PLAY_MENU : textureId = MENU_TEXTURES_ID.PLAY_BUTTON;
+	break;
+	case MAP_MENU : textureId = MENU_TEXTURES_ID.MAPS[BUTTON_OF_MENU.cmp];
+	break;
+
+	
 	default : return;
 	break;
 	}
-	
+
 	glPushMatrix();
 	glTranslatef(button->position.x , button->position.y , 0.0);
 	glScalef(button->width, button->height,1.);
+
 	drawTexturedQuad(textureId);
 	glPopMatrix();
 }
