@@ -54,7 +54,7 @@ void drawMonster(const Monster* monster){
 	glPushMatrix();
 	glColor3ub(255,255,255);
 	
-	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
+	glTranslatef(oglPosition.x, oglPosition.y, oglPosition.z);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	drawTexturedQuad(monsterTexture);
 	

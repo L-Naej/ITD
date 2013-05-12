@@ -658,7 +658,7 @@ void drawInterface(Interface* interface){
 	if(interface->gameWinned){
 		glPushMatrix();
 		glLoadIdentity();
-		glScalef(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0, 1.);
+		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);
 		drawTexturedQuad(GAME_TEXTURES_ID.WIN_MESSAGE_ID);
 		glPopMatrix();
 	}
@@ -833,7 +833,7 @@ void createLooseMessage(){
 	police = TTF_OpenFont("font/Champagne.ttf", 35);
 	SDL_Color color; color.r = 255;
 	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
-	SDL_Surface* image = IMG_Load("images/hyene.jpg");
+	SDL_Surface* image = IMG_Load("images/hyene.png");
 	if (image ==NULL){
 		fprintf(stderr,"Erreur fatale : impossible de charger l'image.\n");
 		exit(1);

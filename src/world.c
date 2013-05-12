@@ -48,22 +48,24 @@ void startNewMonsterWave(World* world){
 	int i = 0;
 	Point3D startPoint = getStartPoint(&(world->map));
 	Point3D secondPoint = nextNode(world->map.pathNodeList, startPoint); 
-	Vector3D direction = MultVector(Normalize(Vector(startPoint, secondPoint)), -1.0);
-
-	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map
+	//Vector3D direction = MultVector(Normalize(Vector(startPoint, secondPoint)), -1.0);
+	Vector3D direction = Vector(startPoint, PointXYZ(startPoint.x, startPoint.y, -1.0));
+	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map (en z)
 	//Avec comme destination le point de départ de leur chemin.
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
 		world->monsters[i] = createMonster(world->currentMonstersWave, i);
 		world->monsters[i].destination = startPoint;
-		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX)*i));
-		//Sécurité
-		world->monsters[i].position.z = 0.0;
+		//On ménage un espace entre les monstres, le *2 a été rajouté après qu'on les fasse arrivé par l'axe z, 
+		//en effet au moment où le monstre arrive sur la map il lui faut à nouveau s'éloigner en x et en y du monstre qui le suit !
+		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX)*(i+1)*2));
 		//--- VERY IMPORTANT SINON BUG DE DEPLACEMENT ==> On veut des valeurs entières qui correspondent à un pixel
 		world->monsters[i].position.x = floor(world->monsters[i].position.x);
 		world->monsters[i].position.y = floor(world->monsters[i].position.y);
+		world->monsters[i].position.z = floor(world->monsters[i].position.z);
 		world->monsters[i].direction = Vector(world->monsters[i].position, startPoint);
 		world->monsters[i].realPosition = world->monsters[i].position;
 	}
+	
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
 }
 
@@ -178,7 +180,6 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		monsters[i].nbTurnsSinceLastMove++;
 		
 		moveMonster(&(monsters[i]));
-		
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
 			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
@@ -210,8 +211,9 @@ int towerShoots(Tower* tower, Monster* monsters){
 	bool towerCanShoot = true;
 	int i = 0; int lifeLosed = 0;
 	
-	while(towerCanShoot && i < MONSTERS_PER_WAVE){ 
-		if(monsters[i].life > 0
+	while(towerCanShoot && i < MONSTERS_PER_WAVE){
+		//Si le monstre a un z différent de 0 c'est qu'il n'est pas encore apparu sur la carte
+		if(monsters[i].life > 0 && monsters[i].position.z >= 0.0
 		&& Norm(Vector(monsters[i].position, tower->position)) <= tower->range){
 			switch(tower->type){
 				case ROCKET : lifeLosed = tower->power - monsters[i].rocketResistance;

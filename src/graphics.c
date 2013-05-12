@@ -78,12 +78,12 @@ GLuint makeTextureFromSurface(SDL_Surface* image){
 	/*envoi de la texture à openGL*/
 	SDL_LockSurface(image);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
+	SDL_UnlockSurface(image);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);	
-	SDL_UnlockSurface(image);
 	return textureId;
 }
 
@@ -110,7 +110,9 @@ void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
 
 	glEnable(GL_TEXTURE_2D);	
 	glBindTexture(GL_TEXTURE_2D, textureId);
+	SDL_LockSurface(surface);
 	glTexImage2D(GL_TEXTURE_2D,0, nOfColors, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);
+	SDL_UnlockSurface(surface);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);	
 }
@@ -144,7 +146,9 @@ GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int align
 	SDL_Surface* black = SDL_CreateRGBSurface(SDL_HWSURFACE, totalWidth, totalHeight, 32, 0, 0, 0, 0);
 	Uint32 color = SDL_MapRGBA(black->format, 0, 0, 0,0);
 	SDL_FillRect(black, NULL, color);
+	SDL_LockSurface(black);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGBA,GL_UNSIGNED_BYTE, black->pixels);
+	SDL_UnlockSurface(black);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
@@ -170,8 +174,9 @@ GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int align
 		printf("warning: the image is not truecolor..  this will probably break\n");
 		// this error should not go unhandled
 		}
-
+		SDL_LockSurface(surfaces[i]);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, surfaces[i]->w, surfaces[i]->h, format, GL_UNSIGNED_BYTE, surfaces[i]->pixels);
+		SDL_UnlockSurface(surfaces[i]);
 		if(alignement == HORIZONTAL) xOffset += surfaces[i]->w;
 		else yOffset += surfaces[i]->h;
 	}
@@ -246,7 +251,7 @@ void drawCircle(int full){
 
 Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
-	oglPoint.z = 0.0;
+	oglPoint.z = sdlPoint.z;
 	
 	oglPoint.x = GL_X_AXIS_MIN + 2*GL_X_AXIS_MAX* sdlPoint.x / WINDOW_WIDTH;
 	oglPoint.y = - (GL_Y_AXIS_MIN + 2*GL_Y_AXIS_MAX* sdlPoint.y / WINDOW_HEIGHT);

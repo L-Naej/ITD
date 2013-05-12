@@ -109,6 +109,12 @@ void moveMonster(Monster* monster){
 	monsterMove = monster->nbTurnsSinceLastMove >= monster->speed;
 	if(!monsterMove) return;
 	
+	//Astuce : un monstre avec un z inférieur à 0 cherche à rejoindre la map !
+	if(monster->position.z < 0.0){
+		monster->position.z++;
+		monster->realPosition.z++;
+		return;
+	}
 	float factorX, factorY;
 	
 	Vector3D direction = Normalize(Vector(monster->position, monster->destination));
