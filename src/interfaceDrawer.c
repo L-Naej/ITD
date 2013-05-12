@@ -426,6 +426,9 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Point3D sdlPosition = PointXYZ(WINDOW_WIDTH *positionX, WINDOW_HEIGHT *positionY, 0.0);
 	interface.position = sdlToOpenGL(sdlPosition);
 	interface.moneyPosition = interface.position;
+	interface.isBetweenWaves = false;
+	interface.waveNumber = 0;
+	interface.waveDisplayTime = 0;
 
 	//On positionne en fonction du coin haut gauche
 	interface.position.x += interface.width / 2.0;
@@ -556,13 +559,9 @@ void drawInterface(Interface* interface){
 	glLoadIdentity();
 	glColor3ub(255,255,255);
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
-	
 	glTranslatef(interface->moneyPosition.x, interface->moneyPosition.y, 0.);
 	glScalef(interface->moneyWidth,interface->moneyHeight,1.);
 	drawTexturedQuad(GAME_TEXTURES_ID.MONEY_ID);
-	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 	//Dessin des boutons
@@ -573,19 +572,15 @@ void drawInterface(Interface* interface){
 		drawButton(cur);
 	}
 	
-	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)//TODO
+	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
 	
 	glTranslatef(interface->infoPosition.x, interface->infoPosition.y, 0.);
 	glScalef(interface->infoWidth,interface->infoHeight,1.);
 
 	drawTexturedQuad(GAME_TEXTURES_ID.INFO_PANEL_ID);
-	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 	
@@ -615,12 +610,8 @@ void drawInterface(Interface* interface){
 		glLoadIdentity();
 		glColor3ub(255,255,255);
 	
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.0f);
-	
 		glScalef(WINDOW_WIDTH / 5.0,WINDOW_HEIGHT / 10.0,1.);
 		drawTexturedQuad(GAME_TEXTURES_ID.PAUSE_MESSAGE_ID);
-		glDisable(GL_ALPHA_TEST);
 	
 		glPopMatrix();
 		
@@ -634,11 +625,27 @@ void drawInterface(Interface* interface){
 		glLoadIdentity();
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.0f);
 		drawTexturedQuad(textureId);
-		glDisable(GL_ALPHA_TEST);
 		glPopMatrix();
+	}
+	
+	//Affichage du message "Wave X"
+	if(interface->isBetweenWaves){
+		if(interface->waveDisplayTime == 0){
+			glDeleteTextures(1, &(GAME_TEXTURES_ID.WAVE_MESSAGE_ID));
+			GAME_TEXTURES_ID.WAVE_MESSAGE_ID = createWaveMessage(interface->waveNumber);
+			interface->waveDisplayTime = SDL_GetTicks();
+		}
+		Uint32 elapsedTime = SDL_GetTicks() - interface->waveDisplayTime;
+		if(elapsedTime <= WAVE_DISPLAY_DURATION){
+			glPushMatrix();
+			glLoadIdentity();
+			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 10.0, 1.0);
+			drawTexturedQuad(GAME_TEXTURES_ID.WAVE_MESSAGE_ID);
+			glPopMatrix();
+		}
+	}else{
+		interface->waveDisplayTime = 0;
 	}
 	
 }
@@ -741,4 +748,27 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	TTF_CloseFont(police);
 	TTF_Quit();	
 }
+
+GLuint createWaveMessage(unsigned char waveNumber){
+	char message[100];
+	sprintf(message, "Vague %d dans %d secondes", waveNumber, NB_TURNS_BETWEEN_WAVES / 100);
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	GLuint textureId = makeTextureFromSurface(sMessage);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+	
+	return textureId;
+}
+
+
 

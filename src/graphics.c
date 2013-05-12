@@ -19,6 +19,12 @@ void initGameGraphics(const SDL_Surface* map){
 	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/tower.png");
 	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
 	
+	//Initialisées après par l'interace
+	GAME_TEXTURES_ID.MONEY_ID = 0;
+	GAME_TEXTURES_ID.WAVE_MESSAGE_ID = 0;
+	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID = 0;
+	GAME_TEXTURES_ID.INFO_PANEL_ID = 0;
+	
 	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
 }
 
@@ -192,6 +198,8 @@ void drawQuad(){
 void drawTexturedQuad(GLuint textureId){
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureId);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER,0.0f);
 	
 	glBegin(GL_QUADS);
 	
@@ -210,6 +218,7 @@ void drawTexturedQuad(GLuint textureId){
 	glVertex2f(-0.5, 0.5);
 
 	glEnd();
+	glDisable(GL_ALPHA_TEST);
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
 }

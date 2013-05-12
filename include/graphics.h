@@ -25,6 +25,7 @@ typedef struct{
 	GLuint MONEY_ID;
 	GLuint PAUSE_MESSAGE_ID;
 	GLuint INFO_PANEL_ID;
+	GLuint WAVE_MESSAGE_ID;
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;

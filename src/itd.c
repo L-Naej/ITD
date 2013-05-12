@@ -82,7 +82,6 @@ int main(int argc,  char* argv[]) {
 	GLuint ChoixLegend = makeTextureFromSurface (choix_surface);
 
 	char aide[16]="Lire les regles";
-	printf(" %s\n",aide);
 	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
 	GLuint ReglesLegend = makeTextureFromSurface (aide_surface);
 

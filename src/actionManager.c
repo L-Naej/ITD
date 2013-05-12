@@ -55,6 +55,11 @@ bool handleGameActions(World* world, Interface* interface){
 		updateMoneyTexture(interface, world->money);
 		lastMoney = world->money;
 	}
+	//Est-on entre deux vagues ? L'interface doit le savoir pour afficher un message
+	if(world->isBetweenWaves){
+		interface->isBetweenWaves = true;
+		interface->waveNumber = world->currentMonstersWave + 1;//Le world compte en partant de 0, pas très sexy
+	}else interface->isBetweenWaves = false;
 	
 	SDL_Event e;
 	bool askedForQuit = false;

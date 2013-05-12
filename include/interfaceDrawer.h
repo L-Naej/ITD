@@ -13,7 +13,9 @@
  * ATTENTION : Les paramètres envoyés à initInterface travaillent en repère SDL.
  * Rappel : le repère OpenGL a comme unité le pixel, tout comme le repère SDL.
  */
- 
+
+//Temps d'affichage des messages "VagueN°" en millisecondes
+static const Uint32 WAVE_DISPLAY_DURATION = 3000; 
 typedef enum{
 	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
 }Action;
@@ -45,6 +47,9 @@ typedef struct{
 	float infoHeight;
 	Point3D infoPosition;
 	Action currentAction;///L'action en cours du joueur suite à une interaction sur l'interface
+	bool isBetweenWaves;
+	char waveNumber;
+	Uint32 waveDisplayTime; //Indique quand l'interface a commencé à afficher le message de nouvelle vague
 }Interface;
 
 /**
@@ -61,6 +66,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
  * Dessine l'interface pointée par interface.
  */
 void drawInterface(Interface* interface);
+
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
 void drawMenu(GLuint ,GLuint,GLuint ,GLuint , GLuint,GLuint,GLuint,GLuint,GLuint,GLuint,GLuint, GLuint,GLuint, int*,int*,int*, char*);
 void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide, GLuint casechecked, char* mapName);
@@ -78,6 +84,7 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
+GLuint createWaveMessage(unsigned char waveNumber);
 void drawButtonMenu();
 void drawButton(const Button* button);
 void drawCarre();
