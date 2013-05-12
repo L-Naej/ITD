@@ -174,7 +174,7 @@ int main(int argc,  char* argv[]) {
 	bool gameFinished = false;
 	
 	//Surtout à appeler APRES avoir initialisé la SDL
-	char mapPath[50] = "map/";
+	char mapPath[50] = "data/";
 	strcat(mapPath, mapName);
 	World world = initWorld(mapPath);
 	initGameGraphics(world.map.image);
