@@ -12,7 +12,7 @@
 static const int TIMESTEP_MILLISECONDS = 10;
 
 /*Temps d'attente en nombre de tours entre deux vagues successives */
-static const int NB_TURNS_BETWEEN_WAVES = 1000;//=10seconde
+static const int NB_TURNS_BETWEEN_WAVES = 100;//=10seconde
 
 /* Nombre de vagues de monstres que le jouer va devoir affronter */
 static const int NB_TOTAL_WAVES = 20;
@@ -34,6 +34,8 @@ typedef struct{
 	List* towersList;///Liste des tours actuellement sur la map.
 	int money;
 	Point3D cameraPosition;
+	bool gameWinned;
+	bool gameLoosed;
 }World;
 
 

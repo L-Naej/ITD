@@ -4,7 +4,7 @@
 #define CIRCLE_PRECISION 100
 
 //TODO
-void initGameGraphics(const SDL_Surface* map){
+void initGameGraphics(SDL_Surface* map){
 	if(map == NULL){
 		fprintf(stderr, "Erreur : les graphismes du jeu ne peuvent être initialisés avant le chargement de la map.\n");
 		exit(-1);
@@ -24,7 +24,8 @@ void initGameGraphics(const SDL_Surface* map){
 	GAME_TEXTURES_ID.WAVE_MESSAGE_ID = 0;
 	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID = 0;
 	GAME_TEXTURES_ID.INFO_PANEL_ID = 0;
-	
+	GAME_TEXTURES_ID.WIN_MESSAGE_ID = 0;
+		
 	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
 }
 
@@ -46,7 +47,7 @@ GLuint makeTextureFromFile(const char* imagePath){
 	return textureId;
 }
 
-GLuint makeTextureFromSurface(const SDL_Surface* image){
+GLuint makeTextureFromSurface(SDL_Surface* image){
 
 	if(image == NULL) return -1;
 	GLuint textureId;
@@ -55,59 +56,61 @@ GLuint makeTextureFromSurface(const SDL_Surface* image){
 	glGenTextures(1,&textureId);
 
 	glBindTexture(GL_TEXTURE_2D,textureId);
-  
-	switch(image->format->BytesPerPixel) {
-		case 1:
-		format = GL_RED;
-		break;
 
-		case 3:
-		format = GL_RGB;
-		break;
-
-		case 4:
+	Uint8 nOfColors = image->format->BytesPerPixel;
+	if (nOfColors == 4)     // contains an alpha channel
+	{
+	if (image->format->Rmask == 0x000000ff)
 		format = GL_RGBA;
-		break;
-
-		default:
-		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
-		return EXIT_FAILURE;
+	else
+	    	format = GL_BGRA;
+	} else if (nOfColors == 3)     // no alpha channel
+	{
+	if (image->format->Rmask == 0x000000ff)
+		format = GL_RGB;
+	else
+		format = GL_BGR;
+	} else {
+	printf("warning: the image is not truecolor..  this will probably break\n");
+	// this error should not go unhandled
 	}
 
 	/*envoi de la texture à openGL*/
-
+	SDL_LockSurface(image);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);	
+	SDL_UnlockSurface(image);
 	return textureId;
 }
 
 void updateTextureFromSurface(GLuint textureId, SDL_Surface* surface){
 	if(surface == NULL) return;
 	GLenum format;
-	switch(surface->format->BytesPerPixel) {
-		case 1:
-		format = GL_RED;
-		break;
-
-		case 3:
-		format = GL_RGB;
-		break;
-
-		case 4:
+	Uint8 nOfColors = surface->format->BytesPerPixel;
+	if (nOfColors == 4)     // contains an alpha channel
+	{
+	if (surface->format->Rmask == 0x000000ff)
 		format = GL_RGBA;
-		break;
-
-		default:
-		fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
-		break;
+	else
+	    	format = GL_BGRA;
+	} else if (nOfColors == 3)     // no alpha channel
+	{
+	if (surface->format->Rmask == 0x000000ff)
+		format = GL_RGB;
+	else
+		format = GL_BGR;
+	} else {
+	printf("warning: the image is not truecolor..  this will probably break\n");
+	// this error should not go unhandled
 	}
+
 	glEnable(GL_TEXTURE_2D);	
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);
+	glTexImage2D(GL_TEXTURE_2D,0, nOfColors, surface->w, surface->h, 0, format,GL_UNSIGNED_BYTE, surface->pixels);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);	
 }
@@ -139,9 +142,9 @@ GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int align
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	//On créé la texture contenant l'ensemble des surfaces, pour l'instant vide 
 	SDL_Surface* black = SDL_CreateRGBSurface(SDL_HWSURFACE, totalWidth, totalHeight, 32, 0, 0, 0, 0);
-	Uint32 color = SDL_MapRGB(black->format, 0, 0, 0);
+	Uint32 color = SDL_MapRGBA(black->format, 0, 0, 0,0);
 	SDL_FillRect(black, NULL, color);
-	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, black->pixels);
+	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGBA,GL_UNSIGNED_BYTE, black->pixels);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
@@ -150,23 +153,24 @@ GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int align
 	for(i = 0; i < nbSurfaces; ++i){
 	
 		GLenum format;
-		switch(surfaces[i]->format->BytesPerPixel) {
-			case 1:
-			format = GL_RED;
-			break;
-
-			case 3:
-			format = GL_RGB;
-			break;
-
-			case 4:
+		Uint8 nOfColors = surfaces[i]->format->BytesPerPixel;
+		if (nOfColors == 4)     // contains an alpha channel
+		{
+		if (surfaces[i]->format->Rmask == 0x000000ff)
 			format = GL_RGBA;
-			break;
-
-			default:
-			fprintf(stderr, "Format des pixels de l’image  non pris en charge\n");
-			break;
+		else
+		    	format = GL_BGRA;
+		} else if (nOfColors == 3)     // no alpha channel
+		{
+		if (surfaces[i]->format->Rmask == 0x000000ff)
+			format = GL_RGB;
+		else
+			format = GL_BGR;
+		} else {
+		printf("warning: the image is not truecolor..  this will probably break\n");
+		// this error should not go unhandled
 		}
+
 		glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, surfaces[i]->w, surfaces[i]->h, format, GL_UNSIGNED_BYTE, surfaces[i]->pixels);
 		if(alignement == HORIZONTAL) xOffset += surfaces[i]->w;
 		else yOffset += surfaces[i]->h;
@@ -200,6 +204,7 @@ void drawTexturedQuad(GLuint textureId){
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER,0.0f);
+	
 	
 	glBegin(GL_QUADS);
 	

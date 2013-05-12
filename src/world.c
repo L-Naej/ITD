@@ -15,6 +15,8 @@ World initWorld(const char* pathToItdFile){
 	newWorld.nbMonstersAlive = 0;//Pas de monstres au départ
 	newWorld.money = 1000;
 	newWorld.paused = false;
+	newWorld.gameLoosed = false;
+	newWorld.gameWinned = false;
 	
 	newWorld.cameraPosition = PointXYZ(0.,0.,0.);
 	newWorld.towersList = createEmptyList();
@@ -54,6 +56,8 @@ void startNewMonsterWave(World* world){
 		world->monsters[i] = createMonster(world->currentMonstersWave, i);
 		world->monsters[i].destination = startPoint;
 		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX)*i));
+		//Sécurité
+		world->monsters[i].position.z = 0.0;
 		//--- VERY IMPORTANT SINON BUG DE DEPLACEMENT ==> On veut des valeurs entières qui correspondent à un pixel
 		world->monsters[i].position.x = floor(world->monsters[i].position.x);
 		world->monsters[i].position.y = floor(world->monsters[i].position.y);
@@ -118,6 +122,8 @@ bool doTurn(World* world){
 	
 	bool isGameFinished = false;
 	
+	if(world->gameLoosed || world->gameWinned) return true;
+	
 	//Phase d'attente entre deux vague de monstres ? On ne fait rien
 	if(world->isBetweenWaves){
 		world->nbTurnsWaiting++;
@@ -141,7 +147,10 @@ bool doTurn(World* world){
 	while(i < MONSTERS_PER_WAVE && !isGameFinished){
 		isGameFinished = arePointsEquals(world->monsters[i].position, endPoint);
 		if(world->monsters[i].life > 0) cptMonstersAlive++;
-		if(isGameFinished) printf("Un monstre a atteint la sortie, vous avez perdu !\n");
+		if(isGameFinished){
+			printf("Un monstre a atteint la sortie, vous avez perdu !\n");
+			world->gameLoosed = true;
+		}
 		++i;
 	}
 	world->nbMonstersAlive = cptMonstersAlive;
@@ -149,8 +158,9 @@ bool doTurn(World* world){
 		if(world->currentMonstersWave >= NB_TOTAL_WAVES){
 			isGameFinished = true;
 			printf("Vous avez tué tous les monstres, vous avez gagné !\n");
+			world->gameWinned = true;
 		}
-		world->isBetweenWaves = true;
+		else world->isBetweenWaves = true;
 	}
 	return isGameFinished;
 }

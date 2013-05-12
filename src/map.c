@@ -243,6 +243,7 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
+	node1->z = 0.0;
 
 	map->pathNodeList = createList((void*)node1); 
 

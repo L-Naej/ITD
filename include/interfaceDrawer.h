@@ -14,8 +14,8 @@
  * Rappel : le repère OpenGL a comme unité le pixel, tout comme le repère SDL.
  */
 
-//Temps d'affichage des messages "VagueN°" en millisecondes
-static const Uint32 WAVE_DISPLAY_DURATION = 3000; 
+//Temps d'affichage des messages de l'interface en millisecondes
+static const Uint32 MESSAGE_DISPLAY_DURATION = 3000; 
 typedef enum{
 	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
 }Action;
@@ -49,7 +49,9 @@ typedef struct{
 	Action currentAction;///L'action en cours du joueur suite à une interaction sur l'interface
 	bool isBetweenWaves;
 	char waveNumber;
-	Uint32 waveDisplayTime; //Indique quand l'interface a commencé à afficher le message de nouvelle vague
+	Uint32 messageDisplayTime; //Indique quand l'interface a commencé à afficher le dernier message en date
+	bool gameWinned;
+	bool gameLoosed;
 }Interface;
 
 /**
@@ -88,5 +90,7 @@ GLuint createWaveMessage(unsigned char waveNumber);
 void drawButtonMenu();
 void drawButton(const Button* button);
 void drawCarre();
+void createLooseMessage();
+void createWinMessage();
 
 #endif

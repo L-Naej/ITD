@@ -428,7 +428,13 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	interface.moneyPosition = interface.position;
 	interface.isBetweenWaves = false;
 	interface.waveNumber = 0;
-	interface.waveDisplayTime = 0;
+	interface.messageDisplayTime = 0;
+	interface.gameWinned = false;
+	interface.gameLoosed = false;
+	
+	//Création messages de fin
+	createLooseMessage();
+	createWinMessage();
 
 	//On positionne en fonction du coin haut gauche
 	interface.position.x += interface.width / 2.0;
@@ -631,13 +637,13 @@ void drawInterface(Interface* interface){
 	
 	//Affichage du message "Wave X"
 	if(interface->isBetweenWaves){
-		if(interface->waveDisplayTime == 0){
+		if(interface->messageDisplayTime == 0){
 			glDeleteTextures(1, &(GAME_TEXTURES_ID.WAVE_MESSAGE_ID));
 			GAME_TEXTURES_ID.WAVE_MESSAGE_ID = createWaveMessage(interface->waveNumber);
-			interface->waveDisplayTime = SDL_GetTicks();
+			interface->messageDisplayTime = SDL_GetTicks();
 		}
-		Uint32 elapsedTime = SDL_GetTicks() - interface->waveDisplayTime;
-		if(elapsedTime <= WAVE_DISPLAY_DURATION){
+		Uint32 elapsedTime = SDL_GetTicks() - interface->messageDisplayTime;
+		if(elapsedTime <= MESSAGE_DISPLAY_DURATION){
 			glPushMatrix();
 			glLoadIdentity();
 			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 10.0, 1.0);
@@ -645,9 +651,24 @@ void drawInterface(Interface* interface){
 			glPopMatrix();
 		}
 	}else{
-		interface->waveDisplayTime = 0;
+		interface->messageDisplayTime = 0;
 	}
 	
+	//Si on a gagné/perdu affichage du message
+	if(interface->gameWinned){
+		glPushMatrix();
+		glLoadIdentity();
+		glScalef(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0, 1.);
+		drawTexturedQuad(GAME_TEXTURES_ID.WIN_MESSAGE_ID);
+		glPopMatrix();
+	}
+	else if(interface->gameLoosed){
+		glPushMatrix();
+		glLoadIdentity();
+		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);
+		drawTexturedQuad(GAME_TEXTURES_ID.LOOSE_MESSAGE_ID);
+		glPopMatrix();
+	}
 }
 
 void drawButton(const Button* button){
@@ -770,5 +791,63 @@ GLuint createWaveMessage(unsigned char waveNumber){
 	return textureId;
 }
 
+void createWinMessage(){
+	char message[20] = "WINAGE PINAGE !";
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	SDL_Surface* image = IMG_Load("images/simba_thumbs_up.png");
+	if (image ==NULL){
+		fprintf(stderr,"Erreur fatale : impossible de charger l'image.\n");
+		exit(1);
+	}
+	
+	SDL_Surface* tab[2];
+	tab[0] = sMessage;
+	tab[1] = image;
+	int width, height;
+	GAME_TEXTURES_ID.WIN_MESSAGE_ID = makeTextureFromSurfaces(tab, 2, 1, &width, &height);
+	
+	SDL_FreeSurface(image);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+}
+
+void createLooseMessage(){
+	char message[20] = "YOU LOOSE MUHAHA";
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	SDL_Surface* image = IMG_Load("images/hyene.jpg");
+	if (image ==NULL){
+		fprintf(stderr,"Erreur fatale : impossible de charger l'image.\n");
+		exit(1);
+	}
+	SDL_Surface* tab[2];
+	tab[0] = sMessage;
+	tab[1] = image;
+	int width, height;
+	GAME_TEXTURES_ID.LOOSE_MESSAGE_ID = makeTextureFromSurfaces(tab, 2, 1, &width, &height);
+	
+	SDL_FreeSurface(image);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+}
 
 

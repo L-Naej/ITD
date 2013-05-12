@@ -56,10 +56,7 @@ void drawMonster(const Monster* monster){
 	
 	glTranslatef(oglPosition.x, oglPosition.y, 0.0);
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
 	drawTexturedQuad(monsterTexture);
-	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 }
@@ -88,10 +85,7 @@ void drawTowers(List* towersList){
 		Point3D oglPosition = sdlToOpenGL(cur->position);
 		glTranslatef(oglPosition.x, oglPosition.y, oglPosition.z);
 		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.0f);
 		drawTexturedQuad(textureId);
-		glDisable(GL_ALPHA_TEST);
 		glPopMatrix();
 	}	
 }

@@ -150,7 +150,7 @@ int main(int argc,  char* argv[]) {
 		/* On tente un nouveau cycle de tours de jeu si besoin. Le temps est 
 		 géré par la fonction. La plupart du temps plusieurs tours de jeu sont
 		 joués d'affilé. */
-		gameFinished = worldNewStep(&world);
+		worldNewStep(&world);
 		 
 		drawWorld(&world);
 		drawInterface(&interface);

@@ -26,6 +26,8 @@ typedef struct{
 	GLuint PAUSE_MESSAGE_ID;
 	GLuint INFO_PANEL_ID;
 	GLuint WAVE_MESSAGE_ID;
+	GLuint WIN_MESSAGE_ID;
+	GLuint LOOSE_MESSAGE_ID;
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;
@@ -51,7 +53,7 @@ static const unsigned int BIT_PER_PIXEL = 32;
  * sont liés. Les stocke dans la variable globale 
  * GAME_TEXTURES_ID.
  */
-void initGameGraphics(const SDL_Surface* map);
+void initGameGraphics(SDL_Surface* map);
 
 /**
  * Initialise la fenêtre SDL du
@@ -79,7 +81,7 @@ GLuint makeTextureFromFile(const char* imagePath);
  * Charge une texture à partir d'une SDL_Surface.
  * Retourne l'id de la texture générée.
  */
-GLuint makeTextureFromSurface(const SDL_Surface* surface);
+GLuint makeTextureFromSurface(SDL_Surface* surface);
 
 /**
  * Met à jour la texture pointée par l'identifiant passé

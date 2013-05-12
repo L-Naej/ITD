@@ -47,10 +47,12 @@ bool isMouseExtremRight = false;
 bool isMouseExtremLeft = false;
 bool isMouseExtremTop = false;
 bool isMouseExtremBottom = false;
-
+//Gestion de la fin du jeu
+Uint32 startEndGameTime = 0;
 bool handleGameActions(World* world, Interface* interface){
 	//Gestion de l'évolution de l'argent
 	static int lastMoney = 0;
+	bool gameIsFinished = false;
 	if(lastMoney != world->money){
 		updateMoneyTexture(interface, world->money);
 		lastMoney = world->money;
@@ -60,6 +62,20 @@ bool handleGameActions(World* world, Interface* interface){
 		interface->isBetweenWaves = true;
 		interface->waveNumber = world->currentMonstersWave + 1;//Le world compte en partant de 0, pas très sexy
 	}else interface->isBetweenWaves = false;
+	
+	//Le jeu est-il fini ?
+	if(world->gameLoosed || world->gameWinned){
+		if(startEndGameTime == 0) startEndGameTime = SDL_GetTicks();
+		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
+		if (elapsedTime > END_GAME_DURATION) gameIsFinished = true;
+		else{
+			interface->gameWinned = world->gameWinned;
+			interface->gameLoosed = world->gameLoosed;
+			gameIsFinished = false;
+		}
+		//On ne traite pas les actions de l'utilisateur en fin de jeu
+		return gameIsFinished;
+	}
 	
 	SDL_Event e;
 	bool askedForQuit = false;

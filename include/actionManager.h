@@ -12,7 +12,9 @@
 #include "world.h"
 #include "interfaceDrawer.h"
 
-
+//Temps qui s'écoule entre la fin du jeu et le retour au menu en millisecondes
+//(permet d'afficher un message de fin de jeu)
+static const Uint32 END_GAME_DURATION = 3000;
 /**
  * Gère les actions clavier et souris du joueur lorsqu'il
  * est dans le menu d'accueil.
