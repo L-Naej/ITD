@@ -209,6 +209,8 @@ void drawTexturedQuad(GLuint textureId){
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER,0.0f);
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	
 	glBegin(GL_QUADS);
@@ -229,6 +231,7 @@ void drawTexturedQuad(GLuint textureId){
 
 	glEnd();
 	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
 }
