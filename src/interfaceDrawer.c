@@ -133,7 +133,9 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 
 
 		if (*menuOpen == 1){
+
 			drawMapMenu(mapName);
+
 		}
 
 		if (*aideOpen == 1){
@@ -195,6 +197,7 @@ void drawMapMenu (char* mapName){
 
 		yText-=70.;
 	}
+
 }	
 
 void drawCarre(){

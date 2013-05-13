@@ -23,9 +23,11 @@ void initGameGraphics(const SDL_Surface* map){
 }
 
 void initMenuGraphics(char* font1,char* font2, char* rootPath){
-	
+
+
 	TTF_Font* police = NULL;
 	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
+
 	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
 	MENU_TEXTURES_ID.BIENVENUE = makeTextureFromSurface (bienvenue_surface);
 
@@ -50,18 +52,21 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
 
-	
+
 	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName,rootPath);
 
 	int j;
 
 	for (j=1;j<=MENU_TEXTURES_ID.nb_cartes;j++){
-		printf(" %s\n",BUTTON_OF_MENU.tabMapName[j]);
+
 		SDL_Surface* text=loadFont(police,BUTTON_OF_MENU.tabMapName[j],font1,100);
+
 		MENU_TEXTURES_ID.MAPS[j] = makeTextureFromSurface (text);
+
 	}
-	
+
 			TTF_CloseFont(police);
+
 
 }
 

@@ -19,8 +19,6 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 		switch(e.type) {
 		 	case SDL_MOUSEBUTTONDOWN:
          			if (e.button.button==SDL_BUTTON_LEFT){
-					Point3D sdl = PointXYZ(e.button.x,e.button.y,0.);
-					Point3D oGL = sdlToOpenGL(sdl);
 				clicButton (e, playIsPush, e.button.x ,e.button.y, menuOpen,aideOpen, mapName);
 					
 				}
@@ -272,6 +270,7 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
+
 
 			}
 			int i;
