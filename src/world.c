@@ -3,6 +3,7 @@
 #include <SDL/SDL_image.h>
 #include <math.h>
 #include "geometry.h"
+#include "point3D.h"
 
 //-------------- FONCTIONS PUBLIQUES --------------------------
 World initWorld(const char* pathToItdFile){
@@ -63,19 +64,22 @@ bool worldNewStep(World* world){
 	return isGameFinished;
 }
 
-//TODO
 bool canIPutATowerHere(World* world, int posX, int posY){
 	int i;
 	Uint32 time = SDL_GetTicks();
-	Point3D position = PointXYZ(posX, posY, 0.);
+	/*Point3D position = PointXYZ(posX, posY, 0.);*/
 	if(world == NULL) return false;
-	for(i=0; i < world->map.nbPixelsConst; i++) {	
-		if (arePointsEquals(position, world->map.tabXYConstruct[i])) {
+	if (posX > 800 || posY > 600) {	
+		printf("La zone entrée ne fait pas partie de la carte veuillez choisir une dimension entre %d et %d \n",world->map.width,world->map.height);
+		exit(0);
+		}
+	for(i=0; i <= world->map.nbPixels; i++) {	
+		if (world->map.tabXYConstruct[posX][posY] == true) {
 			time = SDL_GetTicks() - time;		
 			printf("Zone constructible temps de recherche : %d, iteration %d\n", time, i);
 			return true;	
 		}
-			
+					
 	}
 	time = SDL_GetTicks() - time;
 	printf("Zone non constructible, temps de recherche : %d \n", time);

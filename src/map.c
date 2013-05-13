@@ -384,17 +384,20 @@ bool loadPpmMap(Map* map){
 	}	  
 	
 	int i,j = 0;
-	int cpt = 1;
+	int cpt_const, cpt_inconst = 1;
 	Color3u colorPixel;
 	Uint32 initColorPixel;
 	Uint32 newColorPixel;
 	int nbPixels = map->image->w * map->image->h;
-	map->tabXYConstruct = (Point3D*) malloc(nbPixels*sizeof(Point3D));
+	int nbLignes = map->image->w;
+	int nbCol = map->image->h; 
+	map->tabXYConstruct = (bool**) malloc(nbLignes*sizeof(bool*));
 	if(map->tabXYConstruct == NULL){
 		printf("Erreur lors de l'allocation du tableau de mémorisation des zones constructibles \n");
            	exit(EXIT_FAILURE);
 	} 
-	for(i=0; i<map->image->w; i++) {		
+	for(i=0; i<map->image->w+1; i++) {	
+	    map->tabXYConstruct[i] = (bool*) malloc(nbCol*sizeof(bool));	
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
@@ -402,16 +405,11 @@ bool loadPpmMap(Map* map){
 				colorPixel.red = map->constructAreaColor.red;
 				colorPixel.green = map->constructAreaColor.green;
 				colorPixel.blue = map->constructAreaColor.blue;	
-		
-				map->tabXYConstruct[j].x = i;
-				map->tabXYConstruct[j].y = j;
-				map->tabXYConstruct[j].z = 0.;
-				
-				cpt++;	
-				/*	
-				printf("posXConstruct : %f \n",map->tabXYConstruct[j].x );
-				printf("posYConstruct : %f \n",map->tabXYConstruct[j].y );
-				*/					
+				map->tabXYConstruct[i][j] = true;
+
+				cpt_const++;	
+					
+				/*printf("constructible ? : %d \n",map->tabXYConstruct[i][j]);*/
 				
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
@@ -420,16 +418,24 @@ bool loadPpmMap(Map* map){
 				colorPixel.red = map->pathColor.red;
 				colorPixel.green = map->pathColor.green;
 				colorPixel.blue = map->pathColor.blue;	
+
+				map->tabXYConstruct[i][j] = false;
+				
+				cpt_inconst++;	
+				
+				/*printf("constructible ? : %d \n",map->tabXYConstruct[i][j]);*/
+
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			}
 		}
 	}
 	/* realloc  */
-	int nbPixelsConst = cpt;
-	map->nbPixelsConst = nbPixelsConst;
-	map->tabXYConstruct = realloc(map->tabXYConstruct, nbPixelsConst * sizeof(char));
-	if (map->tabXYConstruct == NULL) printf("Erreur reallocation mémoire tableau zones constructibles \n");
+	/*int nbPixelsConst = cpt_const;
+	int nbPixelsInconst = cpt_inconst;*/
+	map->nbPixels = nbPixels;
+	/*map->tabXYConstruct = realloc(map->tabXYConstruct, nbPixelsConst * sizeof(char));
+	if (map->tabXYConstruct == NULL) printf("Erreur reallocation mémoire tableau zones constructibles \n");*/
 	/*free(map->tabXYConstruct);*/
 	return true;
 }
