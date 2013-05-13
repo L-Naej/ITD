@@ -426,11 +426,8 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Point3D sdlPosition = PointXYZ(WINDOW_WIDTH *positionX, WINDOW_HEIGHT *positionY, 0.0);
 	interface.position = sdlToOpenGL(sdlPosition);
 	interface.moneyPosition = interface.position;
-	interface.isBetweenWaves = false;
-	interface.waveNumber = 0;
 	interface.messageDisplayTime = 0;
-	interface.gameWinned = false;
-	interface.gameLoosed = false;
+	interface.lastMoney = 0;
 	
 	//Création messages de fin
 	createLooseMessage();
@@ -547,7 +544,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 }
 
 //TODO
-void drawInterface(Interface* interface){
+void drawInterface(Interface* interface, World* world){
 	
 	if(interface == NULL) return;
 	
@@ -561,6 +558,10 @@ void drawInterface(Interface* interface){
 	glPopMatrix();
 	
 	//Dessin du texte argent
+	if(interface->lastMoney != world->money){
+		updateMoneyTexture(interface, world->money);
+		interface->lastMoney = world->money;
+	}
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
@@ -636,10 +637,10 @@ void drawInterface(Interface* interface){
 	}
 	
 	//Affichage du message "Wave X"
-	if(interface->isBetweenWaves){
+	if(world->isBetweenWaves){
 		if(interface->messageDisplayTime == 0){
 			glDeleteTextures(1, &(GAME_TEXTURES_ID.WAVE_MESSAGE_ID));
-			GAME_TEXTURES_ID.WAVE_MESSAGE_ID = createWaveMessage(interface->waveNumber);
+			GAME_TEXTURES_ID.WAVE_MESSAGE_ID = createWaveMessage(world->currentMonstersWave + 1);
 			interface->messageDisplayTime = SDL_GetTicks();
 		}
 		Uint32 elapsedTime = SDL_GetTicks() - interface->messageDisplayTime;
@@ -655,14 +656,14 @@ void drawInterface(Interface* interface){
 	}
 	
 	//Si on a gagné/perdu affichage du message
-	if(interface->gameWinned){
+	if(world->gameWinned){
 		glPushMatrix();
 		glLoadIdentity();
 		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);
 		drawTexturedQuad(GAME_TEXTURES_ID.WIN_MESSAGE_ID);
 		glPopMatrix();
 	}
-	else if(interface->gameLoosed){
+	else if(world->gameLoosed){
 		glPushMatrix();
 		glLoadIdentity();
 		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);

@@ -189,6 +189,8 @@ GLuint makeTextureFromSurfaces(SDL_Surface** surfaces, int nbSurfaces, int align
 }
 
 void drawQuad(){
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBegin(GL_QUADS);
 	
 	//Bottom left
@@ -202,13 +204,12 @@ void drawQuad(){
 	glVertex2f(-0.5, 0.5);
 
 	glEnd();
+	glDisable(GL_BLEND);
 }
 
 void drawTexturedQuad(GLuint textureId){
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
@@ -230,7 +231,6 @@ void drawTexturedQuad(GLuint textureId){
 	glVertex2f(-0.5, 0.5);
 
 	glEnd();
-	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);

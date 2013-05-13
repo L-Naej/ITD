@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "geometry.h"
 #include "list.h"
+#include "world.h"
 
 /**
  * L'interface contient l'ensemble des boutons nécessaires à l'interaction
@@ -47,11 +48,8 @@ typedef struct{
 	float infoHeight;
 	Point3D infoPosition;
 	Action currentAction;///L'action en cours du joueur suite à une interaction sur l'interface
-	bool isBetweenWaves;
-	char waveNumber;
 	Uint32 messageDisplayTime; //Indique quand l'interface a commencé à afficher le dernier message en date
-	bool gameWinned;
-	bool gameLoosed;
+	int lastMoney;///Permet de savoir s'il faut mettre à jour l'affcihage de l'argent
 }Interface;
 
 /**
@@ -67,7 +65,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 /**
  * Dessine l'interface pointée par interface.
  */
-void drawInterface(Interface* interface);
+void drawInterface(Interface* interface, World* world);
 
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
 void drawMenu(GLuint ,GLuint,GLuint ,GLuint , GLuint,GLuint,GLuint,GLuint,GLuint,GLuint,GLuint, GLuint,GLuint, int*,int*,int*, char*);

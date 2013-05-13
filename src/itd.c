@@ -153,7 +153,7 @@ int main(int argc,  char* argv[]) {
 		worldNewStep(&world);
 		 
 		drawWorld(&world);
-		drawInterface(&interface);
+		drawInterface(&interface, &world);
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
 		au tour suivant.
 		 */

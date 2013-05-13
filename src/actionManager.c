@@ -51,17 +51,7 @@ bool isMouseExtremBottom = false;
 Uint32 startEndGameTime = 0;
 bool handleGameActions(World* world, Interface* interface){
 	//Gestion de l'évolution de l'argent
-	static int lastMoney = 0;
 	bool gameIsFinished = false;
-	if(lastMoney != world->money){
-		updateMoneyTexture(interface, world->money);
-		lastMoney = world->money;
-	}
-	//Est-on entre deux vagues ? L'interface doit le savoir pour afficher un message
-	if(world->isBetweenWaves){
-		interface->isBetweenWaves = true;
-		interface->waveNumber = world->currentMonstersWave + 1;//Le world compte en partant de 0, pas très sexy
-	}else interface->isBetweenWaves = false;
 	
 	//Le jeu est-il fini ?
 	if(world->gameLoosed || world->gameWinned){
@@ -69,8 +59,6 @@ bool handleGameActions(World* world, Interface* interface){
 		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
 		if (elapsedTime > END_GAME_DURATION) gameIsFinished = true;
 		else{
-			interface->gameWinned = world->gameWinned;
-			interface->gameLoosed = world->gameLoosed;
 			gameIsFinished = false;
 		}
 		//On ne traite pas les actions de l'utilisateur en fin de jeu
