@@ -19,6 +19,7 @@ typedef enum{
 typedef struct{
 	MonsterType type;
 	int life; 		/*points de vie*/
+	int maxLife;
 	int rocketResistance;
 	int laserResistance;
 	int gunResistance;

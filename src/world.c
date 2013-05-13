@@ -53,7 +53,7 @@ void startNewMonsterWave(World* world){
 	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map (en z)
 	//Avec comme destination le point de départ de leur chemin.
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-		world->monsters[i] = createMonster(world->currentMonstersWave, i);
+		world->monsters[i] = createMonster(world->currentMonstersWave +1, i);
 		world->monsters[i].destination = startPoint;
 		//On ménage un espace entre les monstres, le *2 a été rajouté après qu'on les fasse arrivé par l'axe z, 
 		//en effet au moment où le monstre arrive sur la map il lui faut à nouveau s'éloigner en x et en y du monstre qui le suit !

@@ -34,7 +34,8 @@ Monster createMonster(unsigned char wave, int nbMonstersCreated){
 Monster createBlueOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = BLUE_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 40*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
 	monster.gunResistance = 1;
@@ -54,7 +55,8 @@ Monster createBlueOctopus(unsigned char wave){
 Monster createOrangeOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = ORANGE_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 3*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
 	monster.gunResistance = 1;
@@ -73,7 +75,8 @@ Monster createOrangeOctopus(unsigned char wave){
 Monster createGreenOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = GREEN_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 3*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
 	monster.gunResistance = 1;
