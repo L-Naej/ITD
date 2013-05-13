@@ -12,8 +12,7 @@
 #endif
 #include "point3D.h"
 
-
-
+#define NB_MAX_MAPS 5
 
 typedef struct{
 	GLuint BLUE_OCTOPUS_ID;
@@ -44,7 +43,7 @@ typedef struct menu_text{
 	GLuint BULLE;
 	GLuint CASE_CHECKED;
 	GLuint CASE_VIDE;
-	GLuint MAPS[5];
+	GLuint MAPS[NB_MAX_MAPS];
 	int nb_cartes;
 }ITD_Menu_Textures;
 

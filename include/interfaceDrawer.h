@@ -33,11 +33,10 @@ typedef struct{
 	Button* regles;
 	Button* jouer;
 	Button* choix_carte;
-	Button* carte[5];
-	Button* cases[5];
+	Button* carte[NB_MAX_MAPS];
+	Button* cases[NB_MAX_MAPS];
 	int cmp;
-	char* tabMapName[4];
-
+	char* tabMapName[NB_MAX_MAPS];
 }ButtonOfMenu;
 
 ButtonOfMenu BUTTON_OF_MENU;	

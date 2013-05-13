@@ -270,20 +270,12 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
-
-
 			}
 			int i;
-			for (i=1;i<=5;i++){
+			for (i=0;i<MENU_TEXTURES_ID.nb_cartes;i++){
 				if(BUTTON_OF_MENU.carte[i]!=NULL){
 					if (isMouseOnButton(BUTTON_OF_MENU.carte[i],x, y) ==true){
-								printf("map name %s\n",mapName);
-										printf("map name %s\n", BUTTON_OF_MENU.tabMapName[i]);
-
 						strcpy(mapName, BUTTON_OF_MENU.tabMapName[i]);
-								printf("map name %s\n",mapName);
-
-
 					}
 				}
 			}

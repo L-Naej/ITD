@@ -178,7 +178,7 @@ void drawMapMenu (char* mapName){
 		Button* tabMap[MENU_TEXTURES_ID.nb_cartes];
 
 
-		for (i=1; i<=MENU_TEXTURES_ID.nb_cartes;i++){
+		for (i=0; i<MENU_TEXTURES_ID.nb_cartes;i++){
 
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/

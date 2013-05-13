@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include "utils.h"
+#include "graphics.h"
 #define MAX_LENGHT 30
 	
 int readDirectory(char* map[],char* rootPath){
@@ -15,14 +16,13 @@ int readDirectory(char* map[],char* rootPath){
 
 	struct dirent* fichierLu =NULL;
 	
-	int i=1;
-
-
-	while((fichierLu = readdir(dataRep))!=NULL && i<= 5){
-		if (strcmp(fichierLu->d_name,".")!=0 && strcmp(fichierLu->d_name,"..")!=0){
+	int i=0;
+	while((fichierLu = readdir(dataRep))!=NULL && i< NB_MAX_MAPS){
+		printf("%s\n",fichierLu->d_name);
+		if (fichierLu->d_name[0] != '.'){
 
 			if (strlen(fichierLu->d_name)>  MAX_LENGHT)
-				printf("Désolé, le nom de la map dépasse 30 caractères\n");
+				fprintf(stderr, "Erreur : le nom du fichier %s dépasse 30 caractères\n", fichierLu->d_name);
 			else{
 				map[i]=(char*)malloc(sizeof(char)*strlen(fichierLu->d_name));
 				strcpy(map[i],fichierLu->d_name);
@@ -32,7 +32,7 @@ int readDirectory(char* map[],char* rootPath){
 		}
 	}
 
-	int nb_cartes = i-1;
+	int nb_cartes = i;
 
 	if (closedir(dataRep)!=0){
 		printf("erreur dans la fermeture du repertoire\n");

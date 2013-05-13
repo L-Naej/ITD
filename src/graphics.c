@@ -57,7 +57,7 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 
 	int j;
 
-	for (j=1;j<=MENU_TEXTURES_ID.nb_cartes;j++){
+	for (j=0;j<MENU_TEXTURES_ID.nb_cartes;j++){
 
 		SDL_Surface* text=loadFont(police,BUTTON_OF_MENU.tabMapName[j],font1,100);
 
