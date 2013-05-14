@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "point3D.h"
+static const int TOWER_WIDTH = 30;
+static const int TOWER_HEIGHT = 50;
 
 typedef enum {
 	ROCKET, LASER, GUN, HYBRID

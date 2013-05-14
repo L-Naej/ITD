@@ -65,22 +65,23 @@ bool worldNewStep(World* world){
 }
 
 bool canIPutATowerHere(World* world, int posX, int posY){
-	int i;
+	
 	Uint32 time = SDL_GetTicks();
-	/*Point3D position = PointXYZ(posX, posY, 0.);*/
+	int tower_center = world->map.tabXYConstruct[posX][posY];
+	int tower_top_right = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
+	int tower_top_left = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
+	int tower_bot_right = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
+	int tower_bot_left = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
 	if(world == NULL) return false;
-	if (posX > 800 || posY > 600) {	
-		printf("La zone entrée ne fait pas partie de la carte veuillez choisir une dimension entre %d et %d \n",world->map.width,world->map.height);
-		exit(0);
-		}
-	for(i=0; i <= world->map.nbPixels; i++) {	
-		if (world->map.tabXYConstruct[posX][posY] == true) {
+	if (posX >= world->map.width || posY >= world->map.height) return false;
+		
+	if (tower_center == true && tower_top_right == true && tower_top_left == true && tower_bot_right == true && tower_bot_left == true ) {
 			time = SDL_GetTicks() - time;		
-			printf("Zone constructible temps de recherche : %d, iteration %d\n", time, i);
+			printf("Zone constructible temps de recherche : %d \n", time);
 			return true;	
-		}
-					
 	}
+					
+	
 	time = SDL_GetTicks() - time;
 	printf("Zone non constructible, temps de recherche : %d \n", time);
 	return false;
