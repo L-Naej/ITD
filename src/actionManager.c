@@ -268,6 +268,8 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName){
 
+			Point3D clicOGL = sdlToOpenGL(PointXYZ(x,y,0));
+			printf ("position du clic x : %f y:%f\n",clicOGL.x,clicOGL.y);
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
 			}
@@ -276,6 +278,8 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 				if(BUTTON_OF_MENU.carte[i]!=NULL){
 					if (isMouseOnButton(BUTTON_OF_MENU.carte[i],x, y) ==true){
 						strcpy(mapName, BUTTON_OF_MENU.tabMapName[i]);
+						printf("Position du bouton %s: x entre %f et %f; y entre %f et %f\n",BUTTON_OF_MENU.tabMapName[i],(BUTTON_OF_MENU.carte[i]->position.x)-((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.x)+((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.y)-((BUTTON_OF_MENU.carte[i]->height)/2.),(BUTTON_OF_MENU.carte[i]->position.y)+((BUTTON_OF_MENU.carte[i]->height)/2.));
+						break;
 					}
 				}
 			}
@@ -284,7 +288,7 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 			if (isMouseOnButton(BUTTON_OF_MENU.regles,x, y) ==true){
 				*aideOpen =1;
 			}
-			if (x >= 190. && x <= 212. && y >= -212. && y <= -194. && *aideOpen==1 ){
+			if (isMouseOnButton(BUTTON_OF_MENU.close_rules,x, y) ==true && *aideOpen==1 ){
 				*aideOpen =0;
 			}
 			if (isMouseOnButton(BUTTON_OF_MENU.jouer,x, y) ){

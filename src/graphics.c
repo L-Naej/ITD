@@ -47,9 +47,9 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
 	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
 	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
-	MENU_TEXTURES_ID.CASE_CHECKED = makeTextureFromFile("images/casechecked.png");
 	MENU_TEXTURES_ID.CASE_VIDE = makeTextureFromFile("images/casevide.png");
 	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
+	MENU_TEXTURES_ID.RULES_CLOSE = makeTextureFromFile("images/close.png");
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
 
 
@@ -238,11 +238,11 @@ void drawQuad(){
 }
 
 void drawTexturedQuad(GLuint textureId){
-	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glAlphaFunc(GL_GREATER,0.0f);
-	
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glBegin(GL_QUADS);
 	
 	//Bottom left
@@ -260,9 +260,9 @@ void drawTexturedQuad(GLuint textureId){
 	glVertex2f(-0.5, 0.5);
 
 	glEnd();
+	glDisable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D,0);
 	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
 }
 
 Point3D sdlToOpenGL(Point3D sdlPoint){
@@ -314,7 +314,6 @@ int initWindow(){
 
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
-	SDL_WM_GrabInput(SDL_GRAB_ON);//On capture la souris
 	SDL_WarpMouse((Uint16)200, (Uint16)200);
 	return 0;
 }

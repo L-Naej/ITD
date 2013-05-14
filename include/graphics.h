@@ -40,8 +40,8 @@ typedef struct menu_text{
 	GLuint PLAY_LEGEND;
 	GLuint BIENVENUE;
 	GLuint RULES;
+	GLuint RULES_CLOSE;
 	GLuint BULLE;
-	GLuint CASE_CHECKED;
 	GLuint CASE_VIDE;
 	GLuint MAPS[NB_MAX_MAPS];
 	int nb_cartes;

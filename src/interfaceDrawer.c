@@ -148,6 +148,19 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 		drawTexturedQuad(MENU_TEXTURES_ID.RULES);
 		glPopMatrix();
 
+
+
+		Point3D closePosition = PointXYZ(223.,225.,0.);
+		Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
+		glColor3ub(255,255,255);
+		drawButton(closeButton);
+		BUTTON_OF_MENU.close_rules=closeButton;
+	}
+
+		if (*menuOpen == 1){
+
+			drawMapMenu(mapName);
+
 		}
 
 		if (*playIsPush == 1){
@@ -493,6 +506,8 @@ void drawButton(const Button* button){
 	case PLAY_MENU : textureId = MENU_TEXTURES_ID.PLAY_BUTTON;
 	break;
 	case MAP_MENU : textureId = MENU_TEXTURES_ID.MAPS[BUTTON_OF_MENU.cmp];
+	break;
+	case CLOSE_RULES_MENU : textureId = MENU_TEXTURES_ID.RULES_CLOSE;
 	break;
 
 	
