@@ -18,7 +18,7 @@
 //Temps d'affichage des messages de l'interface en millisecondes
 static const Uint32 MESSAGE_DISPLAY_DURATION = 3000; 
 typedef enum{
-	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION
+	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION, AIDE_MENU,CHOIX_MENU,PLAY_MENU,MAP_MENU,MAP_MENU_CASE,CLOSE_RULES_MENU
 }Action;
 
 /**
@@ -31,7 +31,19 @@ typedef struct{
 	float width;///En pixels
 	float height;///En pixels
 }Button;
-	
+
+typedef struct{
+	Button* regles;
+	Button* jouer;
+	Button* choix_carte;
+	Button* close_rules;
+	Button* carte[NB_MAX_MAPS];
+	Button* cases[NB_MAX_MAPS];
+	int cmp;
+	char* tabMapName[NB_MAX_MAPS];
+}ButtonOfMenu;
+
+ButtonOfMenu BUTTON_OF_MENU;	
 
 /**
  * Structure représentant l'interface du jeu.
@@ -67,13 +79,21 @@ typedef struct{
 Interface initGameInterface(float width, float height, float positionX, float positionY);
 
 /**
+ * Charge les textures du menu dans la carte
+ * graphique et récupère les textures id qui leurs
+ * sont liés. Les stocke dans la variable globale 
+ * MENU_TEXTURES_ID.
+ */
+void initMenuGraphics(char* font1,char* font2,char* rootPath);
+
+/**
  * Dessine l'interface pointée par interface.
  */
 void drawInterface(Interface* interface, World* world);
 
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
-void drawMenu(GLuint ,GLuint,GLuint ,GLuint , GLuint,GLuint,GLuint,GLuint,GLuint,GLuint,GLuint, GLuint,GLuint, int*,int*,int*, char*);
-void drawMapMenu (GLuint carteMarine,GLuint carteSpatiale, GLuint casevide, GLuint casechecked, char* mapName);
+void drawMenu(GLuint*,int, int*,int*,int*, char*);
+void drawMapMenu (char* mapName);
 
 /** 
   *Met à jour la texture affichant l'argent du joueur.

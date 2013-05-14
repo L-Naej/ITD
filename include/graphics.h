@@ -12,6 +12,8 @@
 #endif
 #include "point3D.h"
 
+#define NB_MAX_MAPS 5
+
 typedef struct{
 	GLuint BLUE_OCTOPUS_ID;
 	GLuint ORANGE_OCTOPUS_ID;
@@ -31,6 +33,24 @@ typedef struct{
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;
+
+typedef struct menu_text{
+	GLuint AIDE_BUTTON;
+	GLuint MAP_CHOICE_BUTTON;
+	GLuint PLAY_BUTTON;
+	GLuint AIDE_LEGEND;
+	GLuint MAP_CHOICE_LEGEND;
+	GLuint PLAY_LEGEND;
+	GLuint BIENVENUE;
+	GLuint RULES;
+	GLuint RULES_CLOSE;
+	GLuint BULLE;
+	GLuint CASE_VIDE;
+	GLuint MAPS[NB_MAX_MAPS];
+	int nb_cartes;
+}ITD_Menu_Textures;
+
+ITD_Menu_Textures MENU_TEXTURES_ID;
 
 /* Dimensions de la fenêtre */
 unsigned int WINDOW_WIDTH;
@@ -54,6 +74,7 @@ static const unsigned int BIT_PER_PIXEL = 32;
  * GAME_TEXTURES_ID.
  */
 void initGameGraphics(SDL_Surface* map);
+
 
 /**
  * Initialise la fenêtre SDL du

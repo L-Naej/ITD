@@ -12,16 +12,14 @@
 #include "graphics.h"
 #include "interfaceDrawer.h"
 
-bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked){
+bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen){
 	SDL_Event e;
 	bool askedForQuit = false;
 	while(SDL_PollEvent(&e) && !askedForQuit) {
 		switch(e.type) {
 		 	case SDL_MOUSEBUTTONDOWN:
          			if (e.button.button==SDL_BUTTON_LEFT){
-					float x = 800.0*(e.button.x/(float)WINDOW_WIDTH)-400.0;
-					float y = 600.0*(e.button.y/(float)WINDOW_HEIGHT)-300.0;
-				clicButton (e, playIsPush, x ,y, menuOpen,aideOpen, mapName, casechecked);
+				clicButton (e, playIsPush, e.button.x ,e.button.y, menuOpen,aideOpen, mapName);
 					
 				}
 			break;
@@ -292,28 +290,32 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	return inside;
 }
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName, GLuint casechecked){
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName){
 
-			if (x >= 60. && x <= 178. && y >= -180. && y <= -60. && *aideOpen ==0){
+			Point3D clicOGL = sdlToOpenGL(PointXYZ(x,y,0));
+			printf ("position du clic x : %f y:%f\n",clicOGL.x,clicOGL.y);
+			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
 			}
-
-			if (x >= 194. && x <= 363. && y >= -135. && y <= -105. && *menuOpen ==1){
-				strcpy(mapName, "map1.itd");
-
-
+			int i;
+			for (i=0;i<MENU_TEXTURES_ID.nb_cartes;i++){
+				if(BUTTON_OF_MENU.carte[i]!=NULL){
+					if (isMouseOnButton(BUTTON_OF_MENU.carte[i],x, y) ==true){
+						strcpy(mapName, BUTTON_OF_MENU.tabMapName[i]);
+						printf("Position du bouton %s: x entre %f et %f; y entre %f et %f\n",BUTTON_OF_MENU.tabMapName[i],(BUTTON_OF_MENU.carte[i]->position.x)-((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.x)+((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.y)-((BUTTON_OF_MENU.carte[i]->height)/2.),(BUTTON_OF_MENU.carte[i]->position.y)+((BUTTON_OF_MENU.carte[i]->height)/2.));
+						break;
+					}
+				}
 			}
-			if (x >= 200. && x <= 384. && y >= -95. && y <= -66. && *menuOpen ==1){
-				strcpy(mapName, "map2.itd");
 
-			}
-			if (x >= -180. && x <= -60. && y >= -181. && y <= -60.){
+
+			if (isMouseOnButton(BUTTON_OF_MENU.regles,x, y) ==true){
 				*aideOpen =1;
 			}
-			if (x >= 190. && x <= 212. && y >= -212. && y <= -194. && *aideOpen==1 ){
+			if (isMouseOnButton(BUTTON_OF_MENU.close_rules,x, y) ==true && *aideOpen==1 ){
 				*aideOpen =0;
 			}
-			if (x >= -61. && x <= 58. && y >= 60. && y <= 178. ){
+			if (isMouseOnButton(BUTTON_OF_MENU.jouer,x, y) ){
 				*playIsPush =1;
 			}
 

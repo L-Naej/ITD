@@ -13,10 +13,10 @@ void initGameGraphics(SDL_Surface* map){
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1.png");
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2.png");
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID = makeTextureFromFile("images/monster3.png");
-	GAME_TEXTURES_ID.LASER_TOWER_ID = makeTextureFromFile("images/tower.png");
-	GAME_TEXTURES_ID.ROCKET_TOWER_ID = makeTextureFromFile("images/tower.png");
-	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/tower.png");
-	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/tower.png");
+	GAME_TEXTURES_ID.LASER_TOWER_ID = makeTextureFromFile("images/laser.png");
+	GAME_TEXTURES_ID.ROCKET_TOWER_ID = makeTextureFromFile("images/rocket.png");
+	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/mitraillette.png");
+	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/hybrid.png");
 	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
 	
 	//Initialisées après par l'interace
@@ -212,8 +212,7 @@ void drawTexturedQuad(GLuint textureId){
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	
+
 	glBegin(GL_QUADS);
 	
 	//Bottom left
@@ -307,14 +306,13 @@ int initWindow(){
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(EXIT_FAILURE == setVideoMode(600, 400)) {
+	if(EXIT_FAILURE == setVideoMode(800, 600)) {
 		fprintf(stderr, "Impossible d'ouvrir la fenetre.\n");
 		return EXIT_FAILURE;
 	}
 
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
-	//SDL_WM_GrabInput(SDL_GRAB_ON);//On capture la souris
 	SDL_WarpMouse((Uint16)(WINDOW_WIDTH / 2), (Uint16)(WINDOW_HEIGHT/2));
 	return 0;
 }

@@ -6,5 +6,7 @@
 
 typedef enum{false=0, true=1}bool;
 
-unsigned char int32toubyte8(int);
+int readDirectory(char* map[],char* rootPath);
+
+
 #endif
