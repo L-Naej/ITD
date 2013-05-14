@@ -252,6 +252,37 @@ void drawCircle(int full){
 
 }
 
+Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
+	Point3D oglPoint;
+	float maxWidth, maxHeight;
+			maxWidth = mapWidth;
+					maxHeight = mapHeight;
+					/*
+	if(mapWidth > WINDOW_WIDTH){
+		maxWidth = mapWidth;
+	}
+	else{
+		maxWidth = WINDOW_WIDTH;
+	}
+	if(mapHeight > WINDOW_HEIGHT){
+		maxHeight = mapHeight;
+	}
+	else{
+		maxHeight = WINDOW_HEIGHT;
+	}
+	*/
+	oglPoint.x = -(maxWidth / 2.0) + 2*maxWidth/2.0 * itdPoint.x / maxWidth; 	
+	oglPoint.y = ((maxHeight / 2.0) - 2*maxHeight/2.0 * itdPoint.y / maxHeight); 
+	oglPoint.z = itdPoint.z;
+	
+	printf("ITD POINT ");
+	dumpPoint(itdPoint);
+	printf("OGL POINT");
+	dumpPoint(oglPoint);
+	return oglPoint;	
+}
+
+
 Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
 	oglPoint.z = sdlPoint.z;
@@ -275,8 +306,8 @@ void reshape() {
 }
 
 int setVideoMode() {
-	WINDOW_WIDTH = 800;
-	WINDOW_HEIGHT = 600;
+	WINDOW_WIDTH = 600;
+	WINDOW_HEIGHT = 400;
 	if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER)) {
 		return EXIT_FAILURE;
 	}

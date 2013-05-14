@@ -71,6 +71,12 @@ int initWindow();
 Point3D sdlToOpenGL(Point3D sdlPoint);
 
 /**
+ * Transforme un point itd (dans le repère de la map)
+ * en opengl et vice-versa.
+ */
+Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint);
+
+/**
  * Charge une texture dans la carte graphique à partir de
  * l'image dont le chemin d'accès est passé en paramètre.
  * Retourne l'id de la texture générée.

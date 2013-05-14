@@ -49,12 +49,12 @@ void drawMonster(const Monster* monster){
 		default : return;
 		break;
 	}
-	Point3D oglPosition = sdlToOpenGL(monster->position);	
+	//Point3D oglPosition = sdlToOpenGL(monster->position);	
 	
 	glPushMatrix();
 	glColor3ub(255,255,255);
 	
-	glTranslatef(oglPosition.x, oglPosition.y, oglPosition.z);
+	glTranslatef(monster->position.x, monster->position.y, monster->position.z);
 	glPushMatrix();
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	drawTexturedQuad(monsterTexture);
@@ -90,8 +90,8 @@ void drawTowers(List* towersList){
 		}
 		glPushMatrix();
 		glColor3ub(255,255,255);
-		Point3D oglPosition = sdlToOpenGL(cur->position);
-		glTranslatef(oglPosition.x, oglPosition.y, oglPosition.z);
+		//Point3D oglPosition = sdlToOpenGL(cur->position);
+		glTranslatef(cur->position.x, cur->position.y, cur->position.z);
 		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
 		drawTexturedQuad(textureId);
 		glPopMatrix();
@@ -116,20 +116,20 @@ void drawPath(const Map* map){
 	glPushMatrix();
 	glColor3ub(map->pathColor.red,map->pathColor.green,map->pathColor.blue);
 	glBegin(GL_LINE_STRIP);
-	glVertex2f(oglStartNode.x, oglStartNode.y);
+	glVertex2f(startNode.x, startNode.y);
 	do{
-		oglNode = sdlToOpenGL(curNode);
-		glVertex2f(oglNode.x,oglNode.y);
+		//oglNode = sdlToOpenGL(curNode);
+		glVertex2f(curNode.x,curNode.y);
 		curNode = nextNode(map->pathNodeList, curNode);
 	}while(! arePointsEquals(curNode, endNode));	
-	glVertex2f(oglEndNode.x, oglEndNode.y);
+	glVertex2f(endNode.x, endNode.y);
 	glEnd();
 	glPopMatrix();
 
 	//Dessin du point de départ 
 	glPushMatrix();
 	glColor3ub(map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue);
-	glTranslatef(oglStartNode.x,oglStartNode.y,oglStartNode.z);
+	glTranslatef(startNode.x,startNode.y,startNode.z);
 	glScalef(radius, radius, 1.);
 	drawCircle(1);
 	glPopMatrix();
@@ -137,7 +137,7 @@ void drawPath(const Map* map){
 	//Dessin du point d'arrivée
 	glPushMatrix();
 	glColor3ub(map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue);
-	glTranslatef(oglEndNode.x,oglEndNode.y,oglEndNode.z);
+	glTranslatef(endNode.x,endNode.y,endNode.z);
 	glScalef(radius, radius, 1.);
 	drawCircle(1);
 	glPopMatrix();
@@ -147,10 +147,10 @@ void drawPath(const Map* map){
 	glPushMatrix();	
 	glColor3ub(map->pathColor.red,map->pathColor.green,map->pathColor.blue);
 	do{
-		oglNode = sdlToOpenGL(curNode);
+		//oglNode = sdlToOpenGL(curNode);
 		
 		glPushMatrix();
-		glTranslatef(oglNode.x, oglNode.y, oglNode.z);
+		glTranslatef(curNode.x, curNode.y, curNode.z);
 		glScalef(radius, radius, 1.);
 		drawCircle(1);
 		glPopMatrix();

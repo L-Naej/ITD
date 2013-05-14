@@ -49,7 +49,7 @@ int main(int argc,  char* argv[]) {
 
 /*-------------- GESTION DU MENU --------------------*/
 	//TODO
-	bool play = false;//Pour debug, à remettre à false pour de vrai
+	bool play = true;//Pour debug, à remettre à false pour de vrai
 	char mapName[30]= "Not chosen";
 	int playIsPush = 0;
 
@@ -132,7 +132,7 @@ int main(int argc,  char* argv[]) {
 	//Surtout à appeler APRES avoir initialisé la SDL
 	char mapPath[50] = "map/";
 	strcat(mapPath, mapName);
-	World world = initWorld(mapPath);
+	World world = initWorld("map/map1.itd");
 	initGameGraphics(world.map.image);
 	
 	float width = .15;//10% de largeur

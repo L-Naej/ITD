@@ -265,9 +265,23 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 
 	
 	loadPpmMap(map);
+	
+	transformCoordToOpenGL(map);
 
 	return 1;
 } 
+
+void transformCoordToOpenGL(Map* map){
+	if(map == NULL) return;
+	goToHeadList(map->pathNodeList);
+	Point3D* cur = NULL;
+	
+	while( (cur = (Point3D*) nextData(map->pathNodeList) ) != NULL){
+		*cur = itdToOpenGL(map->width, map->height, *cur);
+		dumpPoint(*cur);
+	}
+}
+
 bool loadMap(Map* map, const char* pathToItdFile){	
 
 	/* On ouvre le fichier */

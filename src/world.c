@@ -64,6 +64,8 @@ void startNewMonsterWave(World* world){
 		world->monsters[i].position.z = floor(world->monsters[i].position.z);
 		world->monsters[i].direction = Vector(world->monsters[i].position, startPoint);
 		world->monsters[i].realPosition = world->monsters[i].position;
+		printf("Monstre %d position :",i);
+		dumpPoint(world->monsters[i].position);
 	}
 	
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
@@ -94,8 +96,13 @@ bool canIPutATowerHere(World* world, int posX, int posY){
 
 bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	if(world == NULL || world->towersList == NULL) return false;
-	//Si la zone où l'on veut construire la tour est non constructible, 
-	//on annule l'action.
+//----Si la zone où l'on veut construire la tour est non constructible, on annule l'action.---
+	
+	//On annule la translation de la caméra pour obtenir la position OpenGL "réelle"
+	Point3D oglRealPosition = sdlToOpenGL(PointXYZ(posX, posY, 0.0));
+	oglRealPosition.x -= world->cameraPosition.x;
+	oglRealPosition.y -= world->cameraPosition.y;
+	Point3D itdPosition = itdToOpenGL(world->map.width, world->map.height, oglRealPosition);
 	if(canIPutATowerHere(world, posX, posY) == false) return false;
 	
 	//L'erreur d'allocation est gérée plus bas
@@ -109,8 +116,9 @@ bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	}
 	
 	//La "caméra" fausse les coordonnées de la tour il faut donc l'annuler
-	Point3D towerPosition = PointXYZ(posX - world->cameraPosition.x,posY + world->cameraPosition.y,0);
-	newTower->position = towerPosition;
+	//Point3D towerPosition = PointXYZ(posX - world->cameraPosition.x,posY + world->cameraPosition.y,0);
+	//newTower->position = towerPosition;
+	newTower->position = oglRealPosition;
 	insertBottomCell(world->towersList, newTower);
 	
 	//La tour a un coût !

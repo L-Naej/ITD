@@ -264,16 +264,17 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	if(tower == NULL) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
-	Point3D oglTower = sdlToOpenGL(tower->position);
+	//Point3D oglTower = sdlToOpenGL(tower->position);
+	Point3D realTowerPos = tower->position;
 	//Il faut appliquer la translation de la caméra à la position
 	//"sdl to opengl" de la tour pour avoir sa position dans le monde
-	oglTower.x += cameraPosition.x;
-	oglTower.y += cameraPosition.y;
-	oglTower.z += cameraPosition.z;
+	realTowerPos.x += cameraPosition.x;
+	realTowerPos.y += cameraPosition.y;
+	realTowerPos.z += cameraPosition.z;
 	
-	inside = oglMouse.x >= oglTower.x - TOWER_WIDTH_PX / 2.0 && oglMouse.x <= oglTower.x + TOWER_HEIGHT_PX / 2.0;
+	inside = oglMouse.x >= realTowerPos.x - TOWER_WIDTH_PX / 2.0 && oglMouse.x <= realTowerPos.x + TOWER_HEIGHT_PX / 2.0;
 	if(!inside) return inside;
-	inside = oglMouse.y >= oglTower.y - TOWER_HEIGHT_PX / 2.0 && oglMouse.y <= oglTower.y + TOWER_HEIGHT_PX;
+	inside = oglMouse.y >= realTowerPos.y - TOWER_HEIGHT_PX / 2.0 && oglMouse.y <= realTowerPos.y + TOWER_HEIGHT_PX;
 	return inside;
 }
 
