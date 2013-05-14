@@ -87,7 +87,7 @@ Monster createGreenOctopus(unsigned char wave){
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
 	monster.nbTurnsSinceLastMove = 0;
-		monster.direction = VectorXYZ(0.,0.,0.);
+	monster.direction = VectorXYZ(0.,0.,0.);
 	
 	return monster;
 }

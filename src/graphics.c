@@ -255,22 +255,8 @@ void drawCircle(int full){
 Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
 	Point3D oglPoint;
 	float maxWidth, maxHeight;
-			maxWidth = mapWidth;
-					maxHeight = mapHeight;
-					/*
-	if(mapWidth > WINDOW_WIDTH){
-		maxWidth = mapWidth;
-	}
-	else{
-		maxWidth = WINDOW_WIDTH;
-	}
-	if(mapHeight > WINDOW_HEIGHT){
-		maxHeight = mapHeight;
-	}
-	else{
-		maxHeight = WINDOW_HEIGHT;
-	}
-	*/
+	maxWidth = mapWidth;
+	maxHeight = mapHeight;
 	oglPoint.x = -(maxWidth / 2.0) + 2*maxWidth/2.0 * itdPoint.x / maxWidth; 	
 	oglPoint.y = ((maxHeight / 2.0) - 2*maxHeight/2.0 * itdPoint.y / maxHeight); 
 	oglPoint.z = itdPoint.z;

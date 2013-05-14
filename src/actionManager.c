@@ -53,7 +53,6 @@ bool mouseInWindow;
 bool handleGameActions(World* world, Interface* interface){
 	//Gestion de l'évolution de l'argent
 	bool gameIsFinished = false;
-	dumpPoint(world->cameraPosition);
 	
 	//Le jeu est-il fini ?
 	if(world->gameLoosed || world->gameWinned){
