@@ -49,7 +49,6 @@ void drawMonster(const Monster* monster){
 		default : return;
 		break;
 	}
-	//Point3D oglPosition = sdlToOpenGL(monster->position);	
 	
 	glPushMatrix();
 	glColor3ub(255,255,255);
@@ -90,7 +89,6 @@ void drawTowers(List* towersList){
 		}
 		glPushMatrix();
 		glColor3ub(255,255,255);
-		//Point3D oglPosition = sdlToOpenGL(cur->position);
 		glTranslatef(cur->position.x, cur->position.y, cur->position.z);
 		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
 		drawTexturedQuad(textureId);
@@ -106,11 +104,8 @@ void drawPath(const Map* map){
 	//Dessin des cercles, en prenant en compte les bonnes couleurs
 	Point3D startNode = getStartPoint(map);
 	Point3D endNode = getEndPoint(map);
-	Point3D oglStartNode = sdlToOpenGL(startNode);
-	Point3D oglEndNode = sdlToOpenGL(endNode);
 	
 	Point3D curNode = nextNode(map->pathNodeList, startNode);
-	Point3D oglNode;
 	
 	//Dessin du chemin
 	glPushMatrix();
@@ -118,7 +113,6 @@ void drawPath(const Map* map){
 	glBegin(GL_LINE_STRIP);
 	glVertex2f(startNode.x, startNode.y);
 	do{
-		//oglNode = sdlToOpenGL(curNode);
 		glVertex2f(curNode.x,curNode.y);
 		curNode = nextNode(map->pathNodeList, curNode);
 	}while(! arePointsEquals(curNode, endNode));	
@@ -147,7 +141,6 @@ void drawPath(const Map* map){
 	glPushMatrix();	
 	glColor3ub(map->pathColor.red,map->pathColor.green,map->pathColor.blue);
 	do{
-		//oglNode = sdlToOpenGL(curNode);
 		
 		glPushMatrix();
 		glTranslatef(curNode.x, curNode.y, curNode.z);

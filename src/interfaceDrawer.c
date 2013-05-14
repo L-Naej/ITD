@@ -428,6 +428,10 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	interface.moneyPosition = interface.position;
 	interface.messageDisplayTime = 0;
 	interface.lastMoney = 0;
+	interface.relativePosX = positionX;
+	interface.relativePosY = positionY;
+	interface.relativeWidth = width;
+	interface.relativeHeight = height;
 	
 	//Création messages de fin
 	createLooseMessage();

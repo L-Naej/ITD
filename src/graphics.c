@@ -274,11 +274,7 @@ Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
 	oglPoint.x = -(maxWidth / 2.0) + 2*maxWidth/2.0 * itdPoint.x / maxWidth; 	
 	oglPoint.y = ((maxHeight / 2.0) - 2*maxHeight/2.0 * itdPoint.y / maxHeight); 
 	oglPoint.z = itdPoint.z;
-	
-	printf("ITD POINT ");
-	dumpPoint(itdPoint);
-	printf("OGL POINT");
-	dumpPoint(oglPoint);
+
 	return oglPoint;	
 }
 
@@ -305,10 +301,10 @@ void reshape() {
 	gluOrtho2D(GL_X_AXIS_MIN, GL_X_AXIS_MAX, GL_Y_AXIS_MIN, GL_Y_AXIS_MAX);
 }
 
-int setVideoMode() {
-	WINDOW_WIDTH = 600;
-	WINDOW_HEIGHT = 400;
-	if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER)) {
+int setVideoMode(int w, int h) {
+	WINDOW_WIDTH = w;
+	WINDOW_HEIGHT = h;
+	if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_RESIZABLE)) {
 		return EXIT_FAILURE;
 	}
 
@@ -325,14 +321,14 @@ int initWindow(){
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(EXIT_FAILURE == setVideoMode()) {
+	if(EXIT_FAILURE == setVideoMode(600, 400)) {
 		fprintf(stderr, "Impossible d'ouvrir la fenetre.\n");
 		return EXIT_FAILURE;
 	}
 
 	/* Titre de la fenêtre */
 	SDL_WM_SetCaption("ITD Avatanéo Camarasa Chiganne", NULL);
-	SDL_WM_GrabInput(SDL_GRAB_ON);//On capture la souris
-	SDL_WarpMouse((Uint16)200, (Uint16)200);
+	//SDL_WM_GrabInput(SDL_GRAB_ON);//On capture la souris
+	SDL_WarpMouse((Uint16)(WINDOW_WIDTH / 2), (Uint16)(WINDOW_HEIGHT/2));
 	return 0;
 }

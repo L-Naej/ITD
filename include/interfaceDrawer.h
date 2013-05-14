@@ -37,6 +37,10 @@ typedef struct{
  * Structure représentant l'interface du jeu.
  */
 typedef struct{
+	float relativeWidth;//En %
+	float relativeHeight;//En %
+	float relativePosX;//En %
+	float relativePosY;//En % toutes ces valeurs utilisées pour le resize
 	float width;///En pixels
 	float height;///En pixels
 	Point3D position;///Position du milieu de l'interface (coordonnées OpenGL)

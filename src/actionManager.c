@@ -49,9 +49,11 @@ bool isMouseExtremTop = false;
 bool isMouseExtremBottom = false;
 //Gestion de la fin du jeu
 Uint32 startEndGameTime = 0;
+bool mouseInWindow;
 bool handleGameActions(World* world, Interface* interface){
 	//Gestion de l'évolution de l'argent
 	bool gameIsFinished = false;
+	dumpPoint(world->cameraPosition);
 	
 	//Le jeu est-il fini ?
 	if(world->gameLoosed || world->gameWinned){
@@ -72,19 +74,31 @@ bool handleGameActions(World* world, Interface* interface){
 		if(e.type == SDL_QUIT) {
 			askedForQuit = true;
 		}
-		
+		//Si on perd le focus sur la fenêtre la souris ne doit pas impacter le jeu (caméra...)
+		else if(e.type == SDL_ACTIVEEVENT){
+			if(e.active.gain == 0) mouseInWindow = false;
+			else mouseInWindow = true;
+			
+		}
 		else if(e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
 			askedForQuit = handleGameKeyboard(&(e.key), world, interface);
 		}	
 		
+		else if (e.type == SDL_VIDEORESIZE){
+			setVideoMode(e.resize.w, e.resize.h);
+			initGameGraphics(world->map.image);
+			*interface = initGameInterface(interface->relativeWidth, interface->relativeHeight, interface->relativePosX, interface->relativePosY);
+		}
 		else askedForQuit = handleGameMouse(&e, world, interface);
 	}
 	//Gestion caméra
-	
-	if(isMouseExtremBottom) world->cameraPosition.y += 2;
-	else if(isMouseExtremTop) world->cameraPosition.y -= 2;
-	if(isMouseExtremLeft) world->cameraPosition.x += 2;
-	else if(isMouseExtremRight) world->cameraPosition.x -= 2;
+	if(mouseInWindow){
+		if(isMouseExtremBottom) world->cameraPosition.y += 2;
+		else if(isMouseExtremTop) world->cameraPosition.y -= 2;
+		if(isMouseExtremLeft) world->cameraPosition.x += 2;
+		else if(isMouseExtremRight) world->cameraPosition.x -= 2;
+		
+	}
 
 	return askedForQuit;
 }
@@ -119,13 +133,14 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
+	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
-		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < 2.* WINDOW_WIDTH / 100.0){
+		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < spaceForCapture* WINDOW_WIDTH / 100.0){
 			isMouseExtremRight = true;
 			isMouseExtremLeft = false;
 		}
-		else if(fabs(e->motion.x - 0.0) < 2.*WINDOW_WIDTH / 100.0){
+		else if(fabs(e->motion.x - 0.0) < spaceForCapture*WINDOW_WIDTH / 100.0){
 			isMouseExtremLeft = true;
 			isMouseExtremRight = false;
 		}
@@ -133,11 +148,11 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 			isMouseExtremLeft = false;
 			isMouseExtremRight = false;
 		}
-		if(fabs((int)e->motion.y - (int)WINDOW_HEIGHT) < 2.*WINDOW_HEIGHT / 100.0){
+		if(fabs((int)e->motion.y - (int)WINDOW_HEIGHT) < spaceForCapture*WINDOW_HEIGHT / 100.0){
 			isMouseExtremBottom = true;
 			isMouseExtremTop = false;
 		}
-		else if(fabs(e->motion.y - 0.) < 2.* WINDOW_HEIGHT / 100.0){
+		else if(fabs(e->motion.y - 0.) < spaceForCapture* WINDOW_HEIGHT / 100.0){
 			isMouseExtremTop = true;
 			isMouseExtremBottom = false;
 		}	

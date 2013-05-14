@@ -47,8 +47,6 @@ void startNewMonsterWave(World* world){
 	
 	int i = 0;
 	Point3D startPoint = getStartPoint(&(world->map));
-	Point3D secondPoint = nextNode(world->map.pathNodeList, startPoint); 
-	//Vector3D direction = MultVector(Normalize(Vector(startPoint, secondPoint)), -1.0);
 	Vector3D direction = Vector(startPoint, PointXYZ(startPoint.x, startPoint.y, -1.0));
 	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map (en z)
 	//Avec comme destination le point de départ de leur chemin.
@@ -64,8 +62,6 @@ void startNewMonsterWave(World* world){
 		world->monsters[i].position.z = floor(world->monsters[i].position.z);
 		world->monsters[i].direction = Vector(world->monsters[i].position, startPoint);
 		world->monsters[i].realPosition = world->monsters[i].position;
-		printf("Monstre %d position :",i);
-		dumpPoint(world->monsters[i].position);
 	}
 	
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;

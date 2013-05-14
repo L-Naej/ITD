@@ -278,7 +278,6 @@ void transformCoordToOpenGL(Map* map){
 	
 	while( (cur = (Point3D*) nextData(map->pathNodeList) ) != NULL){
 		*cur = itdToOpenGL(map->width, map->height, *cur);
-		dumpPoint(*cur);
 	}
 }
 
