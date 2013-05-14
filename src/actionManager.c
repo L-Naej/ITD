@@ -12,7 +12,7 @@
 #include "graphics.h"
 #include "interfaceDrawer.h"
 
-bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked){
+bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen){
 	SDL_Event e;
 	bool askedForQuit = false;
 	while(SDL_PollEvent(&e) && !askedForQuit) {

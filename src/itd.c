@@ -95,7 +95,7 @@ int main(int argc,  char* argv[]) {
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		askedForQuit = handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen, MENU_TEXTURES_ID.CASE_CHECKED);
+		askedForQuit = handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen);
 
 		if(playIsPush == 2) play = true;
 		

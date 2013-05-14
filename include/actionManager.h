@@ -18,7 +18,7 @@
  * est dans le menu d'accueil.
  * Renvoie true si le joueur a demandé à quitter le programme.
  */	
-bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen, GLuint casechecked);
+bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen);
 
 /**
  * Gère les actions clavier et souris du joueur lorsqu'il
