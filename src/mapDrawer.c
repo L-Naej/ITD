@@ -24,7 +24,7 @@ void drawWorld(const World* world){
 		}
 	}
 	
-	drawTowers(world->towersList);
+	drawTowers(world, world->towersList);
 	glPopMatrix();
 }
 
@@ -68,8 +68,8 @@ void drawMonster(const Monster* monster){
 	glPopMatrix();
 }
 
-void drawTowers(List* towersList){
-	if(towersList == NULL) return;
+void drawTowers(World* world, List* towersList){
+	if(world == NULL || towersList == NULL) return;
 	
 	Tower* cur = NULL;
 	GLuint textureId = -1;

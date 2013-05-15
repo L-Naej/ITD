@@ -85,6 +85,14 @@ int initWindow();
 
 /**
  * Renvoie le Point3D fourni en paramètre en coordonnées
+ * itd (0,0 => mapWidth, mapHeight).
+ * Note : le point fourni en paramètre doit être exprimé en
+ * coordonnées OpenGL en considérant la caméra en 0.0,0.0,0.0.
+ */
+Point3D openGLToItd(int mapWidth, int mapHeight, Point3D oglPoint);
+
+/**
+ * Renvoie le Point3D fourni en paramètre en coordonnées
  * OpenGL.
  * Note : le point fourni en paramètre doit être exprimé en
  * coordonnées SDL.

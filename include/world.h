@@ -60,9 +60,9 @@ bool worldNewStep(World* world);
 
 /**
  * Indique s'il est possible de poser une tour à
- * la position (posX,posY) sur la carte du jeu.
+ * la position indiquée en paramètre (en coordonnées openGL et ITD)
  **/
-bool canIPutATowerHere(World* world, int posX, int posY);
+bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition);
 
 /**
  * Ajoute une tour de type 'type' à la position posX posY

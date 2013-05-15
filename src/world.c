@@ -85,36 +85,49 @@ bool worldNewStep(World* world){
 	return isGameFinished;
 }
 
-bool canIPutATowerHere(World* world, int posX, int posY){
-	
-	Uint32 time = SDL_GetTicks();
-	int tower_center = world->map.tabXYConstruct[posX][posY];
-	int tower_top_right = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
-	int tower_top_left = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
-	int tower_bot_right = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
-	int tower_bot_left = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
+//Les coordonnées doivent être en répère itd (map) !!
+bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition){
 	if(world == NULL) return false;
-	/* Tester si le centre est sur la map */
-	if (posX >= world->map.width || posY >= world->map.height) return false;
-	/* Tester que les tours ne débordent pas de la map */
-	if ( tower_top_right > world->map.width && tower_top_right > world->map.height) return false;
-	if ( tower_top_left > world->map.width && tower_top_right > world->map.height) return false;
-	if ( tower_bot_right > world->map.width && tower_top_right > world->map.height) return false;
-	if ( tower_bot_left > world->map.width && tower_top_right > world->map.height) return false;
-	/* Tester si les coins de la tour et le centre sont constructibles */
-	if ( tower_center == true && tower_top_right == true && tower_top_left == true && tower_bot_right == true && tower_bot_left == true ) {
-			time = SDL_GetTicks() - time;		
-			printf("Zone constructible temps de recherche : %d \n", time);
-			return true;	
-	}
+	int posX = itdPosition.x, posY = itdPosition.y;
+
+	//Si le centre est en dehors des limites de la carte, c'est mort
+	if(posX < 0.0 || posX >= world->map.width) return false;
+	if(posY < 0.0 || posY >= world->map.height) return false;
+	
+	//Si le centre n'est pas sur une zone constructible, c'est mort
+	if(! world->map.tabXYConstruct[posX][posY]) return false;
+	
+	//On teste maintenant les quatres coins
+	Point3D tower_top_right = PointXYZ(posX + TOWER_WIDTH_PX/2, posY + TOWER_HEIGHT_PX/2, 0.0);;
+	Point3D tower_top_left = PointXYZ(posX + TOWER_WIDTH_PX/2, posY - TOWER_HEIGHT_PX/2, 0.0);
+	Point3D tower_bot_right = PointXYZ(posX - TOWER_WIDTH_PX/2, posY + TOWER_HEIGHT_PX/2, 0.0);
+	Point3D tower_bot_left = PointXYZ(posX - TOWER_WIDTH_PX/2,posY - TOWER_HEIGHT_PX/2, 0.0);
+	
+	//Si un des deux points de la diagonale est en dehors de la map c'est mort
+	if(tower_top_right.x >= world->map.width || tower_top_right.y < 0.0) return false;
+	if(tower_bot_left.x < 0.0 || tower_bot_left.y >= world->map.height) return false;
+	
+	//On test maintenant si les quatre points sont sur une zone constructible
+	if( ! world->map.tabXYConstruct[(int)floor(tower_top_right.x)][(int)floor(tower_top_right.y)]) return false;
+	if( ! world->map.tabXYConstruct[(int)floor(tower_top_left.x)][(int)floor(tower_top_left.y)]) return false;
+	if( ! world->map.tabXYConstruct[(int)floor(tower_bot_right.x)][(int)floor(tower_bot_right.y)]) return false;
+	if( ! world->map.tabXYConstruct[(int)floor(tower_bot_left.x)][(int)floor(tower_bot_left.y)]) return false;
 					
 	/* Tester s'il n'y a pas déjà une tour */
+	Tower* cur = NULL;
+	goToHeadList(world->towersList);
+	while( (cur = (Tower*) nextData(world->towersList)) != NULL ){
+		bool xOverlap = false, yOverlap = false;
+		if(cur->position.x > oglPosition.x - TOWER_WIDTH_PX && cur->position.x < oglPosition.x + TOWER_WIDTH_PX)
+			xOverlap = true;
+		if(cur->position.y > oglPosition.y + TOWER_HEIGHT_PX && cur->position.x < oglPosition.x - TOWER_WIDTH_PX)
+			yOverlap = true;
+		if(xOverlap && yOverlap) { printf("patafouin\n");return false;}	
+	}
 	
 	/* Tester si le chemin ne passe pas par là */
 
-	time = SDL_GetTicks() - time;
-	printf("Zone non constructible, temps de recherche : %d \n", time);
-	return false;
+	return true;
 }
 
 bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
@@ -125,8 +138,8 @@ bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	Point3D oglRealPosition = sdlToOpenGL(PointXYZ(posX, posY, 0.0));
 	oglRealPosition.x -= world->cameraPosition.x;
 	oglRealPosition.y -= world->cameraPosition.y;
-	Point3D itdPosition = itdToOpenGL(world->map.width, world->map.height, oglRealPosition);
-	if(canIPutATowerHere(world, posX, posY) == false) return false;
+	Point3D itdPosition = openGLToItd(world->map.width, world->map.height, oglRealPosition);
+	if(canIPutATowerHere(world, oglRealPosition, itdPosition) == false) return false;
 	
 	//L'erreur d'allocation est gérée plus bas
 	//Le programme s'arrête si le malloc a échoué 

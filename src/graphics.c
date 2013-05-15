@@ -251,6 +251,17 @@ void drawCircle(int full){
 
 }
 
+//Considère la caméra en 0;0;0
+Point3D openGLToItd(int mapWidth, int mapHeight, Point3D oglPoint){
+	Point3D itdPoint;
+	itdPoint.z = 0.0;
+	itdPoint.x = oglPoint.x + mapWidth / 2;
+	itdPoint.y = oglPoint.y + mapHeight / 2;
+	itdPoint. y = mapHeight - itdPoint.y;	
+	return itdPoint;
+}
+
+//Considère la caméra en 0;0;0
 Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
 	Point3D oglPoint;
 	float maxWidth, maxHeight;
@@ -263,7 +274,7 @@ Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
 	return oglPoint;	
 }
 
-
+//Considère la caméra en 0;0;0
 Point3D sdlToOpenGL(Point3D sdlPoint){
 	Point3D oglPoint;
 	oglPoint.z = sdlPoint.z;
