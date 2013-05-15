@@ -52,11 +52,11 @@ void startNewMonsterWave(World* world){
 	//On fait démarrer les monstres "à la queuleuleu" en dehors de la map (en z)
 	//Avec comme destination le point de départ de leur chemin.
 	for(i = 0; i < MONSTERS_PER_WAVE; ++i){
-		world->monsters[i] = createMonster(world->currentMonstersWave +1, i);
+		world->monsters[i] = createMonster(world->currentMonstersWave, i);
 		world->monsters[i].destination = startPoint;
 		//On ménage un espace entre les monstres, le *2 a été rajouté après qu'on les fasse arrivé par l'axe z, 
 		//en effet au moment où le monstre arrive sur la map il lui faut à nouveau s'éloigner en x et en y du monstre qui le suit !
-		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX)*(i+1)*2));
+		world->monsters[i].position = PointPlusVector(startPoint, MultVector(direction, (MONSTER_WIDTH_PX+SPACE_BETWEEN_MONSTERS_PX*world->monsters[i].speed*3)*(i+1)*2));
 		//--- VERY IMPORTANT SINON BUG DE DEPLACEMENT ==> On veut des valeurs entières qui correspondent à un pixel
 		world->monsters[i].position.x = floor(world->monsters[i].position.x);
 		world->monsters[i].position.y = floor(world->monsters[i].position.y);
@@ -221,11 +221,7 @@ bool doTurn(World* world){
 		}
 		else world->isBetweenWaves = true;
 		goToHeadList(world->towersList);
-		Tower* curTower = NULL;
-		//Pour chaque tour on regarde si elle peut tirer sur un monstre
-		while( (curTower = (Tower*) nextData(world->towersList)) != NULL){
-			curTower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
-}
+
 	}
 	return isGameFinished;
 }
@@ -270,8 +266,10 @@ int towerShoots(Tower* tower, Monster* monsters){
 	if(tower == NULL || monsters == NULL) return 0;
 	tower->nbTurnsSinceLastShoot++;
 	int moneyGained = 0;
+		//On supprime à chaque fois la liste des cibles de la tour
+	freeListComplete(tower->whereIShoot);
+	tower->whereIShoot = createEmptyList();	
 	if(tower->rate > tower->nbTurnsSinceLastShoot){
-		tower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
 		return 0;
 	} 
 	bool towerCanShoot = true;
@@ -300,9 +298,15 @@ int towerShoots(Tower* tower, Monster* monsters){
 			}
 			towerCanShoot = tower->type == GUN;//Seul les GUN peuvent tirer sur tous les monstres en même temps
 			tower->nbTurnsSinceLastShoot = 0;
-			tower->whereIShoot = monsters[i].position;
+			Point3D* target = (Point3D*) malloc(sizeof(Point3D));
+			*target = monsters[i].position;
+			if(target == NULL){
+				fprintf(stderr, "Impossible d'allouer la mémoire nécessaire, le programme va quitter.\n");
+				exit(EXIT_FAILURE);
+			}
+			insertBottomCell(tower->whereIShoot, target);
 		}
-		else tower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
+		
 		i++;
 	}
 	return moneyGained;

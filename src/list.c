@@ -464,6 +464,7 @@ void freeCell(Cell* c){
 //currentCell.*/
 void freeList(List* list){
 	if(list == NULL) return;
+	if(list->size <= 0) return;
 	Cell* c = NULL;
 	
 	goToHeadList(list);
@@ -480,7 +481,7 @@ void freeList(List* list){
 //currentCell.*/
 void freeListComplete(List* list){
 	if(list == NULL) return;
-	
+	if(list->size <= 0) return;
 	Cell* c = NULL;
 	
 	goToHeadList(list);

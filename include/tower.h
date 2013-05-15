@@ -18,7 +18,7 @@ typedef struct {
 	int range;
 	int power;
 	float cost;
-	Point3D whereIShoot;
+	List* whereIShoot;///Liste de point3D
 	Point3D position;
 }Tower;
 

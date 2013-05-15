@@ -6,14 +6,14 @@
 Monster createMonster(unsigned char wave, int nbMonstersCreated){
 
 	MonsterType type;
-	if(wave < 10) type = BLUE_OCTOPUS;
-	else if (wave < 15){
-		if(nbMonstersCreated < (wave - 9))
+	if(wave < 2) type = BLUE_OCTOPUS;
+	else if (wave < 8){
+		if(nbMonstersCreated < (wave - 1))
 			type = ORANGE_OCTOPUS;
 		else type = BLUE_OCTOPUS;
 	}
 	else{
-		if(nbMonstersCreated < (wave -14))
+		if(nbMonstersCreated < (wave -7))
 			type = GREEN_OCTOPUS;
 		else type = ORANGE_OCTOPUS;
 	}
@@ -38,10 +38,10 @@ Monster createBlueOctopus(unsigned char wave){
 	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
+	monster.gunResistance = 2*wave;
+	monster.hybridResistance = wave;
 	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.speed = 5;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
@@ -55,14 +55,14 @@ Monster createBlueOctopus(unsigned char wave){
 Monster createOrangeOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = ORANGE_OCTOPUS;
-	monster.maxLife = 3*wave;
+	monster.maxLife = 80*wave;
 	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
-	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.gunResistance = 5*wave;
+	monster.hybridResistance = wave + 5;
+	monster.money = 10*wave;
+	monster.speed = 3;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
@@ -75,14 +75,14 @@ Monster createOrangeOctopus(unsigned char wave){
 Monster createGreenOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = GREEN_OCTOPUS;
-	monster.maxLife = 3*wave;
+	monster.maxLife = 100*wave;
 	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
-	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.gunResistance = 10*wave;
+	monster.hybridResistance = wave + 10;
+	monster.money = 15*wave;
+	monster.speed = 1;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);

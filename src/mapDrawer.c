@@ -95,13 +95,17 @@ void drawTowers(List* towersList){
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 		//Dessin des tirs
-		if(cur->whereIShoot.z > -1.0){
+		Point3D* curTarget = NULL;
+		goToHeadList(cur->whereIShoot);
+		while( (curTarget = (Point3D*) nextData(cur->whereIShoot)) != NULL){
+			printf("i draw\n");
+		
 			glPushMatrix();
 			glLineWidth(1.4);
 			glColor3ub(255,0,0);
 			glBegin(GL_LINES);
 			glVertex2f(cur->position.x, cur->position.y);
-			glVertex2f(cur->whereIShoot.x, cur->whereIShoot.y);
+			glVertex2f(curTarget->x, curTarget->y);
 			glEnd();
 			glPopMatrix();
 		}
