@@ -8,7 +8,7 @@
 
 /* Largeur d'un sprite de monstre en pixels (ca respecte pas trop 
 mvc de le mettre là mais en attendant de trouver mieux... */
-static const int MONSTER_WIDTH_PX = 20;
+static const int MONSTER_WIDTH_PX = 35;
 static const int SPACE_BETWEEN_MONSTERS_PX = 5;
 typedef enum{
 	BLUE_OCTOPUS,
