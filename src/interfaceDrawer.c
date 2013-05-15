@@ -534,7 +534,7 @@ void drawInterface(Interface* interface, World* world){
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 	}
-	
+	glColor4ub(255,255,255, 255);
 	//Affichage du message "Wave X"
 	if(world->isBetweenWaves){
 		if(interface->messageDisplayTime == 0){

@@ -118,11 +118,12 @@ bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition){
 	goToHeadList(world->towersList);
 	while( (cur = (Tower*) nextData(world->towersList)) != NULL ){
 		bool xOverlap = false, yOverlap = false;
-		if(cur->position.x > oglPosition.x - TOWER_WIDTH_PX && cur->position.x < oglPosition.x + TOWER_WIDTH_PX)
+		if( oglPosition.x > cur->position.x - TOWER_WIDTH_PX &&  oglPosition.x < cur->position.x+ TOWER_WIDTH_PX)
 			xOverlap = true;
-		if(cur->position.y > oglPosition.y + TOWER_HEIGHT_PX && cur->position.x < oglPosition.x - TOWER_WIDTH_PX)
+		if( oglPosition.y < cur->position.y + TOWER_HEIGHT_PX && oglPosition.y > cur->position.y - TOWER_WIDTH_PX)
 			yOverlap = true;
-		if(xOverlap && yOverlap) return false;
+		if(xOverlap && yOverlap)return false;
+		
 	}
 	
 	/* Tester si le chemin ne passe pas par là */
