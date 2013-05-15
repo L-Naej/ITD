@@ -1,7 +1,7 @@
 #include "mapDrawer.h"
 #include "graphics.h"
 
-void drawWorld(const World* world){
+void drawWorld(World* world){
 	if(world == NULL) return;
 	int i = 0;
 	
@@ -24,7 +24,7 @@ void drawWorld(const World* world){
 		}
 	}
 	
-	drawTowers(world, world->towersList);
+	drawTowers(world->towersList);
 	glPopMatrix();
 }
 
@@ -68,8 +68,8 @@ void drawMonster(const Monster* monster){
 	glPopMatrix();
 }
 
-void drawTowers(World* world, List* towersList){
-	if(world == NULL || towersList == NULL) return;
+void drawTowers(List* towersList){
+	if(towersList == NULL) return;
 	
 	Tower* cur = NULL;
 	GLuint textureId = -1;

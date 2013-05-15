@@ -519,10 +519,17 @@ void drawInterface(Interface* interface, World* world){
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 		Point3D oglMouse = sdlToOpenGL(PointXYZ(mouseX,mouseY, 0.0));
+		//Besoin des coordonnées réelles pour le test de tour
+		Point3D oglRealMouse = oglMouse;
+		oglRealMouse.x -= world->cameraPosition.x;
+		oglRealMouse.y -= world->cameraPosition.y;
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
+	 	if(!canIPutATowerHere(world, oglMouse, openGLToItd(world->map.width, world->map.height, oglRealMouse))){
+			glColor3ub(255, 0,0);
+		}
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 	}

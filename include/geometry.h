@@ -5,4 +5,5 @@
 
 Vector3D Vector(Point3D A, Point3D B);
 Point3D PointPlusVector(Point3D P, Vector3D V);
+bool segment2segment(Point3D A,Point3D B,Point3D C,Point3D D);
 #endif

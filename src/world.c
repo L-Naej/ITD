@@ -97,7 +97,7 @@ bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition){
 	//Si le centre n'est pas sur une zone constructible, c'est mort
 	if(! world->map.tabXYConstruct[posX][posY]) return false;
 	
-	//On teste maintenant les quatres coins
+	//On teste maintenant les quatres coins en coordonnées ITD
 	Point3D tower_top_right = PointXYZ(posX + TOWER_WIDTH_PX/2, posY + TOWER_HEIGHT_PX/2, 0.0);;
 	Point3D tower_top_left = PointXYZ(posX + TOWER_WIDTH_PX/2, posY - TOWER_HEIGHT_PX/2, 0.0);
 	Point3D tower_bot_right = PointXYZ(posX - TOWER_WIDTH_PX/2, posY + TOWER_HEIGHT_PX/2, 0.0);
@@ -122,10 +122,22 @@ bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition){
 			xOverlap = true;
 		if(cur->position.y > oglPosition.y + TOWER_HEIGHT_PX && cur->position.x < oglPosition.x - TOWER_WIDTH_PX)
 			yOverlap = true;
-		if(xOverlap && yOverlap) { printf("patafouin\n");return false;}	
+		if(xOverlap && yOverlap) return false;
 	}
 	
 	/* Tester si le chemin ne passe pas par là */
+	tower_top_right = PointXYZ(oglPosition.x + TOWER_WIDTH_PX/2, oglPosition.y + TOWER_HEIGHT_PX/2, 0.0);;
+	tower_top_left = PointXYZ(oglPosition.x + TOWER_WIDTH_PX/2, oglPosition.y - TOWER_HEIGHT_PX/2, 0.0);
+	tower_bot_right = PointXYZ(oglPosition.x - TOWER_WIDTH_PX/2, oglPosition.y + TOWER_HEIGHT_PX/2, 0.0);
+	tower_bot_left = PointXYZ(oglPosition.x - TOWER_WIDTH_PX/2,oglPosition.y - TOWER_HEIGHT_PX/2, 0.0);
+	goToHeadList(world->map.pathNodeList);
+	Point3D* curNode1 = nextData(world->map.pathNodeList);
+	Point3D* curNode2 = NULL;
+	while( (curNode2 = nextData(world->map.pathNodeList) ) != NULL){
+		if(segment2segment(*curNode1, *curNode2, tower_top_left, tower_bot_right)) return false;
+		if(segment2segment(*curNode1, *curNode2, tower_top_right, tower_bot_left)) return false;
+		curNode1 = curNode2;
+	}
 
 	return true;
 }

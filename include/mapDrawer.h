@@ -1,7 +1,7 @@
 #ifndef ITD_MAP_DRAWER_H
 #define ITD_MAP_DRAWER_H
 #include "world.h"
-void drawWorld(const World* world);
+void drawWorld(World* world);
 
 //Fonctions internes
 void drawMap(const Map* map);
