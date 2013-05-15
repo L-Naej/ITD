@@ -85,6 +85,7 @@ bool handleGameActions(World* world, Interface* interface){
 			setVideoMode(e.resize.w, e.resize.h);
 			initGameGraphics(world->map.image);
 			*interface = initGameInterface(interface->relativeWidth, interface->relativeHeight, interface->relativePosX, interface->relativePosY);
+			world->cameraPosition.x = 0.0; world->cameraPosition.y = 0.0;
 		}
 		else askedForQuit = handleGameMouse(&e, world, interface);
 	}

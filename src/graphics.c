@@ -9,6 +9,21 @@ void initGameGraphics(SDL_Surface* map){
 		fprintf(stderr, "Erreur : les graphismes du jeu ne peuvent être initialisés avant le chargement de la map.\n");
 		exit(-1);
 	}
+	GLuint tab[] = {GAME_TEXTURES_ID.BLUE_OCTOPUS_ID, 
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID,  
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID, 
+	GAME_TEXTURES_ID.LASER_TOWER_ID, 
+	GAME_TEXTURES_ID.ROCKET_TOWER_ID, 
+	GAME_TEXTURES_ID.GUN_TOWER_ID, 
+	GAME_TEXTURES_ID.HYBRID_TOWER_ID, 
+	GAME_TEXTURES_ID.QUIT_GAME_ID, 
+	GAME_TEXTURES_ID.MONEY_ID, 
+	GAME_TEXTURES_ID.WAVE_MESSAGE_ID, 
+	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID, 
+	GAME_TEXTURES_ID.INFO_PANEL_ID, 
+	GAME_TEXTURES_ID.WIN_MESSAGE_ID };
+	glDeleteTextures(13,tab);
+	
 	
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1.png");
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2.png");
