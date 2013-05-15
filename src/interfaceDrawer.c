@@ -69,8 +69,23 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 		MENU_TEXTURES_ID.MAPS[j] = makeTextureFromSurface (text);
 
 	}
-
-			TTF_CloseFont(police);
+	Point3D aidePosition = PointXYZ(-150.,100.,0.);
+	Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
+	BUTTON_OF_MENU.regles = aideButton;
+	
+	Point3D choixPosition = PointXYZ(140.,100.,0.);
+	Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
+	BUTTON_OF_MENU.choix_carte = choixButton;
+	
+	Point3D playPosition = PointXYZ(0.,-100.,0.);
+	Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
+	BUTTON_OF_MENU.jouer=playButton;
+		
+	Point3D closePosition = PointXYZ(223.,225.,0.);
+	Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
+	BUTTON_OF_MENU.close_rules=closeButton;
+	
+	TTF_CloseFont(police);
 
 }
 
@@ -143,40 +158,23 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 	
 
 /* _________________ Dessin du bouton d'aide_______________*/
-		Point3D aidePosition = PointXYZ(-150.,100.,0.);
+		
+		glColor3ub(255,255,255);
 
-		Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
-
-
-			glColor3ub(255,255,255);
-
-			drawButton(aideButton);
-			
-		BUTTON_OF_MENU.regles=aideButton;
+		drawButton(BUTTON_OF_MENU.regles);
 
 /* _________________ Dessin du bouton pour choisir la carte_______________*/
 
-		Point3D choixPosition = PointXYZ(140.,100.,0.);
+		glColor3ub(255,255,255);
 
-		Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
+		drawButton(BUTTON_OF_MENU.choix_carte);
 
-
-			glColor3ub(255,255,255);
-
-			drawButton(choixButton);
-
-		BUTTON_OF_MENU.choix_carte=choixButton;
 /* _________________ Dessin du bouton play_______________*/
 
-		Point3D playPosition = PointXYZ(0.,-100.,0.);
+		glColor3ub(255,255,255);
 
-		Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
-
-
-			glColor3ub(255,255,255);
-
-			drawButton(playButton);
-		BUTTON_OF_MENU.jouer=playButton;
+		drawButton(BUTTON_OF_MENU.jouer);
+		
 
 
 		if (*menuOpen == 1){
@@ -196,12 +194,9 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 		glPopMatrix();
 
 
-
-		Point3D closePosition = PointXYZ(223.,225.,0.);
-		Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
 		glColor3ub(255,255,255);
-		drawButton(closeButton);
-		BUTTON_OF_MENU.close_rules=closeButton;
+		drawButton(BUTTON_OF_MENU.close_rules);
+
 	}
 
 		if (*menuOpen == 1){
