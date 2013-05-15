@@ -528,8 +528,9 @@ void drawInterface(Interface* interface, World* world){
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
 	 	if(!canIPutATowerHere(world, oglMouse, openGLToItd(world->map.width, world->map.height, oglRealMouse))){
-			glColor3ub(255, 0,0);
+			glColor4ub(255, 0,0, 190);
 		}
+		else glColor4ub(0,255,0,190);
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 	}

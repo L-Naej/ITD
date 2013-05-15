@@ -571,25 +571,18 @@ bool loadPpmMap(Map* map){
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
-			if(colorPixel.red == 120 && colorPixel.green == 120 && colorPixel.blue == 120) {				
-				colorPixel.red = map->constructAreaColor.red;
-				colorPixel.green = map->constructAreaColor.green;
-				colorPixel.blue = map->constructAreaColor.blue;	
-				map->tabXYConstruct[i][j] = true;
-				
-				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
-				modifColorPixel(map->image, i, j, newColorPixel);
-			} else if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
+			if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
 				
 				colorPixel.red = map->pathColor.red;
 				colorPixel.green = map->pathColor.green;
 				colorPixel.blue = map->pathColor.blue;	
 
-				map->tabXYConstruct[i][j] = false;
+				map->tabXYConstruct[i][j] = true;
 				
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			}
+			else map->tabXYConstruct[i][j] = false;
 		}
 	}
 	
