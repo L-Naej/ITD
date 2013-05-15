@@ -8,6 +8,7 @@ void drawWorld(World* world){
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glLineWidth(1.0);
 	
 	//Important car les textures sont multipliées par la couleur courante
 	glColor3ub(255,255,255);
@@ -93,6 +94,17 @@ void drawTowers(List* towersList){
 		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
 		drawTexturedQuad(textureId);
 		glPopMatrix();
+		//Dessin des tirs
+		if(cur->whereIShoot.z > -1.0){
+			glPushMatrix();
+			glLineWidth(1.4);
+			glColor3ub(255,0,0);
+			glBegin(GL_LINES);
+			glVertex2f(cur->position.x, cur->position.y);
+			glVertex2f(cur->whereIShoot.x, cur->whereIShoot.y);
+			glEnd();
+			glPopMatrix();
+		}
 	}	
 }
 
@@ -100,7 +112,7 @@ void drawTowers(List* towersList){
 void drawPath(const Map* map){
 	if(map == NULL) return;
 	int radius = 10;
-	
+	glLineWidth(1.0);
 	//Dessin des cercles, en prenant en compte les bonnes couleurs
 	Point3D startNode = getStartPoint(map);
 	Point3D endNode = getEndPoint(map);

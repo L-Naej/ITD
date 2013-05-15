@@ -220,6 +220,12 @@ bool doTurn(World* world){
 			world->gameWinned = true;
 		}
 		else world->isBetweenWaves = true;
+		goToHeadList(world->towersList);
+		Tower* curTower = NULL;
+		//Pour chaque tour on regarde si elle peut tirer sur un monstre
+		while( (curTower = (Tower*) nextData(world->towersList)) != NULL){
+			curTower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
+}
 	}
 	return isGameFinished;
 }
@@ -264,7 +270,10 @@ int towerShoots(Tower* tower, Monster* monsters){
 	if(tower == NULL || monsters == NULL) return 0;
 	tower->nbTurnsSinceLastShoot++;
 	int moneyGained = 0;
-	if(tower->rate > tower->nbTurnsSinceLastShoot) return 0;
+	if(tower->rate > tower->nbTurnsSinceLastShoot){
+		tower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
+		return 0;
+	} 
 	bool towerCanShoot = true;
 	int i = 0; int lifeLosed = 0;
 	
@@ -291,7 +300,9 @@ int towerShoots(Tower* tower, Monster* monsters){
 			}
 			towerCanShoot = tower->type == GUN;//Seul les GUN peuvent tirer sur tous les monstres en même temps
 			tower->nbTurnsSinceLastShoot = 0;
+			tower->whereIShoot = monsters[i].position;
 		}
+		else tower->whereIShoot = PointXYZ(0.0,0.0,-1.0);
 		i++;
 	}
 	return moneyGained;

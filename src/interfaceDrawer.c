@@ -437,6 +437,7 @@ void drawInterface(Interface* interface, World* world){
 	glLoadIdentity();
 	//Dessin du fond de l'interface
 	glColor3ub(0,0,0);
+	glLineWidth(1.0);
 	glPushMatrix();
 	glTranslatef(interface->position.x, interface->position.y, interface->position.z);
 	glScalef(interface->width, interface->height, 1.0);
@@ -523,13 +524,13 @@ void drawInterface(Interface* interface, World* world){
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
 	 	if(!canIPutATowerHere(world, oglMouse, openGLToItd(world->map.width, world->map.height, oglRealMouse))){
-			glColor4ub(255, 0,0, 190);
+			glColor3ub(255, 0,0);
 		}
-		else glColor4ub(0,255,0,190);
+		else glColor3ub(0,255,0);
 		drawTexturedQuad(textureId);
 		glPopMatrix();
 	}
-	glColor4ub(255,255,255, 255);
+	glColor3ub(255,255,255);
 	//Affichage du message "Wave X"
 	if(world->isBetweenWaves){
 		if(interface->messageDisplayTime == 0){
@@ -541,6 +542,7 @@ void drawInterface(Interface* interface, World* world){
 		if(elapsedTime <= MESSAGE_DISPLAY_DURATION){
 			glPushMatrix();
 			glLoadIdentity();
+			glColor3ub(255,255,255);
 			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 10.0, 1.0);
 			drawTexturedQuad(GAME_TEXTURES_ID.WAVE_MESSAGE_ID);
 			glPopMatrix();
