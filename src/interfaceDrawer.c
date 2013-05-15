@@ -244,7 +244,7 @@ void drawMapMenu (char* mapName){
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
 		Point3D mapPosition = PointXYZ(xText,yText,0.);
 		BUTTON_OF_MENU.cmp=i;
-		tabMap[i] = createButton(MAP_MENU,mapPosition,60,60);
+		tabMap[i] = createButton(MAP_MENU,mapPosition,100,60);
 		if (strcmp(BUTTON_OF_MENU.tabMapName[i],mapName)==0)
 			glColor3ub(0,204,204);
 		else
