@@ -3,6 +3,7 @@
 #include <SDL/SDL_image.h>
 #include <math.h>
 #include "geometry.h"
+#include "point3D.h"
 
 //-------------- FONCTIONS PUBLIQUES --------------------------
 World initWorld(const char* pathToItdFile){
@@ -84,10 +85,36 @@ bool worldNewStep(World* world){
 	return isGameFinished;
 }
 
-//TODO
 bool canIPutATowerHere(World* world, int posX, int posY){
+	
+	Uint32 time = SDL_GetTicks();
+	int tower_center = world->map.tabXYConstruct[posX][posY];
+	int tower_top_right = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
+	int tower_top_left = world->map.tabXYConstruct[posX + TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
+	int tower_bot_right = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY + TOWER_HEIGHT/2];
+	int tower_bot_left = world->map.tabXYConstruct[posX - TOWER_WIDTH/2][posY - TOWER_HEIGHT/2];
 	if(world == NULL) return false;
-	return true;
+	/* Tester si le centre est sur la map */
+	if (posX >= world->map.width || posY >= world->map.height) return false;
+	/* Tester que les tours ne débordent pas de la map */
+	if ( tower_top_right > world->map.width && tower_top_right > world->map.height) return false;
+	if ( tower_top_left > world->map.width && tower_top_right > world->map.height) return false;
+	if ( tower_bot_right > world->map.width && tower_top_right > world->map.height) return false;
+	if ( tower_bot_left > world->map.width && tower_top_right > world->map.height) return false;
+	/* Tester si les coins de la tour et le centre sont constructibles */
+	if ( tower_center == true && tower_top_right == true && tower_top_left == true && tower_bot_right == true && tower_bot_left == true ) {
+			time = SDL_GetTicks() - time;		
+			printf("Zone constructible temps de recherche : %d \n", time);
+			return true;	
+	}
+					
+	/* Tester s'il n'y a pas déjà une tour */
+	
+	/* Tester si le chemin ne passe pas par là */
+
+	time = SDL_GetTicks() - time;
+	printf("Zone non constructible, temps de recherche : %d \n", time);
+	return false;
 }
 
 bool addTowerOnMap(World* world, int posX, int posY, TowerType type){

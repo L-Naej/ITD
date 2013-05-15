@@ -534,27 +534,40 @@ void modifColorPixel(SDL_Surface *surface, int x, int y, Uint32 pixel){
     }
 }
 
+	
+	
 
+/*Chargement de l'image ppm*/
 bool loadPpmMap(Map* map){
 	
-	/*Chargement de l'image*/
-      char chemin [38] = "images/";
+	char chemin [38] = "images/";
 	strcat(chemin,map->name);
-
   	map->image = IMG_Load(chemin);
-  	map->width = map->image->w;
-  	map->height = map->image->h;
   	
   	if(map->image == NULL) {
    		fprintf(stderr, "Impossible de charger le fichier %s.\n", map->name);
   		 return false;
 	}	  
 	
-	int i,j =0;
+	int i,j = 0;
 	Color3u colorPixel;
 	Uint32 initColorPixel;
-	Uint32 newColorPixel; 
-	for(i=0; i<map->image->w; i++) {		
+	Uint32 newColorPixel;
+	int nbPixels = map->image->w * map->image->h;
+	int nbLignes = map->image->w;
+	int nbCol = map->image->h;
+	map->nbPixels = nbPixels;
+	map->width = map->image->w;
+	map->height = map->image->h;
+ 
+	map->tabXYConstruct = (bool**) malloc(nbLignes*sizeof(bool*));
+
+	if(map->tabXYConstruct == NULL){
+		printf("Erreur lors de l'allocation du tableau de mémorisation des zones constructibles \n");
+           	exit(EXIT_FAILURE);
+	} 
+	for(i=0; i<map->image->w; i++) {	
+	    map->tabXYConstruct[i] = (bool*) malloc(nbCol*sizeof(bool));	
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
@@ -562,6 +575,7 @@ bool loadPpmMap(Map* map){
 				colorPixel.red = map->constructAreaColor.red;
 				colorPixel.green = map->constructAreaColor.green;
 				colorPixel.blue = map->constructAreaColor.blue;	
+				map->tabXYConstruct[i][j] = true;
 				
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
@@ -569,13 +583,16 @@ bool loadPpmMap(Map* map){
 				
 				colorPixel.red = map->pathColor.red;
 				colorPixel.green = map->pathColor.green;
-				colorPixel.blue = map->pathColor.blue;		
+				colorPixel.blue = map->pathColor.blue;	
+
+				map->tabXYConstruct[i][j] = false;
+				
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			}
 		}
 	}
-
+	
 	return true;
 }
 

@@ -49,7 +49,11 @@ typedef struct{
 	TowerStat* towerdatas;
 	
 	SDL_Surface* image;
+
+	bool** tabXYConstruct;
+	int nbPixels;
 }Map;
+
 
 /**
  * Retourne une structure Map initialisée
