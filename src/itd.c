@@ -48,7 +48,7 @@ int main(int argc,  char* argv[]) {
 	rootPath = argv[0];
 
 /*-------------- GESTION DU MENU --------------------*/
-	//TODO
+	
 	bool play = false;
 	char mapName[30]= "Not chosen";
 
@@ -57,6 +57,24 @@ int main(int argc,  char* argv[]) {
 	int playIsPush = 0;
 	int menuOpen = 0;
 	int aideOpen = 0;
+
+	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
+	/* selection d'une carte en ligne de commande*/
+	bool carteChosen = false;
+	if (argv[1]){
+		int i;
+		for (i=0;i< NB_MAX_MAPS; i++){
+			printf(" nom des cartes %s\n",BUTTON_OF_MENU.tabMapName[i]);
+			if (strcmp(argv[1],BUTTON_OF_MENU.tabMapName[i])==0){
+				strcpy(mapName,argv[1]);
+				play = true;
+			}
+			else{
+				printf("Error - le nom saisi ne correspond à aucun fichier ITD \n");
+			}
+		}
+		
+	}
 
 	/* ouverture du répertoire data */
 

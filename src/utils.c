@@ -16,7 +16,6 @@ int readDirectory(char* map[]){
 	
 	int i=0;
 	while((fichierLu = readdir(dataRep))!=NULL && i< NB_MAX_MAPS){
-		printf("%s\n",fichierLu->d_name);
 		if (fichierLu->d_name[0] != '.'){
 
 			if (strlen(fichierLu->d_name)>  MAX_LENGHT)
