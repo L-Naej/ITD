@@ -105,6 +105,12 @@ Point3D getStartPoint(const Map* map);
 Point3D getEndPoint(const Map* map);
 
 /**
+ * Nettoie la structure map en réinitialisant ses paramètres
+ * et en libérant la mémoire pour ses sous-structures.
+ */
+void cleanMap(Map* map);
+
+/**
  * Fonction de debug, affiche dans la
  * console les paramètres de la Map map.
  */

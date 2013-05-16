@@ -393,7 +393,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	//Horizontale
 	if(interface.width > interface.height){
 		buttonWidth = interface.width / 2.0 * 0.1;
-		buttonHeight = interface.height / 2.0 * 0.95;
+		buttonHeight = buttonWidth > interface.height ? interface.height : buttonWidth;
 		interface.infoHeight = interface.infoHeight > interface.height ? interface.height : interface.infoHeight;
 		xStep = buttonWidth + interface.width * 0.05;
 		yStep = 0.0;
@@ -402,7 +402,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	//Verticale
 	else{ 
 		buttonWidth = interface.width / 2.0 * 0.70;
-		buttonHeight = interface.height / 2.0 * 0.1;
+		buttonHeight = buttonWidth;
 		interface.infoWidth = interface.infoWidth > interface.width ? interface.width : interface.infoWidth;
 		xStep = 0.0;
 		yStep = buttonHeight + interface.height * 0.05;
@@ -444,6 +444,12 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	
 	interface.lstButtons = lstButtons;
 	return interface;
+}
+
+void cleanInterface(Interface* interface){
+	if(interface == NULL) return;
+	if(interface->lstButtons != NULL)
+		freeListComplete(interface->lstButtons);
 }
 
 //TODO

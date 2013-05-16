@@ -51,20 +51,17 @@ bool isMouseExtremBottom = false;
 //Gestion de la fin du jeu
 Uint32 startEndGameTime = 0;
 bool mouseInWindow;
-bool handleGameActions(World* world, Interface* interface){
-	//Gestion de l'évolution de l'argent
-	bool gameIsFinished = false;
-	
+bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished){
 	//Le jeu est-il fini ?
 	if(world->gameLoosed || world->gameWinned){
 		if(startEndGameTime == 0) startEndGameTime = SDL_GetTicks();
 		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
-		if (elapsedTime > END_GAME_DURATION) gameIsFinished = true;
+		if (elapsedTime > END_GAME_DURATION) *gameIsFinished = true;
 		else{
-			gameIsFinished = false;
+			*gameIsFinished = false;
 		}
 		//On ne traite pas les actions de l'utilisateur en fin de jeu
-		return gameIsFinished;
+		return false;
 	}
 	
 	SDL_Event e;

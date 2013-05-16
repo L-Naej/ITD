@@ -27,7 +27,7 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
  * est dans la phase de jeu.
  * Renvoie true si le joueur a demandé à quitter le programme.
  */
-bool handleGameActions(World* world, Interface* interface);
+bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished);
 
 //Fonctions internes
 bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* interface);

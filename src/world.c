@@ -175,6 +175,15 @@ bool addTowerOnMap(World* world, int posX, int posY, TowerType type){
 	return true;
 }
 
+
+void cleanWorld(World* world){
+	if(world == NULL) return;
+	cleanMap(&(world->map));
+	if(world->towersList != NULL)
+		freeListComplete(world->towersList);
+	world->towersList = NULL;
+}
+
 //---------------------- FONCTIONS PRIVEES ---------------------
 bool doTurn(World* world){
 	if(world == NULL) return false;

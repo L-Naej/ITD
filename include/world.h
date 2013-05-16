@@ -9,7 +9,7 @@
 #define MONSTERS_PER_WAVE 10
 
 /* Unité de temps d'un pas de jeu = 10ms */
-static const int TIMESTEP_MILLISECONDS = 10;
+static const int TIMESTEP_MILLISECONDS = 1;
 
 /*Temps d'attente en nombre de tours entre deux vagues successives */
 static const int NB_TURNS_BETWEEN_WAVES = 100;//=10seconde
@@ -72,6 +72,8 @@ bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition);
  * Renvoie si l'ajout a réussi ou non
  **/
 bool addTowerOnMap(World* world, int posX, int posY, TowerType type);
+
+void cleanWorld(World* world);
 
 
 // -------- FONCTIONS INTERNES, A NE PAS APPELER DE L'EXTERIEUR -----------

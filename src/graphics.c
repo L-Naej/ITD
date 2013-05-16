@@ -45,7 +45,7 @@ void initGameGraphics(SDL_Surface* map){
 }
 
 GLuint makeTextureFromFile(const char* imagePath){
-	if(imagePath == NULL) return -1;
+	if(imagePath == NULL) return 0;
 	
 	GLuint textureId;
 	
@@ -64,7 +64,7 @@ GLuint makeTextureFromFile(const char* imagePath){
 
 GLuint makeTextureFromSurface(SDL_Surface* image){
 
-	if(image == NULL) return -1;
+	if(image == NULL) return 0;
 	GLuint textureId;
 	GLenum format;
 	glEnable(GL_TEXTURE_2D);	
@@ -91,9 +91,9 @@ GLuint makeTextureFromSurface(SDL_Surface* image){
 	}
 
 	/*envoi de la texture à openGL*/
-	SDL_LockSurface(image);
+	//SDL_LockSurface(image);
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, image->w, image->h, 0, format,GL_UNSIGNED_BYTE, image->pixels);
-	SDL_UnlockSurface(image);
+	//SDL_UnlockSurface(image);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
  

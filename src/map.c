@@ -589,6 +589,25 @@ bool loadPpmMap(Map* map){
 	return true;
 }
 
+void cleanMap(Map* map){
+	if(map == NULL) return;
+	free(map->name);
+	map->name = NULL;
+	freeListComplete(map->pathNodeList);
+	map->pathNodeList = NULL;
+	
+	SDL_FreeSurface(map->image);
+	map->image = NULL;
+	int i = 0;
+	if(map->tabXYConstruct != NULL){
+		for(i = 0; i < map->width; i++){
+			free(map->tabXYConstruct[i]);
+		}
+	}
+	map->tabXYConstruct = NULL;
+}
+
+
 void dumpColor3u(Color3u color){
 	printf("(r:%d, g:%d, b:%d)", color.red, color.green, color.blue);
 }

@@ -41,14 +41,12 @@ int main(int argc,  char* argv[]) {
 		printf("Error loading TTF: %s\n",TTF_GetError());
 		exit(1);
 	}
-	/* initialisation du rootpath */
-	char* rootPath;
-	int taille = strlen(argv[0]);
-	argv[0][taille-7] = 0;
-	rootPath = argv[0];
-
+	bool askedForQuit = false;
+	World world;
+	Interface interface;
+	
 /*-------------- GESTION DU MENU --------------------*/
-	//TODO
+do{
 	bool play = false;
 	char mapName[30]= "Not chosen";
 
@@ -61,7 +59,6 @@ int main(int argc,  char* argv[]) {
 	/* ouverture du répertoire data */
 
 	initMenuGraphics();
-	bool askedForQuit = false;
 	while(play == false && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -91,23 +88,25 @@ int main(int argc,  char* argv[]) {
 	
 
 /*-------------- GESTION DU JEU --------------------*/
-	//TODO
 	bool gameFinished = false;
-	
 	//Surtout à appeler APRES avoir initialisé la SDL
 	char mapPath[50] = "data/";
 	strcat(mapPath, mapName);
-	World world = initWorld(mapPath);
-	initGameGraphics(world.map.image);
 	
 	float width = .15;//10% de largeur
 	float height = 1.; //Toute la hauteur
 	float positionX = 0.85; //A 90% de la largeur
 	float positionY = .0; //A 100% de la hauter
-	//Initialisation interface
-	Interface interface = initGameInterface(width, height, positionX, positionY);
 	
-	startWorld(&world);
+	if(!askedForQuit){
+		world = initWorld(mapPath);
+		initGameGraphics(world.map.image);
+
+		//Initialisation interface
+		interface = initGameInterface(width, height, positionX, positionY);
+	
+		startWorld(&world);
+	}
 	while(!gameFinished && !askedForQuit) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -133,14 +132,21 @@ int main(int argc,  char* argv[]) {
 		}
 		
 		/* Boucle traitant les evenements */
-		askedForQuit = handleGameActions(&world, &interface);
+		askedForQuit = handleGameActions(&world, &interface, &gameFinished);
 	}
-
-	/* Liberation des ressources associées à la SDL */ 
-	TTF_Quit();	
-	SDL_Quit();
+	cleanWorld(&world);
+}while(! askedForQuit);
+	/* Liberation des ressources */ 
+	cleanExit(&world, &interface);
 
 	return EXIT_SUCCESS;
+}
+
+void cleanExit(World* world, Interface* interface){
+	cleanWorld(world);
+	cleanInterface(interface);
+	TTF_Quit();	
+	SDL_Quit();
 }
 
 
