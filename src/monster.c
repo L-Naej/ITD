@@ -119,6 +119,11 @@ void moveMonster(Monster* monster){
 		return;
 	}
 	float factorX, factorY;
+	//Correction des erreurs de trajectoire, corriger à rebours marche mieux qu'après coup d'après l'expérience...
+	if(monster->realPosition.x - monster->position.x >= 1) monster->position.x++;
+	else if (monster->realPosition.x - monster->position.x <= -1)monster->position.x--;
+	if(monster->realPosition.y - monster->position.y >= 1) monster->position.y++;
+	else if(monster->realPosition.y - monster->position.y <= -1) monster->position.y--; 
 	
 	Vector3D direction = Normalize(Vector(monster->position, monster->destination));
 	
@@ -145,11 +150,7 @@ void moveMonster(Monster* monster){
 		if(factorX > 0) monster->position.x++;
 		else monster->position.x--;
 	}
-	//Correction des erreurs de trajectoire
-	if(monster->realPosition.x - monster->position.x >= 1) monster->position.x++;
-	else if (monster->realPosition.x - monster->position.x <= -1)monster->position.x--;
-	if(monster->realPosition.y - monster->position.y >= 1) monster->position.y++;
-	else if(monster->realPosition.y - monster->position.y <= -1) monster->position.y--; 
+
 	monster->nbTurnsSinceLastMove = 0;
 
 

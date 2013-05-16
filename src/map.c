@@ -79,14 +79,6 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	return *tmpNode;
 }
 
-Point3D getNodeByNumber(List* pathNodeList, int nodeNumber){
-	if(pathNodeList == NULL)return PointXYZ(0,0,-1);
-	Point3D* result = NULL;
-	if(! goToPosition(pathNodeList, nodeNumber))
-		return PointXYZ(0,0,-1);
-	result = currentData(pathNodeList);
-	return *result;
-}
 Point3D getStartPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
 	

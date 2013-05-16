@@ -33,7 +33,6 @@ typedef struct{
 	Point3D realPosition;
 	Point3D destination;
 	Vector3D direction;
-	int nodeNumber;
 	//Nombre de tours depuis le dernier mouvement
 	int nbTurnsSinceLastMove;
 }Monster;
