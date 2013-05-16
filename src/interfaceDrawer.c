@@ -366,7 +366,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID = makeTextureFromSurface(pauseSurface);
 	
 	//Création de la texture contenant les informations
-	SDL_Surface* infoSurface = TTF_RenderText_Blended(police, "IMAC ITD", color);
+	SDL_Surface* infoSurface = TTF_RenderText_Blended(police, "ITD", color);
 	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurface(infoSurface);
 	interface.infoWidth = infoSurface->w;
 	interface.infoHeight = infoSurface->h;
@@ -401,7 +401,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	}
 	//Verticale
 	else{ 
-		buttonWidth = interface.width / 2.0 * 0.70;
+		buttonWidth = interface.width / 2.0 * 0.90;
 		buttonHeight = buttonWidth;
 		interface.infoWidth = interface.infoWidth > interface.width ? interface.width : interface.infoWidth;
 		xStep = 0.0;
@@ -596,13 +596,13 @@ void drawButton(const Button* button){
 	GLuint textureId = 0;
 	
 	switch(button->action){
-	case PUT_GUN : textureId = GAME_TEXTURES_ID.GUN_TOWER_ID;
+	case PUT_GUN : textureId = GAME_TEXTURES_ID.GUN_BUTTON_ID;
 	break;
-	case PUT_HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_TOWER_ID;
+	case PUT_HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_BUTTON_ID;
 	break;
-	case PUT_LASER : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
+	case PUT_LASER : textureId = GAME_TEXTURES_ID.LASER_BUTTON_ID;
 	break;
-	case PUT_ROCKET : textureId = GAME_TEXTURES_ID.ROCKET_TOWER_ID;
+	case PUT_ROCKET : textureId = GAME_TEXTURES_ID.ROCKET_BUTTON_ID;
 	break;
 	case QUIT_GAME : textureId = GAME_TEXTURES_ID.QUIT_GAME_ID;
 	break;

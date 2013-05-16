@@ -21,8 +21,12 @@ void initGameGraphics(SDL_Surface* map){
 	GAME_TEXTURES_ID.WAVE_MESSAGE_ID, 
 	GAME_TEXTURES_ID.PAUSE_MESSAGE_ID, 
 	GAME_TEXTURES_ID.INFO_PANEL_ID, 
-	GAME_TEXTURES_ID.WIN_MESSAGE_ID };
-	glDeleteTextures(13,tab);
+	GAME_TEXTURES_ID.WIN_MESSAGE_ID,
+	GAME_TEXTURES_ID.HYBRID_BUTTON_ID,
+	GAME_TEXTURES_ID.LASER_BUTTON_ID,
+	GAME_TEXTURES_ID.GUN_BUTTON_ID,
+	GAME_TEXTURES_ID.ROCKET_BUTTON_ID };
+	glDeleteTextures(17,tab);
 	
 	
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1face.png");
@@ -33,6 +37,10 @@ void initGameGraphics(SDL_Surface* map){
 	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/mitraillette.png");
 	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/hybrid.png");
 	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
+	GAME_TEXTURES_ID.HYBRID_BUTTON_ID = makeTextureFromFile("images/hybrid_button.png");
+	GAME_TEXTURES_ID.LASER_BUTTON_ID = makeTextureFromFile("images/laser_button.png");
+	GAME_TEXTURES_ID.GUN_BUTTON_ID = makeTextureFromFile("images/mitraillette_button.png");
+	GAME_TEXTURES_ID.ROCKET_BUTTON_ID = makeTextureFromFile("images/rocket_button.png");
 	
 	//Initialisées après par l'interace
 	GAME_TEXTURES_ID.MONEY_ID = 0;

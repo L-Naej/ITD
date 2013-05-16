@@ -30,6 +30,10 @@ typedef struct{
 	GLuint WAVE_MESSAGE_ID;
 	GLuint WIN_MESSAGE_ID;
 	GLuint LOOSE_MESSAGE_ID;
+	GLuint ROCKET_BUTTON_ID;
+	GLuint LASER_BUTTON_ID;
+	GLuint HYBRID_BUTTON_ID;
+	GLuint GUN_BUTTON_ID;
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;

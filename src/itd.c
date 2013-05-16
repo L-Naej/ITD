@@ -64,7 +64,6 @@ do{
 
 	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
 	/* selection d'une carte en ligne de commande*/
-	bool carteChosen = false;
 	if (argc >= 2 && argv[1]){
 		int i;
 		for (i=0;i< NB_MAX_MAPS; i++){
