@@ -49,6 +49,7 @@ int main(int argc,  char* argv[]) {
 	world.map.image = NULL;
 	world.map.pathNodeList = NULL;
 	Interface interface;
+	interface.lstButtons = NULL;
 	
 /*-------------- GESTION DU MENU --------------------*/
 do{
@@ -61,10 +62,28 @@ do{
 	int menuOpen = 0;
 	int aideOpen = 0;
 
+	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
+	/* selection d'une carte en ligne de commande*/
+	bool carteChosen = false;
+	if (argc >= 2 && argv[1]){
+		int i;
+		for (i=0;i< NB_MAX_MAPS; i++){
+			printf(" nom des cartes %s\n",BUTTON_OF_MENU.tabMapName[i]);
+			if (strcmp(argv[1],BUTTON_OF_MENU.tabMapName[i])==0){
+				strcpy(mapName,argv[1]);
+				play = true;
+				break;	
+			}	
+
+		}
+		if(! play) fprintf(stderr, "Erreur le nom donné en paramètre ne correspond à aucun fichier map\n");
+		
+	}
+
 	/* ouverture du répertoire data */
 
 	initMenuGraphics();
-	while(play == false && askedForQuit == false) {
+	while(!play && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
 
