@@ -160,6 +160,10 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
+		if(e->button.button == SDL_BUTTON_RIGHT){
+			suppressTower(world, e->button.x, e->button.y);
+			return false;
+		}
 		Tower* pointedTower = NULL;
 		Action action = detectAction(e->button.x, e->button.y, world, interface, &pointedTower);
 		if(action == QUIT_GAME) return true;
@@ -249,6 +253,18 @@ Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface, Towe
 			return CLICK_ON_TOWER;
 		}
 		else return CLICK_ON_MAP;
+	}
+}
+
+void suppressTower(World* world, Uint16 x, Uint16 y){
+	Tower* cur = NULL;
+	goToHeadList(world->towersList);
+	bool towerDetected = false;
+	while( !towerDetected && (cur = (Tower*) nextData(world->towersList)) != NULL ){
+		towerDetected = isMouseOnTower(cur, world->cameraPosition, x, y);
+		if(towerDetected){
+			freeCellByPosition(world->towersList, world->towersList->position);
+		}
 	}
 }
 
