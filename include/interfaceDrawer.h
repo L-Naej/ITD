@@ -84,7 +84,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
  * sont liés. Les stocke dans la variable globale 
  * MENU_TEXTURES_ID.
  */
-void initMenuGraphics(char* font1,char* font2,char* rootPath);
+void initMenuGraphics();
 
 /**
  * Dessine l'interface pointée par interface.

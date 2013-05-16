@@ -54,30 +54,13 @@ int main(int argc,  char* argv[]) {
 
 
 	/* chargement des polices */
-
-	char* font1 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
-
-	strcpy(font1,rootPath);
-	font1 = strcat(font1,"font/Champagne.ttf");
-
-	char* font2 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
-	strcpy(font2,rootPath);
-	font2 = strcat(font2,"font/lighthouse.ttf");
-
-
 	int playIsPush = 0;
 	int menuOpen = 0;
 	int aideOpen = 0;
 
 	/* ouverture du répertoire data */
-	
-				
 
-
-	initMenuGraphics(font1,font2, rootPath);
-	
-
-
+	initMenuGraphics();
 	bool askedForQuit = false;
 	while(play == false && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */

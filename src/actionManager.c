@@ -34,6 +34,9 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 					default : break;
 				}
 			break;
+			case SDL_VIDEORESIZE :
+				setVideoMode(e.resize.w,e.resize.h);
+				initMenuGraphics();
 			default : break;
 		}
 	}

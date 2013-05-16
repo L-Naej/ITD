@@ -4,10 +4,8 @@
 #include "graphics.h"
 #define MAX_LENGHT 30
 	
-int readDirectory(char* map[],char* rootPath){
-	char* dataPath = (char*)malloc(sizeof(char)*(strlen(rootPath)+5));
-	strcpy(dataPath,rootPath);
-	dataPath = strcat(dataPath,"data");
+int readDirectory(char* map[]){
+	char dataPath[] = "data/";
 	DIR* dataRep = opendir(dataPath);
 	if (dataRep ==NULL){
 		perror("");

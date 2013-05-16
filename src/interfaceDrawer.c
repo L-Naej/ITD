@@ -27,8 +27,10 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	return button;
 }
 
-void initMenuGraphics(char* font1,char* font2, char* rootPath){
+void initMenuGraphics(){
 
+	char font1[] = "font/Champagne.ttf";
+	char font2[] = "font/lighthouse.ttf";
 
 	TTF_Font* police = NULL;
 	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
@@ -46,9 +48,20 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 
 	char playLegend[7]="Play !";
 	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
+
+	GLuint tabTextures[] = {
+	MENU_TEXTURES_ID.PLAY_LEGEND,
+	MENU_TEXTURES_ID.AIDE_BUTTON, 
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
+	MENU_TEXTURES_ID.PLAY_BUTTON, 
+	MENU_TEXTURES_ID.CASE_VIDE, 
+	MENU_TEXTURES_ID.RULES,
+	MENU_TEXTURES_ID.RULES_CLOSE,
+	MENU_TEXTURES_ID.BULLE};
+	glDeleteTextures(8,tabTextures);
+	
+	
 	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
-
-
 	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
 	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
 	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
@@ -58,7 +71,7 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
 
 
-	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName,rootPath);
+	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
 
 	int j;
 
@@ -71,18 +84,22 @@ void initMenuGraphics(char* font1,char* font2, char* rootPath){
 	}
 	Point3D aidePosition = PointXYZ(-150.,100.,0.);
 	Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
+	free(BUTTON_OF_MENU.regles);
 	BUTTON_OF_MENU.regles = aideButton;
 	
 	Point3D choixPosition = PointXYZ(140.,100.,0.);
 	Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
+	free(BUTTON_OF_MENU.choix_carte);
 	BUTTON_OF_MENU.choix_carte = choixButton;
 	
 	Point3D playPosition = PointXYZ(0.,-100.,0.);
 	Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
+	free(BUTTON_OF_MENU.jouer);
 	BUTTON_OF_MENU.jouer=playButton;
 		
 	Point3D closePosition = PointXYZ(223.,225.,0.);
 	Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
+	free(BUTTON_OF_MENU.close_rules);
 	BUTTON_OF_MENU.close_rules=closeButton;
 	
 	TTF_CloseFont(police);
