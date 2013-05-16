@@ -43,6 +43,11 @@ int main(int argc,  char* argv[]) {
 	}
 	bool askedForQuit = false;
 	World world;
+	world.towersList = NULL;
+	world.map.name = NULL;
+	world.map.tabXYConstruct = NULL;
+	world.map.image = NULL;
+	world.map.pathNodeList = NULL;
 	Interface interface;
 	
 /*-------------- GESTION DU MENU --------------------*/
@@ -145,6 +150,10 @@ do{
 void cleanExit(World* world, Interface* interface){
 	cleanWorld(world);
 	cleanInterface(interface);
+	free(BUTTON_OF_MENU.regles);
+	free(BUTTON_OF_MENU.choix_carte);
+	free(BUTTON_OF_MENU.jouer);
+	free(BUTTON_OF_MENU.close_rules);	
 	TTF_Quit();	
 	SDL_Quit();
 }

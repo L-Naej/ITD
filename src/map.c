@@ -593,7 +593,8 @@ void cleanMap(Map* map){
 	if(map == NULL) return;
 	free(map->name);
 	map->name = NULL;
-	freeListComplete(map->pathNodeList);
+	if(map->pathNodeList != NULL)
+		freeListComplete(map->pathNodeList);
 	map->pathNodeList = NULL;
 	
 	SDL_FreeSurface(map->image);
