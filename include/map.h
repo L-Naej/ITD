@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include "list.h"
 #include "point3D.h"
-
+#include "graphics.h"
 #include "utils.h"
 
 /** Note : les PathNodes sont implémentés par des Point3D **/
@@ -49,7 +49,11 @@ typedef struct{
 	TowerStat* towerdatas;
 	
 	SDL_Surface* image;
+
+	bool** tabXYConstruct;
+	int nbPixels;
 }Map;
+
 
 /**
  * Retourne une structure Map initialisée
@@ -69,6 +73,9 @@ int testItdValid(int R,int V,int B);
 int loadITD1 (Map* map, FILE* file, char* keyword);
 
 bool loadPpmMap(Map* map);
+
+//Transforme les pathNode en coordonnées OpenGL
+void transformCoordToOpenGL(Map* map);
 
 /**
  * Retourne une structure Color3u initialisée

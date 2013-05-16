@@ -52,6 +52,7 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	
 	Point3D* tmpNode = NULL;
 	bool pointIsNode = false;
+	ListState* state = saveListState(pathNodeList);
 	
 	goToHeadList(pathNodeList);
 	//On cherche le node courant
@@ -69,6 +70,9 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	//Puis on retourne celui qui le suit.
 	//La liste gère toute seule si elle est en fin de liste et ne "dépasse" pas (reste sur le dernier node)
 	tmpNode = (Point3D*) nextData(pathNodeList);
+	
+	restoreListState(state);
+	free(state);
 	//Si on est sur le dernier point on le retourne lui même
 	if(tmpNode == NULL) return currentNode;
 
@@ -78,6 +82,8 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 Point3D getStartPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
 	
+	ListState* state = saveListState(map->pathNodeList);
+	
 	goToHeadList(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) nextData(map->pathNodeList);
 	if(tmpPtr == NULL){
@@ -86,11 +92,14 @@ Point3D getStartPoint(const Map* map){
 	}
 	Point3D startPoint = *tmpPtr;
 	
+	restoreListState(state);
+	free(state);
 	return startPoint;
 }
 
 Point3D getEndPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
+	ListState* state = saveListState(map->pathNodeList);
 	
 	goToBottomCell(map->pathNodeList);
 	Point3D* tmpPtr = (Point3D*) currentData(map->pathNodeList);
@@ -100,6 +109,8 @@ Point3D getEndPoint(const Map* map){
 	}
 	Point3D endPoint = *tmpPtr;
 	
+	restoreListState(state);
+	free(state);
 	return endPoint;
 }
 
@@ -232,6 +243,7 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
+	node1->z = 0.0;
 
 	map->pathNodeList = createList((void*)node1); 
 
@@ -253,9 +265,22 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 
 	
 	loadPpmMap(map);
+	
+	transformCoordToOpenGL(map);
 
 	return 1;
 } 
+
+void transformCoordToOpenGL(Map* map){
+	if(map == NULL) return;
+	goToHeadList(map->pathNodeList);
+	Point3D* cur = NULL;
+	
+	while( (cur = (Point3D*) nextData(map->pathNodeList) ) != NULL){
+		*cur = itdToOpenGL(map->width, map->height, *cur);
+	}
+}
+
 bool loadMap(Map* map, const char* pathToItdFile){	
 
 	/* On ouvre le fichier */
@@ -509,48 +534,58 @@ void modifColorPixel(SDL_Surface *surface, int x, int y, Uint32 pixel){
     }
 }
 
+	
+	
 
+/*Chargement de l'image ppm*/
 bool loadPpmMap(Map* map){
 	
-	/*Chargement de l'image*/
-      char chemin [38] = "images/";
+	char chemin [38] = "images/";
 	strcat(chemin,map->name);
-
   	map->image = IMG_Load(chemin);
-  	map->width = map->image->w;
-  	map->height = map->image->h;
   	
   	if(map->image == NULL) {
    		fprintf(stderr, "Impossible de charger le fichier %s.\n", map->name);
   		 return false;
 	}	  
 	
-	int i,j =0;
+	int i,j = 0;
 	Color3u colorPixel;
 	Uint32 initColorPixel;
-	Uint32 newColorPixel; 
-	for(i=0; i<map->image->w; i++) {		
+	Uint32 newColorPixel;
+	int nbPixels = map->image->w * map->image->h;
+	int nbLignes = map->image->w;
+	int nbCol = map->image->h;
+	map->nbPixels = nbPixels;
+	map->width = map->image->w;
+	map->height = map->image->h;
+ 
+	map->tabXYConstruct = (bool**) malloc(nbLignes*sizeof(bool*));
+
+	if(map->tabXYConstruct == NULL){
+		printf("Erreur lors de l'allocation du tableau de mémorisation des zones constructibles \n");
+           	exit(EXIT_FAILURE);
+	} 
+	for(i=0; i<map->image->w; i++) {	
+	    map->tabXYConstruct[i] = (bool*) malloc(nbCol*sizeof(bool));	
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
-			if(colorPixel.red == 120 && colorPixel.green == 120 && colorPixel.blue == 120) {				
-				colorPixel.red = map->constructAreaColor.red;
-				colorPixel.green = map->constructAreaColor.green;
-				colorPixel.blue = map->constructAreaColor.blue;	
-				
-				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
-				modifColorPixel(map->image, i, j, newColorPixel);
-			} else if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
+			if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
 				
 				colorPixel.red = map->pathColor.red;
 				colorPixel.green = map->pathColor.green;
-				colorPixel.blue = map->pathColor.blue;		
+				colorPixel.blue = map->pathColor.blue;	
+
+				map->tabXYConstruct[i][j] = true;
+				
 				newColorPixel=SDL_MapRGB(map->image->format, colorPixel.red, colorPixel.green, colorPixel.blue);
 				modifColorPixel(map->image, i, j, newColorPixel);
 			}
+			else map->tabXYConstruct[i][j] = false;
 		}
 	}
-
+	
 	return true;
 }
 

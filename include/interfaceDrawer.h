@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "geometry.h"
 #include "list.h"
+#include "world.h"
 
 /**
  * L'interface contient l'ensemble des boutons nécessaires à l'interaction
@@ -13,7 +14,9 @@
  * ATTENTION : Les paramètres envoyés à initInterface travaillent en repère SDL.
  * Rappel : le repère OpenGL a comme unité le pixel, tout comme le repère SDL.
  */
- 
+
+//Temps d'affichage des messages de l'interface en millisecondes
+static const Uint32 MESSAGE_DISPLAY_DURATION = 3000; 
 typedef enum{
 	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION, AIDE_MENU,CHOIX_MENU,PLAY_MENU,MAP_MENU,MAP_MENU_CASE,CLOSE_RULES_MENU
 }Action;
@@ -46,6 +49,10 @@ ButtonOfMenu BUTTON_OF_MENU;
  * Structure représentant l'interface du jeu.
  */
 typedef struct{
+	float relativeWidth;//En %
+	float relativeHeight;//En %
+	float relativePosX;//En %
+	float relativePosY;//En % toutes ces valeurs utilisées pour le resize
 	float width;///En pixels
 	float height;///En pixels
 	Point3D position;///Position du milieu de l'interface (coordonnées OpenGL)
@@ -57,6 +64,8 @@ typedef struct{
 	float infoHeight;
 	Point3D infoPosition;
 	Action currentAction;///L'action en cours du joueur suite à une interaction sur l'interface
+	Uint32 messageDisplayTime; //Indique quand l'interface a commencé à afficher le dernier message en date
+	int lastMoney;///Permet de savoir s'il faut mettre à jour l'affcihage de l'argent
 }Interface;
 
 /**
@@ -70,9 +79,18 @@ typedef struct{
 Interface initGameInterface(float width, float height, float positionX, float positionY);
 
 /**
+ * Charge les textures du menu dans la carte
+ * graphique et récupère les textures id qui leurs
+ * sont liés. Les stocke dans la variable globale 
+ * MENU_TEXTURES_ID.
+ */
+void initMenuGraphics();
+
+/**
  * Dessine l'interface pointée par interface.
  */
-void drawInterface(Interface* interface);
+void drawInterface(Interface* interface, World* world);
+
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
 void drawMenu(GLuint*,int, int*,int*,int*, char*);
 void drawMapMenu (char* mapName);
@@ -90,8 +108,11 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 
 //Fonctions internes
 Button* createButton(Action action, Point3D position, float width, float height);
+GLuint createWaveMessage(unsigned char waveNumber);
 void drawButtonMenu();
 void drawButton(const Button* button);
 void drawCarre();
+void createLooseMessage();
+void createWinMessage();
 
 #endif

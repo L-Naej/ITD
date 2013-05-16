@@ -12,7 +12,7 @@
 static const int TIMESTEP_MILLISECONDS = 10;
 
 /*Temps d'attente en nombre de tours entre deux vagues successives */
-static const int NB_TURNS_BETWEEN_WAVES = 100;//=1seconde
+static const int NB_TURNS_BETWEEN_WAVES = 100;//=10seconde
 
 /* Nombre de vagues de monstres que le jouer va devoir affronter */
 static const int NB_TOTAL_WAVES = 20;
@@ -34,6 +34,8 @@ typedef struct{
 	List* towersList;///Liste des tours actuellement sur la map.
 	int money;
 	Point3D cameraPosition;
+	bool gameWinned;
+	bool gameLoosed;
 }World;
 
 
@@ -58,9 +60,9 @@ bool worldNewStep(World* world);
 
 /**
  * Indique s'il est possible de poser une tour à
- * la position (posX,posY) sur la carte du jeu.
+ * la position indiquée en paramètre (en coordonnées openGL et ITD)
  **/
-bool canIPutATowerHere(World* world, int posX, int posY);
+bool canIPutATowerHere(World* world, Point3D oglPosition, Point3D itdPosition);
 
 /**
  * Ajoute une tour de type 'type' à la position posX posY

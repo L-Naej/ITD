@@ -9,13 +9,13 @@ TowerStat* createEmptyTowerStat(){
 	towerstat->rateR=10;
 	towerstat->rangeR=50;
 	towerstat->costR=60;
-	towerstat->powerL=50;
+	towerstat->powerL=20;
 	towerstat->rateL=100;
 	towerstat->rangeL=1150;
 	towerstat->costL=40;
 	towerstat->powerM=20;
 	towerstat->rateM=70;
-	towerstat->rangeM=20;
+	towerstat->rangeM=1000;
 	towerstat->costM=30;
 	towerstat->powerH=40;
 	towerstat->rateH=80;
@@ -53,8 +53,8 @@ Tower* createRocketTower(Map map){
 	newTower->rate = map.towerdatas->rateR;
 	newTower->range = map.towerdatas->rangeR;
 	newTower->cost = map.towerdatas->costR;
-
-
+	
+	newTower->whereIShoot = createEmptyList();
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }
@@ -71,7 +71,7 @@ Tower* createLaserTower(Map map){
 	newTower->rate = map.towerdatas->rateL;
 	newTower->range = map.towerdatas->rangeL;
 	newTower->cost = map.towerdatas->costL;
-
+	newTower->whereIShoot = createEmptyList();
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }
@@ -88,7 +88,7 @@ Tower* createGunTower(Map map){
 	newTower->rate = map.towerdatas->rateM;
 	newTower->range = map.towerdatas->rangeM;
 	newTower->cost = map.towerdatas->costM;
-
+	newTower->whereIShoot = createEmptyList();
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }
@@ -105,7 +105,7 @@ Tower* createHybridTower(Map map){
 	newTower->rate = map.towerdatas->rateH;
 	newTower->range = map.towerdatas->rangeH;
 	newTower->cost = map.towerdatas->costH;
-
+	newTower->whereIShoot = createEmptyList();
 	newTower->position = PointXYZ(-1,-1,0);
 	return newTower;
 }

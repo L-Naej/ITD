@@ -4,9 +4,8 @@
 #include "utils.h"
 #include "point3D.h"
 #include "map.h"
-
-static const int TOWER_WIDTH_PX = 30;
-static const int TOWER_HEIGHT_PX = 30;
+static const int TOWER_WIDTH_PX = 60;
+static const int TOWER_HEIGHT_PX = 66;
 
 typedef enum {
 	ROCKET, LASER, GUN, HYBRID
@@ -19,7 +18,7 @@ typedef struct {
 	int range;
 	int power;
 	float cost;
-
+	List* whereIShoot;///Liste de point3D
 	Point3D position;
 }Tower;
 

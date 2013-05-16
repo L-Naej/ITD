@@ -27,6 +27,85 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	return button;
 }
 
+void initMenuGraphics(){
+
+	char font1[] = "font/Champagne.ttf";
+	char font2[] = "font/lighthouse.ttf";
+
+	TTF_Font* police = NULL;
+	char bienvenue[34]="Bienvenue dans Imac Tower Defense";
+
+	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
+	MENU_TEXTURES_ID.BIENVENUE = makeTextureFromSurface (bienvenue_surface);
+
+	char choix[18]="Choisir une carte";
+	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
+	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND =  makeTextureFromSurface (choix_surface);
+
+	char aide[16]="Lire les regles";
+	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
+	MENU_TEXTURES_ID.AIDE_LEGEND=makeTextureFromSurface (aide_surface);
+
+	char playLegend[7]="Play !";
+	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
+
+	GLuint tabTextures[] = {
+	MENU_TEXTURES_ID.PLAY_LEGEND,
+	MENU_TEXTURES_ID.AIDE_BUTTON, 
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
+	MENU_TEXTURES_ID.PLAY_BUTTON, 
+	MENU_TEXTURES_ID.CASE_VIDE, 
+	MENU_TEXTURES_ID.RULES,
+	MENU_TEXTURES_ID.RULES_CLOSE,
+	MENU_TEXTURES_ID.BULLE};
+	glDeleteTextures(8,tabTextures);
+	
+	
+	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
+	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
+	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
+	MENU_TEXTURES_ID.CASE_VIDE = makeTextureFromFile("images/casevide.png");
+	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
+	MENU_TEXTURES_ID.RULES_CLOSE = makeTextureFromFile("images/close.png");
+	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
+
+
+	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
+
+	int j;
+
+	for (j=0;j<MENU_TEXTURES_ID.nb_cartes;j++){
+
+		SDL_Surface* text=loadFont(police,BUTTON_OF_MENU.tabMapName[j],font1,100);
+
+		MENU_TEXTURES_ID.MAPS[j] = makeTextureFromSurface (text);
+
+	}
+	Point3D aidePosition = PointXYZ(-150.,100.,0.);
+	Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
+	free(BUTTON_OF_MENU.regles);
+	BUTTON_OF_MENU.regles = aideButton;
+	
+	Point3D choixPosition = PointXYZ(140.,100.,0.);
+	Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
+	free(BUTTON_OF_MENU.choix_carte);
+	BUTTON_OF_MENU.choix_carte = choixButton;
+	
+	Point3D playPosition = PointXYZ(0.,-100.,0.);
+	Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
+	free(BUTTON_OF_MENU.jouer);
+	BUTTON_OF_MENU.jouer=playButton;
+		
+	Point3D closePosition = PointXYZ(223.,225.,0.);
+	Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
+	free(BUTTON_OF_MENU.close_rules);
+	BUTTON_OF_MENU.close_rules=closeButton;
+	
+	TTF_CloseFont(police);
+
+}
+
 void drawButtonMenu(){
 	glBegin(GL_QUADS);
  	glTexCoord2f(1, 0);
@@ -96,40 +175,23 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 	
 
 /* _________________ Dessin du bouton d'aide_______________*/
-		Point3D aidePosition = PointXYZ(-150.,100.,0.);
+		
+		glColor3ub(255,255,255);
 
-		Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
-
-
-			glColor3ub(255,255,255);
-
-			drawButton(aideButton);
-			
-		BUTTON_OF_MENU.regles=aideButton;
+		drawButton(BUTTON_OF_MENU.regles);
 
 /* _________________ Dessin du bouton pour choisir la carte_______________*/
 
-		Point3D choixPosition = PointXYZ(140.,100.,0.);
+		glColor3ub(255,255,255);
 
-		Button* choixButton = createButton(CHOIX_MENU,choixPosition,120,120);
+		drawButton(BUTTON_OF_MENU.choix_carte);
 
-
-			glColor3ub(255,255,255);
-
-			drawButton(choixButton);
-
-		BUTTON_OF_MENU.choix_carte=choixButton;
 /* _________________ Dessin du bouton play_______________*/
 
-		Point3D playPosition = PointXYZ(0.,-100.,0.);
+		glColor3ub(255,255,255);
 
-		Button* playButton = createButton(PLAY_MENU,playPosition,120,120);
-
-
-			glColor3ub(255,255,255);
-
-			drawButton(playButton);
-		BUTTON_OF_MENU.jouer=playButton;
+		drawButton(BUTTON_OF_MENU.jouer);
+		
 
 
 		if (*menuOpen == 1){
@@ -149,12 +211,9 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 		glPopMatrix();
 
 
-
-		Point3D closePosition = PointXYZ(223.,225.,0.);
-		Button* closeButton = createButton(CLOSE_RULES_MENU,closePosition,30,30);
 		glColor3ub(255,255,255);
-		drawButton(closeButton);
-		BUTTON_OF_MENU.close_rules=closeButton;
+		drawButton(BUTTON_OF_MENU.close_rules);
+
 	}
 
 		if (*menuOpen == 1){
@@ -197,7 +256,7 @@ void drawMapMenu (char* mapName){
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
 		Point3D mapPosition = PointXYZ(xText,yText,0.);
 		BUTTON_OF_MENU.cmp=i;
-		tabMap[i] = createButton(MAP_MENU,mapPosition,60,60);
+		tabMap[i] = createButton(MAP_MENU,mapPosition,100,60);
 		if (strcmp(BUTTON_OF_MENU.tabMapName[i],mapName)==0)
 			glColor3ub(0,204,204);
 		else
@@ -267,12 +326,21 @@ Interface initGameInterface(float width, float height, float positionX, float po
 	Point3D sdlPosition = PointXYZ(WINDOW_WIDTH *positionX, WINDOW_HEIGHT *positionY, 0.0);
 	interface.position = sdlToOpenGL(sdlPosition);
 	interface.moneyPosition = interface.position;
+	interface.messageDisplayTime = 0;
+	interface.lastMoney = 0;
+	interface.relativePosX = positionX;
+	interface.relativePosY = positionY;
+	interface.relativeWidth = width;
+	interface.relativeHeight = height;
+	
+	//Création messages de fin
+	createLooseMessage();
+	createWinMessage();
 
 	//On positionne en fonction du coin haut gauche
 	interface.position.x += interface.width / 2.0;
 	interface.position.y -= + interface.height / 2.0;
 	 
-	dumpPoint(interface.position);
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
@@ -379,13 +447,14 @@ Interface initGameInterface(float width, float height, float positionX, float po
 }
 
 //TODO
-void drawInterface(Interface* interface){
+void drawInterface(Interface* interface, World* world){
 	
 	if(interface == NULL) return;
 	
 	glLoadIdentity();
 	//Dessin du fond de l'interface
 	glColor3ub(0,0,0);
+	glLineWidth(1.0);
 	glPushMatrix();
 	glTranslatef(interface->position.x, interface->position.y, interface->position.z);
 	glScalef(interface->width, interface->height, 1.0);
@@ -393,17 +462,17 @@ void drawInterface(Interface* interface){
 	glPopMatrix();
 	
 	//Dessin du texte argent
+	if(interface->lastMoney != world->money){
+		updateMoneyTexture(interface, world->money);
+		interface->lastMoney = world->money;
+	}
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
-	
 	glTranslatef(interface->moneyPosition.x, interface->moneyPosition.y, 0.);
 	glScalef(interface->moneyWidth,interface->moneyHeight,1.);
 	drawTexturedQuad(GAME_TEXTURES_ID.MONEY_ID);
-	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 	//Dessin des boutons
@@ -414,19 +483,15 @@ void drawInterface(Interface* interface){
 		drawButton(cur);
 	}
 	
-	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)//TODO
+	//Dessin des infos sur une tour cliquée (si une tour a été cliquée)
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,0.0f);
 	
 	glTranslatef(interface->infoPosition.x, interface->infoPosition.y, 0.);
 	glScalef(interface->infoWidth,interface->infoHeight,1.);
 
 	drawTexturedQuad(GAME_TEXTURES_ID.INFO_PANEL_ID);
-	glDisable(GL_ALPHA_TEST);
 	
 	glPopMatrix();
 	
@@ -456,12 +521,8 @@ void drawInterface(Interface* interface){
 		glLoadIdentity();
 		glColor3ub(255,255,255);
 	
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.0f);
-	
 		glScalef(WINDOW_WIDTH / 5.0,WINDOW_HEIGHT / 10.0,1.);
 		drawTexturedQuad(GAME_TEXTURES_ID.PAUSE_MESSAGE_ID);
-		glDisable(GL_ALPHA_TEST);
 	
 		glPopMatrix();
 		
@@ -471,17 +532,57 @@ void drawInterface(Interface* interface){
 		int mouseX, mouseY;
 		SDL_GetMouseState(&mouseX, &mouseY);
 		Point3D oglMouse = sdlToOpenGL(PointXYZ(mouseX,mouseY, 0.0));
+		//Besoin des coordonnées réelles pour le test de tour
+		Point3D oglRealMouse = oglMouse;
+		oglRealMouse.x -= world->cameraPosition.x;
+		oglRealMouse.y -= world->cameraPosition.y;
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef(oglMouse.x, oglMouse.y, oglMouse.z);
 		glScalef(TOWER_WIDTH_PX,TOWER_HEIGHT_PX, 1.0);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER,0.0f);
+	 	if(!canIPutATowerHere(world, oglRealMouse, openGLToItd(world->map.width, world->map.height, oglRealMouse))){
+			glColor3ub(255, 0,0);
+		}
+		else glColor3ub(0,255,0);
 		drawTexturedQuad(textureId);
-		glDisable(GL_ALPHA_TEST);
 		glPopMatrix();
 	}
+	glColor3ub(255,255,255);
+	//Affichage du message "Wave X"
+	if(world->isBetweenWaves){
+		if(interface->messageDisplayTime == 0){
+			glDeleteTextures(1, &(GAME_TEXTURES_ID.WAVE_MESSAGE_ID));
+			GAME_TEXTURES_ID.WAVE_MESSAGE_ID = createWaveMessage(world->currentMonstersWave + 1);
+			interface->messageDisplayTime = SDL_GetTicks();
+		}
+		Uint32 elapsedTime = SDL_GetTicks() - interface->messageDisplayTime;
+		if(elapsedTime <= MESSAGE_DISPLAY_DURATION){
+			glPushMatrix();
+			glLoadIdentity();
+			glColor3ub(255,255,255);
+			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 10.0, 1.0);
+			drawTexturedQuad(GAME_TEXTURES_ID.WAVE_MESSAGE_ID);
+			glPopMatrix();
+		}
+	}else{
+		interface->messageDisplayTime = 0;
+	}
 	
+	//Si on a gagné/perdu affichage du message
+	if(world->gameWinned){
+		glPushMatrix();
+		glLoadIdentity();
+		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);
+		drawTexturedQuad(GAME_TEXTURES_ID.WIN_MESSAGE_ID);
+		glPopMatrix();
+	}
+	else if(world->gameLoosed){
+		glPushMatrix();
+		glLoadIdentity();
+		glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 2.0, 1.);
+		drawTexturedQuad(GAME_TEXTURES_ID.LOOSE_MESSAGE_ID);
+		glPopMatrix();
+	}
 }
 
 void drawButton(const Button* button){
@@ -595,4 +696,85 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	TTF_CloseFont(police);
 	TTF_Quit();	
 }
+
+GLuint createWaveMessage(unsigned char waveNumber){
+	char message[100];
+	sprintf(message, "Vague %d dans %d secondes", waveNumber, NB_TURNS_BETWEEN_WAVES / 100);
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	GLuint textureId = makeTextureFromSurface(sMessage);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+	
+	return textureId;
+}
+
+void createWinMessage(){
+	char message[20] = "WINAGE PINAGE !";
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	SDL_Surface* image = IMG_Load("images/simba_thumbs_up.png");
+	if (image ==NULL){
+		fprintf(stderr,"Erreur fatale : impossible de charger l'image.\n");
+		exit(1);
+	}
+	
+	SDL_Surface* tab[2];
+	tab[0] = sMessage;
+	tab[1] = image;
+	int width, height;
+	GAME_TEXTURES_ID.WIN_MESSAGE_ID = makeTextureFromSurfaces(tab, 2, 1, &width, &height);
+	
+	SDL_FreeSurface(image);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+}
+
+void createLooseMessage(){
+	char message[20] = "YOU LOOSE MUHAHA";
+
+	//Création des textures affichant du texte
+	if(TTF_Init() == -1){
+		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+		exit(EXIT_FAILURE);
+	}
+	TTF_Font* police = NULL;
+	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	SDL_Color color; color.r = 255;
+	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
+	SDL_Surface* image = IMG_Load("images/hyene.png");
+	if (image ==NULL){
+		fprintf(stderr,"Erreur fatale : impossible de charger l'image.\n");
+		exit(1);
+	}
+	SDL_Surface* tab[2];
+	tab[0] = sMessage;
+	tab[1] = image;
+	int width, height;
+	GAME_TEXTURES_ID.LOOSE_MESSAGE_ID = makeTextureFromSurfaces(tab, 2, 1, &width, &height);
+	
+	SDL_FreeSurface(image);
+	SDL_FreeSurface(sMessage);
+	TTF_CloseFont(police);
+	TTF_Quit();
+}
+
 

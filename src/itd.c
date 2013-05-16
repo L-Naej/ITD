@@ -7,13 +7,11 @@
 #include <GL/glu.h>
 #include <SDL/SDL_ttf.h>
 #endif
-
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 
 #include "itd.h"
 #include "graphics.h"
@@ -56,30 +54,13 @@ int main(int argc,  char* argv[]) {
 
 
 	/* chargement des polices */
-
-	char* font1 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
-
-	strcpy(font1,rootPath);
-	font1 = strcat(font1,"font/Champagne.ttf");
-
-	char* font2 = (char*)malloc(sizeof(char)*(strlen(rootPath)+19));
-	strcpy(font2,rootPath);
-	font2 = strcat(font2,"font/lighthouse.ttf");
-
-
 	int playIsPush = 0;
 	int menuOpen = 0;
 	int aideOpen = 0;
 
 	/* ouverture du répertoire data */
-	
-				
 
-
-	initMenuGraphics(font1,font2, rootPath);
-	
-
-
+	initMenuGraphics();
 	bool askedForQuit = false;
 	while(play == false && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
@@ -134,10 +115,10 @@ int main(int argc,  char* argv[]) {
 		/* On tente un nouveau cycle de tours de jeu si besoin. Le temps est 
 		 géré par la fonction. La plupart du temps plusieurs tours de jeu sont
 		 joués d'affilé. */
-		gameFinished = worldNewStep(&world);
+		worldNewStep(&world);
 		 
 		drawWorld(&world);
-		drawInterface(&interface);
+		drawInterface(&interface, &world);
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 
 		au tour suivant.
 		 */

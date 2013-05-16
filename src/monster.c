@@ -6,14 +6,14 @@
 Monster createMonster(unsigned char wave, int nbMonstersCreated){
 
 	MonsterType type;
-	if(wave < 10) type = BLUE_OCTOPUS;
-	else if (wave < 15){
-		if(nbMonstersCreated < (wave - 9))
+	if(wave < 2) type = BLUE_OCTOPUS;
+	else if (wave < 8){
+		if(nbMonstersCreated < (wave - 1))
 			type = ORANGE_OCTOPUS;
 		else type = BLUE_OCTOPUS;
 	}
 	else{
-		if(nbMonstersCreated < (wave -14))
+		if(nbMonstersCreated < (wave -7))
 			type = GREEN_OCTOPUS;
 		else type = ORANGE_OCTOPUS;
 	}
@@ -34,16 +34,18 @@ Monster createMonster(unsigned char wave, int nbMonstersCreated){
 Monster createBlueOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = BLUE_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 40*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
+	monster.gunResistance = 2*wave;
+	monster.hybridResistance = wave;
 	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.speed = 5;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
+	monster.direction = VectorXYZ(0.,0.,0.);
 	monster.nbTurnsSinceLastMove = 0;
 	
 	
@@ -53,18 +55,19 @@ Monster createBlueOctopus(unsigned char wave){
 Monster createOrangeOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = ORANGE_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 80*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
-	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.gunResistance = 5*wave;
+	monster.hybridResistance = wave + 5;
+	monster.money = 10*wave;
+	monster.speed = 3;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
 	monster.nbTurnsSinceLastMove = 0;
-	
+		monster.direction = VectorXYZ(0.,0.,0.);
 	
 	return monster;
 }
@@ -72,18 +75,19 @@ Monster createOrangeOctopus(unsigned char wave){
 Monster createGreenOctopus(unsigned char wave){
 	Monster monster;
 	monster.type = GREEN_OCTOPUS;
-	monster.life = 3*wave;
+	monster.maxLife = 100*wave;
+	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 1;
-	monster.hybridResistance = 1;
-	monster.money = 5*wave;
-	monster.speed = 2;
+	monster.gunResistance = 10*wave;
+	monster.hybridResistance = wave + 10;
+	monster.money = 15*wave;
+	monster.speed = 1;
 	
 	monster.position = PointXYZ(-1,-1,0);
 	monster.destination = PointXYZ(-1,-1,0);
 	monster.nbTurnsSinceLastMove = 0;
-	
+	monster.direction = VectorXYZ(0.,0.,0.);
 	
 	return monster;
 }
@@ -99,6 +103,8 @@ Monster createGreenOctopus(unsigned char wave){
  * Pour cela on regarde si la direction est plus proche de l'axe X ou de l'axe Y grâce au produit scalaire.
  * On compare les deux valeurs, et la plus grande détermine l'axe dans lequel va se déplacer le monstre.
  * Il faut regarder le signe de la valeur pour savoir si on va en -X ou X / -Y ou Y.
+ * MAJ : Il a fallut rajouter une correction des erreurs de trajectoire car en effet sur un déplacement
+ * il y a toujours une composante majoritaire et les monstres ne suivaient pas la ligne.
  */
 void moveMonster(Monster* monster){
 	if(monster == NULL) return;
@@ -106,9 +112,18 @@ void moveMonster(Monster* monster){
 	monsterMove = monster->nbTurnsSinceLastMove >= monster->speed;
 	if(!monsterMove) return;
 	
+	//Astuce : un monstre avec un z inférieur à 0 cherche à rejoindre la map !
+	if(monster->position.z < 0.0){
+		monster->position.z++;
+		monster->realPosition.z++;
+		return;
+	}
 	float factorX, factorY;
 	
 	Vector3D direction = Normalize(Vector(monster->position, monster->destination));
+	
+	monster->realPosition = PointPlusVector(monster->realPosition, Normalize(monster->direction));
+	
 	
 	factorX = DotProduct(direction, ITD_X_AXIS);
 	factorY = DotProduct(direction, ITD_Y_AXIS);
@@ -116,7 +131,6 @@ void moveMonster(Monster* monster){
 	//Principe : on projette le vecteur direction sur axe des x et axe des y,
 	//on regarde sur quel axe on se déplace le plus, et ensuite on déplace
 	//le monstre d'un pixel sur cet axe.
-	
 	if(fabs(factorX) > fabs(factorY)){
 		if(factorX > 0) monster->position.x++;
 		else monster->position.x--;
@@ -131,7 +145,13 @@ void moveMonster(Monster* monster){
 		if(factorX > 0) monster->position.x++;
 		else monster->position.x--;
 	}
-	
+	//Correction des erreurs de trajectoire
+	if(monster->realPosition.x - monster->position.x > 1) monster->position.x++;
+	else if (monster->realPosition.x - monster->position.x < -1)monster->position.x--;
+	if(monster->realPosition.y - monster->position.y > 1) monster->position.y++;
+	else if(monster->realPosition.y - monster->position.y < -1) monster->position.y--; 
 	monster->nbTurnsSinceLastMove = 0;
+
+
 
 }

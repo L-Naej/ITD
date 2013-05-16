@@ -34,6 +34,9 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 					default : break;
 				}
 			break;
+			case SDL_VIDEORESIZE :
+				setVideoMode(e.resize.w,e.resize.h);
+				initMenuGraphics();
 			default : break;
 		}
 	}
@@ -45,13 +48,23 @@ bool isMouseExtremRight = false;
 bool isMouseExtremLeft = false;
 bool isMouseExtremTop = false;
 bool isMouseExtremBottom = false;
-
+//Gestion de la fin du jeu
+Uint32 startEndGameTime = 0;
+bool mouseInWindow;
 bool handleGameActions(World* world, Interface* interface){
 	//Gestion de l'évolution de l'argent
-	static int lastMoney = 0;
-	if(lastMoney != world->money){
-		updateMoneyTexture(interface, world->money);
-		lastMoney = world->money;
+	bool gameIsFinished = false;
+	
+	//Le jeu est-il fini ?
+	if(world->gameLoosed || world->gameWinned){
+		if(startEndGameTime == 0) startEndGameTime = SDL_GetTicks();
+		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
+		if (elapsedTime > END_GAME_DURATION) gameIsFinished = true;
+		else{
+			gameIsFinished = false;
+		}
+		//On ne traite pas les actions de l'utilisateur en fin de jeu
+		return gameIsFinished;
 	}
 	
 	SDL_Event e;
@@ -61,19 +74,32 @@ bool handleGameActions(World* world, Interface* interface){
 		if(e.type == SDL_QUIT) {
 			askedForQuit = true;
 		}
-		
+		//Si on perd le focus sur la fenêtre la souris ne doit pas impacter le jeu (caméra...)
+		else if(e.type == SDL_ACTIVEEVENT){
+			if(e.active.gain == 0) mouseInWindow = false;
+			else mouseInWindow = true;
+			
+		}
 		else if(e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
 			askedForQuit = handleGameKeyboard(&(e.key), world, interface);
 		}	
 		
+		else if (e.type == SDL_VIDEORESIZE){
+			setVideoMode(e.resize.w, e.resize.h);
+			initGameGraphics(world->map.image);
+			*interface = initGameInterface(interface->relativeWidth, interface->relativeHeight, interface->relativePosX, interface->relativePosY);
+			world->cameraPosition.x = 0.0; world->cameraPosition.y = 0.0;
+		}
 		else askedForQuit = handleGameMouse(&e, world, interface);
 	}
 	//Gestion caméra
-	
-	if(isMouseExtremBottom) world->cameraPosition.y += 2;
-	else if(isMouseExtremTop) world->cameraPosition.y -= 2;
-	if(isMouseExtremLeft) world->cameraPosition.x += 2;
-	else if(isMouseExtremRight) world->cameraPosition.x -= 2;
+	if(mouseInWindow){
+		if(isMouseExtremBottom) world->cameraPosition.y += 2;
+		else if(isMouseExtremTop) world->cameraPosition.y -= 2;
+		if(isMouseExtremLeft) world->cameraPosition.x += 2;
+		else if(isMouseExtremRight) world->cameraPosition.x -= 2;
+		
+	}
 
 	return askedForQuit;
 }
@@ -108,13 +134,14 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
+	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
-		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < 2.* WINDOW_WIDTH / 100.0){
+		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < spaceForCapture* WINDOW_WIDTH / 100.0){
 			isMouseExtremRight = true;
 			isMouseExtremLeft = false;
 		}
-		else if(fabs(e->motion.x - 0.0) < 2.*WINDOW_WIDTH / 100.0){
+		else if(fabs(e->motion.x - 0.0) < spaceForCapture*WINDOW_WIDTH / 100.0){
 			isMouseExtremLeft = true;
 			isMouseExtremRight = false;
 		}
@@ -122,11 +149,11 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 			isMouseExtremLeft = false;
 			isMouseExtremRight = false;
 		}
-		if(fabs((int)e->motion.y - (int)WINDOW_HEIGHT) < 2.*WINDOW_HEIGHT / 100.0){
+		if(fabs((int)e->motion.y - (int)WINDOW_HEIGHT) < spaceForCapture*WINDOW_HEIGHT / 100.0){
 			isMouseExtremBottom = true;
 			isMouseExtremTop = false;
 		}
-		else if(fabs(e->motion.y - 0.) < 2.* WINDOW_HEIGHT / 100.0){
+		else if(fabs(e->motion.y - 0.) < spaceForCapture* WINDOW_HEIGHT / 100.0){
 			isMouseExtremTop = true;
 			isMouseExtremBottom = false;
 		}	
@@ -136,6 +163,10 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
+		if(e->button.button == SDL_BUTTON_RIGHT){
+			suppressTower(world, e->button.x, e->button.y);
+			return false;
+		}
 		Tower* pointedTower = NULL;
 		Action action = detectAction(e->button.x, e->button.y, world, interface, &pointedTower);
 		if(action == QUIT_GAME) return true;
@@ -228,6 +259,18 @@ Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface, Towe
 	}
 }
 
+void suppressTower(World* world, Uint16 x, Uint16 y){
+	Tower* cur = NULL;
+	goToHeadList(world->towersList);
+	bool towerDetected = false;
+	while( !towerDetected && (cur = (Tower*) nextData(world->towersList)) != NULL ){
+		towerDetected = isMouseOnTower(cur, world->cameraPosition, x, y);
+		if(towerDetected){
+			freeCellByPosition(world->towersList, world->towersList->position);
+		}
+	}
+}
+
 bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
 	if(interface == NULL) return false;
 	bool inside = false;
@@ -253,16 +296,17 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	if(tower == NULL) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
-	Point3D oglTower = sdlToOpenGL(tower->position);
+	//Point3D oglTower = sdlToOpenGL(tower->position);
+	Point3D realTowerPos = tower->position;
 	//Il faut appliquer la translation de la caméra à la position
 	//"sdl to opengl" de la tour pour avoir sa position dans le monde
-	oglTower.x += cameraPosition.x;
-	oglTower.y += cameraPosition.y;
-	oglTower.z += cameraPosition.z;
+	realTowerPos.x += cameraPosition.x;
+	realTowerPos.y += cameraPosition.y;
+	realTowerPos.z += cameraPosition.z;
 	
-	inside = oglMouse.x >= oglTower.x - TOWER_WIDTH_PX / 2.0 && oglMouse.x <= oglTower.x + TOWER_HEIGHT_PX / 2.0;
+	inside = oglMouse.x >= realTowerPos.x - TOWER_WIDTH_PX / 2.0 && oglMouse.x <= realTowerPos.x + TOWER_HEIGHT_PX / 2.0;
 	if(!inside) return inside;
-	inside = oglMouse.y >= oglTower.y - TOWER_HEIGHT_PX / 2.0 && oglMouse.y <= oglTower.y + TOWER_HEIGHT_PX;
+	inside = oglMouse.y >= realTowerPos.y - TOWER_HEIGHT_PX / 2.0 && oglMouse.y <= realTowerPos.y + TOWER_HEIGHT_PX;
 	return inside;
 }
 

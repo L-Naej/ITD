@@ -27,6 +27,9 @@ typedef struct{
 	GLuint MONEY_ID;
 	GLuint PAUSE_MESSAGE_ID;
 	GLuint INFO_PANEL_ID;
+	GLuint WAVE_MESSAGE_ID;
+	GLuint WIN_MESSAGE_ID;
+	GLuint LOOSE_MESSAGE_ID;
 }ITD_Game_Textures;
 
 ITD_Game_Textures GAME_TEXTURES_ID;
@@ -70,14 +73,8 @@ static const unsigned int BIT_PER_PIXEL = 32;
  * sont liés. Les stocke dans la variable globale 
  * GAME_TEXTURES_ID.
  */
-void initGameGraphics(const SDL_Surface* map);
-/**
- * Charge les textures du menu dans la carte
- * graphique et récupère les textures id qui leurs
- * sont liés. Les stocke dans la variable globale 
- * MENU_TEXTURES_ID.
- */
-void initMenuGraphics(char* font1,char* font2,char* rootPath);
+void initGameGraphics(SDL_Surface* map);
+
 
 /**
  * Initialise la fenêtre SDL du
@@ -88,11 +85,25 @@ int initWindow();
 
 /**
  * Renvoie le Point3D fourni en paramètre en coordonnées
+ * itd (0,0 => mapWidth, mapHeight).
+ * Note : le point fourni en paramètre doit être exprimé en
+ * coordonnées OpenGL en considérant la caméra en 0.0,0.0,0.0.
+ */
+Point3D openGLToItd(int mapWidth, int mapHeight, Point3D oglPoint);
+
+/**
+ * Renvoie le Point3D fourni en paramètre en coordonnées
  * OpenGL.
  * Note : le point fourni en paramètre doit être exprimé en
  * coordonnées SDL.
  */
 Point3D sdlToOpenGL(Point3D sdlPoint);
+
+/**
+ * Transforme un point itd (dans le repère de la map)
+ * en opengl et vice-versa.
+ */
+Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint);
 
 /**
  * Charge une texture dans la carte graphique à partir de
@@ -105,7 +116,7 @@ GLuint makeTextureFromFile(const char* imagePath);
  * Charge une texture à partir d'une SDL_Surface.
  * Retourne l'id de la texture générée.
  */
-GLuint makeTextureFromSurface(const SDL_Surface* surface);
+GLuint makeTextureFromSurface(SDL_Surface* surface);
 
 /**
  * Met à jour la texture pointée par l'identifiant passé
@@ -133,6 +144,12 @@ void drawQuad();
  * textureId passé en paramètre de la fonction.
  */
 void drawTexturedQuad(GLuint textureId);
+
+/**
+ * Dessine un cercle unitaire.
+ * full = 1 : cercle rempli (disque), sinon cercle vide
+ */
+void drawCircle(int full);
 
 /**
  * Appelée quand la fenêtre est redimensionnée.

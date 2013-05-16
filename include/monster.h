@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "point3D.h"
+#include "vector3D.h"
 #include "list.h"
 
 /* Largeur d'un sprite de monstre en pixels (ca respecte pas trop 
 mvc de le mettre là mais en attendant de trouver mieux... */
-static const int MONSTER_WIDTH_PX = 20;
+static const int MONSTER_WIDTH_PX = 35;
 static const int SPACE_BETWEEN_MONSTERS_PX = 5;
 typedef enum{
 	BLUE_OCTOPUS,
@@ -18,6 +19,7 @@ typedef enum{
 typedef struct{
 	MonsterType type;
 	int life; 		/*points de vie*/
+	int maxLife;
 	int rocketResistance;
 	int laserResistance;
 	int gunResistance;
@@ -28,7 +30,9 @@ typedef struct{
 	int speed;
 	
 	Point3D position;
+	Point3D realPosition;
 	Point3D destination;
+	Vector3D direction;
 	
 	//Nombre de tours depuis le dernier mouvement
 	int nbTurnsSinceLastMove;
