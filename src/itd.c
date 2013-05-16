@@ -67,7 +67,6 @@ do{
 	if (argc >= 2 && argv[1]){
 		int i;
 		for (i=0;i< NB_MAX_MAPS; i++){
-			printf(" nom des cartes %s\n",BUTTON_OF_MENU.tabMapName[i]);
 			if (strcmp(argv[1],BUTTON_OF_MENU.tabMapName[i])==0){
 				strcpy(mapName,argv[1]);
 				play = true;
@@ -88,8 +87,6 @@ do{
 
 		/* Placer ici le code de dessin du menu */		
 		drawMenu(MENU_TEXTURES_ID.MAPS,MENU_TEXTURES_ID.nb_cartes,&menuOpen,&aideOpen,&playIsPush,mapName);
-
-
 
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();

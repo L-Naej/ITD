@@ -352,137 +352,174 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	/*          données des tours ROCKETS         */
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerR")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'powerR' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->powerR));
+		if(fscanf(file,"%d\n",&(map->towerdatas->powerR)) < 1){
+			fprintf(stderr, "Map %s : puissance tours rocket incorrecte\n", map->name);
+			return false;	
+		}
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateR")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rateR' incorrect (%s à la place)\n", keyword);;
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rateR));
+		if(fscanf(file,"%d\n",&(map->towerdatas->rateR)) < 1){ 
+			fprintf(stderr, "Map %s : cadence tours rocket incorrecte\n", map->name);
+			return false;	
+		}
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeR")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rangeR' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rangeR));
+		if(fscanf(file,"%d\n",&(map->towerdatas->rangeR)) < 1){
+			fprintf(stderr, "Map %s : portée tours rocket incorrecte\n", map->name);
+			return false;	
+		}
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costR")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'costR' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->costR));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->costR)) <1){
+			fprintf(stderr, "Map %s : coût tours rocket incorrecte\n", map->name);
+			return false;	
+		}
 	/*          données des tours LASER         */
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerL")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'powerL' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->powerL));
+		if(fscanf(file,"%d\n",&(map->towerdatas->powerL))<1){
+			fprintf(stderr, "Map %s : puissance tours laser incorrecte\n", map->name);
+			return false;	
+		}
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateL")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rateL' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rateL));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rateL))<1){
+			fprintf(stderr, "Map %s : cadence tours laser incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeL")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rangeL' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rangeL));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rangeL))<1){
+			fprintf(stderr, "Map %s : cadence tours laser incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costL")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'costL' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->costL));
+		if(fscanf(file,"%d\n",&(map->towerdatas->costL))<1){
+			fprintf(stderr, "Map %s : coût tours laser incorrecte\n", map->name);
+			return false;	
+		}
 
 	/*          données des tours MITRAILLETTE         */
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerM")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'powerM' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->powerM));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->powerM))<1){
+			fprintf(stderr, "Map %s : puissance tours gun incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateM")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rateM' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rateM));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rateM))<1){
+			fprintf(stderr, "Map %s : cadence tours gun incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeM")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rangeM' incorrect (%s à la place)\n", keyword);
 			return -1;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rangeM));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rangeM))<1){
+			fprintf(stderr, "Map %s : portée tours gun incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costM")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'costM' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->costM));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->costM))<1){
+			fprintf(stderr, "Map %s : coût tours gun incorrecte\n", map->name);
+			return false;	
+		}
 	/*          données des tours HYBRID         */
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerH")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'powerH' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->powerH));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->powerH))<1){
+			fprintf(stderr, "Map %s : puissance tours hybrides incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateH")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rateH' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rateH));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rateH))<1){
+			fprintf(stderr, "Map %s : cadence tours hybrides incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeH")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'rangeH' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->rangeH));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->rangeH))<1){
+			fprintf(stderr, "Map %s : portée tours hybrides incorrecte\n", map->name);
+			return false;	
+		}
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"costH")!= 0){
-			printf("mot-clé'in' incorrect\n");
+			printf("mot-clé'costH' incorrect (%s à la place)\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
-		fscanf(file,"%d\n",&(map->towerdatas->costH));
-
+		if(fscanf(file,"%d\n",&(map->towerdatas->costH))<1){
+			fprintf(stderr, "Map %s : coût tours hybrides incorrecte\n", map->name);
+			return false;	
+		}
 
 		fflush(file);
 		fclose(file);
