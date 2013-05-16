@@ -30,6 +30,7 @@ World initWorld(const char* pathToItdFile){
 	bool loadSucceed = loadMap(&(newWorld.map), pathToItdFile);
 	if(!loadSucceed){
 		fprintf(stderr, "Erreur fatale : impossible de charger la carte %s.\n", pathToItdFile);
+		cleanWorld(&newWorld);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -63,6 +64,7 @@ void startNewMonsterWave(World* world){
 		world->monsters[i].position.z = floor(world->monsters[i].position.z);
 		world->monsters[i].direction = Vector(world->monsters[i].position, startPoint);
 		world->monsters[i].realPosition = world->monsters[i].position;
+		world->monsters[i].nodeNumber = 1;
 	}
 	
 	world->nbMonstersAlive = MONSTERS_PER_WAVE;
@@ -248,12 +250,14 @@ void moveMonsters(Monster* monsters, List* pathNodeList){
 		monsters[i].nbTurnsSinceLastMove++;
 		
 		moveMonster(&(monsters[i]));
+		
 		//Si on est sur un pathnode, on change de pathnode de destination
 		if(arePointsEquals(monsters[i].position, monsters[i].destination)){
-			monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+			//monsters[i].destination = nextNode(pathNodeList, monsters[i].destination);
+			monsters[i].nodeNumber++;
+			monsters[i].destination = getNodeByNumber(pathNodeList, monsters[i].nodeNumber);
 			monsters[i].direction = Vector(monsters[i].position, monsters[i].destination);
-		}
-		
+		}	
 	}
 	
 }

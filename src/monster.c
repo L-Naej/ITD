@@ -146,10 +146,10 @@ void moveMonster(Monster* monster){
 		else monster->position.x--;
 	}
 	//Correction des erreurs de trajectoire
-	if(monster->realPosition.x - monster->position.x > 1) monster->position.x++;
-	else if (monster->realPosition.x - monster->position.x < -1)monster->position.x--;
-	if(monster->realPosition.y - monster->position.y > 1) monster->position.y++;
-	else if(monster->realPosition.y - monster->position.y < -1) monster->position.y--; 
+	if(monster->realPosition.x - monster->position.x >= 1) monster->position.x++;
+	else if (monster->realPosition.x - monster->position.x <= -1)monster->position.x--;
+	if(monster->realPosition.y - monster->position.y >= 1) monster->position.y++;
+	else if(monster->realPosition.y - monster->position.y <= -1) monster->position.y--; 
 	monster->nbTurnsSinceLastMove = 0;
 
 

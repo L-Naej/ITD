@@ -104,6 +104,8 @@ Point3D getStartPoint(const Map* map);
  */
 Point3D getEndPoint(const Map* map);
 
+Point3D getNodeByNumber(List* pathNodeList, int number);
+
 /**
  * Nettoie la structure map en réinitialisant ses paramètres
  * et en libérant la mémoire pour ses sous-structures.

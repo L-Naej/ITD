@@ -282,8 +282,8 @@ Point3D itdToOpenGL(int mapWidth, int mapHeight, Point3D itdPoint){
 	float maxWidth, maxHeight;
 	maxWidth = mapWidth;
 	maxHeight = mapHeight;
-	oglPoint.x = -(maxWidth / 2.0) + 2*maxWidth/2.0 * itdPoint.x / maxWidth; 	
-	oglPoint.y = ((maxHeight / 2.0) - 2*maxHeight/2.0 * itdPoint.y / maxHeight); 
+	oglPoint.x = -(maxWidth / 2.0) + maxWidth * itdPoint.x / maxWidth; 	
+	oglPoint.y = ((maxHeight / 2.0) - maxHeight * itdPoint.y / maxHeight); 
 	oglPoint.z = itdPoint.z;
 
 	return oglPoint;	

@@ -79,6 +79,14 @@ Point3D nextNode(List* pathNodeList, Point3D currentNode){
 	return *tmpNode;
 }
 
+Point3D getNodeByNumber(List* pathNodeList, int nodeNumber){
+	if(pathNodeList == NULL)return PointXYZ(0,0,-1);
+	Point3D* result = NULL;
+	if(! goToPosition(pathNodeList, nodeNumber))
+		return PointXYZ(0,0,-1);
+	result = currentData(pathNodeList);
+	return *result;
+}
 Point3D getStartPoint(const Map* map){
 	if(map == NULL) return PointXYZ(-1,-1,-1);
 	
@@ -126,7 +134,7 @@ int testItdValid(int R,int V,int B){
 
 int loadITD1 (Map* map, FILE* file, char* keyword){
 	/* nom de l'image*/
-
+	int nbItemsLus = 0;
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"carte")!= 0){
 		printf("mot-clé 'carte' incorrect\n");
@@ -139,14 +147,14 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		printf("erreur d'allocation du nom de la map");
 		return -1;
 	}
+	
  	/*  on a dit que le nom de la carte ferait 30 caractères maxi*/
-	fscanf(file,"%s \n",map->name);
+	fscanf(file,"%s30 \n",map->name);
 
 
 	/*rajouter width et height quand on aura le fichier .ppm*/
 
-	int R,V,B;
-			
+	int R,V,B;	
 
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"chemin")!= 0){
@@ -155,16 +163,18 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	}
 	memset (keyword,0,sizeof(keyword));
 
-	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	nbItemsLus = fscanf(file,"%d %d %d\n",&R,&V,&B);
+	if(nbItemsLus < 3){
+		fprintf(stderr, "Map %s : couleur du chemin mal définie\n", map->name);
+		return -1;
+	}
+	if( R < 0 || R > 255 || V < 0 || V > 255 || B < 0 || B > 255){
+		fprintf(stderr,"Map %s : couleur du chemin invalide ([%d,%d,%d])\n", map->name, R,V,B);
+		return -1;
+	}
 	map->pathColor.red =(unsigned char)R;
 	map->pathColor.green = (unsigned char)V;
 	map->pathColor.blue =(unsigned char)B;
-	if (testItdValid(map->pathColor.red,map->pathColor.green,map->pathColor.blue)!= 1){
-		printf("ligne de couleur de chemin erronée \n");
-		return 0;
-	}
-
-
 
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"noeud")!= 0){
@@ -173,17 +183,19 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	}
 	memset (keyword,0,sizeof(keyword));
 
-	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	nbItemsLus = fscanf(file,"%d %d %d\n",&R,&V,&B);
+	if(nbItemsLus < 3){
+		fprintf(stderr, "Map %s : couleur des noeuds du chemin mal définie\n", map->name);
+		return -1;
+	}
+	if( R < 0 || R > 255 || V < 0 || V > 255 || B < 0 || B > 255){
+		fprintf(stderr,"Map %s : couleur des noeuds du chemin invalide ([%d,%d,%d])\n", map->name, R,V,B);
+		return -1;
+	}
 	map->nodeColor.red = (unsigned char)R;
 	map->nodeColor.green = (unsigned char)V;
 	map->nodeColor.blue = (unsigned char)B;
-	if (testItdValid(map->nodeColor.red,map->nodeColor.green,map->nodeColor.blue)!= 1){
-		printf("ligne de couleur de noeud erronée \n");
-		return 0;
-	}
-
-
-
+	
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"construct")!= 0){
 		printf("mot-clé 'construct' incorrect\n");
@@ -191,16 +203,18 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	}
 	memset (keyword,0,sizeof(keyword));
 
-	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	nbItemsLus = fscanf(file,"%d %d %d\n",&R,&V,&B);
+	if(nbItemsLus < 3){
+		fprintf(stderr, "Map %s : couleur des zones de construction mal définie\n", map->name);
+		return -1;
+	}
+	if( R < 0 || R > 255 || V < 0 || V > 255 || B < 0 || B > 255){
+		fprintf(stderr,"Map %s : couleur des zones de construction invalide ([%d,%d,%d])\n", map->name, R,V,B);
+		return -1;
+	}
 	map->constructAreaColor.red = (unsigned char)R;
 	map->constructAreaColor.green = (unsigned char)V;
 	map->constructAreaColor.blue = (unsigned char)B;
-	if (testItdValid(map->constructAreaColor.red,map->constructAreaColor.green,map->constructAreaColor.blue)!= 1){
-		printf("ligne de couleur de zone constructible erronée \n");
-		return 0;
-	}
-
-
 
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"in")!= 0){
@@ -209,16 +223,18 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	} 
 	memset (keyword,0,sizeof(keyword));
 
-	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	nbItemsLus = fscanf(file,"%d %d %d\n",&R,&V,&B);
+	if(nbItemsLus < 3){
+		fprintf(stderr, "Map %s : couleur de la zone d'entrée mal définie\n", map->name);
+		return -1;
+	}
+	if( R < 0 || R > 255 || V < 0 || V > 255 || B < 0 || B > 255){
+		fprintf(stderr,"Map %s : couleur de la zone d'entrée invalide ([%d,%d,%d])\n", map->name, R,V,B);
+		return -1;
+	}
 	map->inAreaColor.red = (unsigned char)R;
 	map->inAreaColor.green = (unsigned char)V;
 	map->inAreaColor.blue = (unsigned char)B;
-	if (testItdValid(map->inAreaColor.red,map->inAreaColor.green,map->inAreaColor.blue)!= 1){
-		printf("ligne de couleur d'entrée erronée \n");
-		return 0;
-	}
-
-
 
 	fscanf(file,"%s \n",keyword);
 	if (strcmp(keyword,"out")!= 0){
@@ -227,44 +243,63 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	} 
 	memset (keyword,0,sizeof(keyword));
 
-	fscanf(file,"%d %d %d\n",&R,&V,&B);
+	nbItemsLus = fscanf(file,"%d %d %d\n",&R,&V,&B);
+	if(nbItemsLus < 3){
+		fprintf(stderr, "Map %s : couleur du chemin mal définie\n", map->name);
+		return -1;
+	}
+	if( R < 0 || R > 255 || V < 0 || V > 255 || B < 0 || B > 255){
+		fprintf(stderr,"Map %s : couleur du chemin invalide ([%d,%d,%d])\n", map->name, R,V,B);
+		return -1;
+	}
 	map->outAreaColor.red = (unsigned char)R;
 	map->outAreaColor.green = (unsigned char)V;
 	map->outAreaColor.blue = (unsigned char)B;
-	if (testItdValid(map->outAreaColor.red,map->outAreaColor.green,map->outAreaColor.blue)!= 1){
-		printf("ligne de couleur de sortie erronée \n");
-		return 0;
-	}
-
+	
 	int size;
 	fscanf(file,"%d\n",&size);
 
-
+	//Chargement de l'image pour connaître les dimensions
+	loadPpmMap(map);
 
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
-	fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
+	nbItemsLus = fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
+	if(nbItemsLus < 2){
+		fprintf(stderr, "Map %s : nombre de coordonnées incorrecte\n", map->name);
+		return -1;
+	}
+	if(node1->x >= map->width || node1->x < 0
+		|| node1->y >= map->height || node1->y < 0){
+		fprintf(stderr, "Map %s : coordonnées de chemin en dehors de la carte(%f, %f)\n", map->name, node1->x, node1->y);
+		return -1;
+	}
 	node1->z = 0.0;
 
 	map->pathNodeList = createList((void*)node1); 
 
 	int j=0;
-
-
+	
 	while (j<size-1){
-
-		Point3D* node = (Point3D*)malloc (sizeof(Point3D));		
-		fscanf(file,"%f %f\n",&(node->x),&(node->y));
-		node->z = 0.0;
-		if ((node->x)==0 && (node->y)==0){
-			printf("nombre de coordonnée de noeuds incorrect - error 1- \n");
+		if(feof(file)){
+			fprintf(stderr, "Map %s : nombre de noeuds incorrect\n", map->name);
 			return 0;
 		}
+		Point3D* node = (Point3D*)malloc (sizeof(Point3D));		
+		nbItemsLus = fscanf(file,"%f %f\n",&(node->x),&(node->y));
+		if(nbItemsLus < 2){
+			fprintf(stderr, "Map %s : nombre de coordonnées incorrect\n", map->name);
+			return 0;
+		}
+		if(node->x >= map->width || node->x < 0
+		|| node->y >= map->height || node->y < 0){
+			fprintf(stderr, "Map %s : coordonnées de chemin en dehors de la carte (%f, %f)\n", map->name, node->x, node->y);
+			return -1;
+		}
+		node->z = 0.0;
 		insertBottomCell(map->pathNodeList,(void*)node);
 		j++;
 	}
 
-	
-	loadPpmMap(map);
 	
 	transformCoordToOpenGL(map);
 
