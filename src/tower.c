@@ -9,7 +9,7 @@ TowerStat* createEmptyTowerStat(){
 	towerstat->rateR=10;
 	towerstat->rangeR=50;
 	towerstat->costR=60;
-	towerstat->powerL=50;
+	towerstat->powerL=20;
 	towerstat->rateL=100;
 	towerstat->rangeL=1150;
 	towerstat->costL=40;

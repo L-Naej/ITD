@@ -25,7 +25,7 @@ void drawWorld(World* world){
 		}
 	}
 	
-	drawTowers(world->towersList);
+	drawTowers(world, world->towersList);
 	glPopMatrix();
 }
 
@@ -69,21 +69,28 @@ void drawMonster(const Monster* monster){
 	glPopMatrix();
 }
 
-void drawTowers(List* towersList){
+List* lstMissiles = NULL;
+void drawTowers(World* world, List* towersList){
 	if(towersList == NULL) return;
+	if(lstMissiles == NULL) lstMissiles = createEmptyList();
 	
 	Tower* cur = NULL;
 	GLuint textureId = -1;
 	goToHeadList(towersList);
 	while ( (cur = (Tower*) nextData(towersList)) != NULL){
+		Color3u missileColor;
 		switch(cur->type){
 		case GUN : textureId = GAME_TEXTURES_ID.GUN_TOWER_ID;
+		missileColor.red = 160; missileColor.green = 160; missileColor.blue = 0;
 		break;
 		case LASER : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
+		missileColor.red = 255; missileColor.green = 0; missileColor.blue = 0;
 		break;
 		case ROCKET : textureId = GAME_TEXTURES_ID.ROCKET_TOWER_ID;
+		missileColor.red = 0; missileColor.green = 0; missileColor.blue = 255;
 		break;
 		case HYBRID : textureId = GAME_TEXTURES_ID.HYBRID_TOWER_ID;
+		missileColor.red = 0; missileColor.green = 255; missileColor.blue = 0;
 		break;
 		default : textureId = GAME_TEXTURES_ID.LASER_TOWER_ID;
 		break;
@@ -94,22 +101,35 @@ void drawTowers(List* towersList){
 		glScalef(TOWER_WIDTH_PX, TOWER_HEIGHT_PX, 1.0);
 		drawTexturedQuad(textureId);
 		glPopMatrix();
-		//Dessin des tirs
+		
+		//Enregistrement des nouveaux missiles
 		Point3D* curTarget = NULL;
 		goToHeadList(cur->whereIShoot);
 		while( (curTarget = (Point3D*) nextData(cur->whereIShoot)) != NULL){
-			printf("i draw\n");
-		
+			Missile* newMissile = createMissile(cur->position, *curTarget, SDL_GetTicks());
+			newMissile->color = missileColor;
+			insertBottomCell(lstMissiles, newMissile);
+		}
+	}	
+	//Dessin des missiles en cours
+	goToHeadList(lstMissiles);
+	Missile* curMissile = NULL;
+	while( (curMissile = (Missile*)nextData(lstMissiles)) != NULL){
+		//Si le temps de vie du missile est dépassé on le détruit
+		if((SDL_GetTicks() - curMissile->startTime) > MISSILE_TIME_TO_LIVE_MS || world->isBetweenWaves){
+			freeCellByPosition(lstMissiles, lstMissiles->position);
+		}
+		else{
 			glPushMatrix();
 			glLineWidth(1.4);
-			glColor3ub(255,0,0);
+			glColor3ub(curMissile->color.red,curMissile->color.green,curMissile->color.blue);
 			glBegin(GL_LINES);
-			glVertex2f(cur->position.x, cur->position.y);
-			glVertex2f(curTarget->x, curTarget->y);
+			glVertex2f(curMissile->startPoint.x, curMissile->startPoint.y);
+			glVertex2f(curMissile->endPoint.x, curMissile->endPoint.y);
 			glEnd();
 			glPopMatrix();
 		}
-	}	
+	}
 }
 
 //Pour l'instant taille des cercles etc fixée en dur
@@ -169,5 +189,26 @@ void drawPath(const Map* map){
 
 	glPopMatrix();
 }
+
+Missile* createMissile(Point3D startPoint, Point3D endPoint, Uint32 startTime){
+	Missile* missile = (Missile*) malloc(sizeof(Missile));
+	if(missile == NULL) {
+		fprintf(stderr, "Erreur fatale : plus de mémoire disponible\n");
+		return NULL;
+	}
+	missile->startPoint = startPoint;
+	missile->endPoint = endPoint;
+	missile->startTime = startTime;
+	
+	return missile;
+}
+
+
+
+
+
+
+
+
 
 
