@@ -50,11 +50,11 @@ int main(int argc,  char* argv[]) {
 	world.map.pathNodeList = NULL;
 	Interface interface;
 	interface.lstButtons = NULL;
-	
+	char mapName[30]= "Not chosen";
 /*-------------- GESTION DU MENU --------------------*/
 do{
 	bool play = false;
-	char mapName[30]= "Not chosen";
+
 
 
 	/* chargement des polices */
@@ -64,7 +64,7 @@ do{
 
 	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
 	/* selection d'une carte en ligne de commande*/
-	if (argc >= 2 && argv[1]){
+	if (argc >= 2 && argv[1] && strcmp(mapName, "Not chosen") == 0){
 		int i;
 		for (i=0;i< NB_MAX_MAPS; i++){
 			if (strcmp(argv[1],BUTTON_OF_MENU.tabMapName[i])==0){
