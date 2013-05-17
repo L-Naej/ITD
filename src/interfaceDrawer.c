@@ -102,6 +102,27 @@ void initMenuGraphics(){
 	free(BUTTON_OF_MENU.close_rules);
 	BUTTON_OF_MENU.close_rules=closeButton;
 	
+	//Dessin des boutons de choix de carte
+	int i;
+	float xText=270.;
+	float yText=110.;
+
+
+	Button* tabMap[MENU_TEXTURES_ID.nb_cartes];
+
+
+	for (i=0; i<MENU_TEXTURES_ID.nb_cartes;i++){
+
+		/* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+		Point3D mapPosition = PointXYZ(xText,yText,0.);
+		tabMap[i] = createButton(MAP_MENU,mapPosition,100,60);
+		
+		BUTTON_OF_MENU.carte[i]=tabMap[i];
+		ButtonOfMenu.indexTexture[i] = MENU_TEXTURES_ID.MAPS[i]  ;
+
+		yText-=70.;
+	}
+	
 	TTF_CloseFont(police);
 
 }
@@ -243,31 +264,18 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 void drawMapMenu (char* mapName){
 
 		int i;
-		float xText=270.;
-		float yText=110.;
 	
 
-		Button* tabMap[MENU_TEXTURES_ID.nb_cartes];
-
-
 		for (i=0; i<MENU_TEXTURES_ID.nb_cartes;i++){
-
-
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
-		Point3D mapPosition = PointXYZ(xText,yText,0.);
-		BUTTON_OF_MENU.cmp=i;
-		tabMap[i] = createButton(MAP_MENU,mapPosition,100,60);
+
+
 		if (strcmp(BUTTON_OF_MENU.tabMapName[i],mapName)==0)
 			glColor3ub(0,204,204);
 		else
 			glColor3ub(255,255,255);
 
-		drawButton(tabMap[i]);
-		BUTTON_OF_MENU.carte[i]=tabMap[i];
-		
-		
-
-		yText-=70.;
+		drawButton(BUTTON_OF_MENU.carte[i]);
 	}
 
 }	
@@ -612,7 +620,7 @@ void drawButton(const Button* button){
 	break;
 	case PLAY_MENU : textureId = MENU_TEXTURES_ID.PLAY_BUTTON;
 	break;
-	case MAP_MENU : textureId = MENU_TEXTURES_ID.MAPS[BUTTON_OF_MENU.cmp];
+	case MAP_MENU : textureId = MENU_TEXTURES_ID ;
 	break;
 	case CLOSE_RULES_MENU : textureId = MENU_TEXTURES_ID.RULES_CLOSE;
 	break;

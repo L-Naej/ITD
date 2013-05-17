@@ -39,7 +39,7 @@ typedef struct{
 	Button* close_rules;
 	Button* carte[NB_MAX_MAPS];
 	Button* cases[NB_MAX_MAPS];
-	int cmp;
+	GLuint indexTexture[NB_MAX_MAPS];
 	char* tabMapName[NB_MAX_MAPS];
 }ButtonOfMenu;
 

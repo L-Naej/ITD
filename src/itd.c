@@ -155,6 +155,7 @@ do{
 		askedForQuit = handleGameActions(&world, &interface, &gameFinished);
 	}
 	cleanWorld(&world);
+	cleanInterface(&interface);
 }while(! askedForQuit);
 	/* Liberation des ressources */ 
 	cleanExit(&world, &interface);
