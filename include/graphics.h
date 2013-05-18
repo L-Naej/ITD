@@ -50,8 +50,6 @@ typedef struct menu_text{
 	GLuint RULES_CLOSE;
 	GLuint BULLE;
 	GLuint CASE_VIDE;
-	GLuint MAPS[NB_MAX_MAPS];
-	int nb_cartes;
 }ITD_Menu_Textures;
 
 ITD_Menu_Textures MENU_TEXTURES_ID;

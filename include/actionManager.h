@@ -30,6 +30,7 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished);
 
 //Fonctions internes
+void scrollMenu(int direction);
 bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* interface);
 bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface);
 Action detectAction(Uint16 x, Uint16 y, World* world, Interface* interface, Tower** pointedTower);

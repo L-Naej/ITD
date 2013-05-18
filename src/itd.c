@@ -62,12 +62,13 @@ do{
 	int menuOpen = 0;
 	int aideOpen = 0;
 
-	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
+	List* lstMaps = createEmptyList();
+	readDirectory(lstMaps);
 	/* selection d'une carte en ligne de commande*/
 	if (argc >= 2 && argv[1] && strcmp(mapName, "Not chosen") == 0){
-		int i;
-		for (i=0;i< NB_MAX_MAPS; i++){
-			if (strcmp(argv[1],BUTTON_OF_MENU.tabMapName[i])==0){
+		char* curMap = NULL;
+		while( (curMap = (char*) nextData(lstMaps)) != NULL){
+			if (strcmp(argv[1],curMap)==0){
 				strcpy(mapName,argv[1]);
 				play = true;
 				break;	
@@ -86,7 +87,7 @@ do{
 		Uint32 startTime = SDL_GetTicks();
 
 		/* Placer ici le code de dessin du menu */		
-		drawMenu(MENU_TEXTURES_ID.MAPS,MENU_TEXTURES_ID.nb_cartes,&menuOpen,&aideOpen,&playIsPush,mapName);
+		drawMenu(&menuOpen,&aideOpen,&playIsPush,mapName);
 
 		/* Echange du front et du back buffer : mise à jour de la fenêtre */
 		SDL_GL_SwapBuffers();

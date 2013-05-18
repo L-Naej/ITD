@@ -17,6 +17,8 @@
 
 //Temps d'affichage des messages de l'interface en millisecondes
 static const Uint32 MESSAGE_DISPLAY_DURATION = 3000; 
+static const int NB_MAP_DISPLAYED = 5;
+
 typedef enum{
 	CLICK_ON_MAP, CLICK_ON_TOWER, PUT_LASER, PUT_GUN, PUT_ROCKET, PUT_HYBRID, QUIT_GAME, PAUSE_GAME, NO_ACTION, AIDE_MENU,CHOIX_MENU,PLAY_MENU,MAP_MENU,MAP_MENU_CASE,CLOSE_RULES_MENU
 }Action;
@@ -37,10 +39,11 @@ typedef struct{
 	Button* jouer;
 	Button* choix_carte;
 	Button* close_rules;
-	Button* carte[NB_MAX_MAPS];
-	Button* cases[NB_MAX_MAPS];
-	GLuint indexTexture[NB_MAX_MAPS];
-	char* tabMapName[NB_MAX_MAPS];
+	List* lstMapButton;
+	List* lstMapTextureIndex;
+	List* lstMapName;
+	int indexButtonClicked;
+	int indexFirstButtonDisplayed;
 }ButtonOfMenu;
 
 ButtonOfMenu BUTTON_OF_MENU;	
@@ -94,8 +97,8 @@ void cleanInterface(Interface* interface);
 void drawInterface(Interface* interface, World* world);
 
 SDL_Surface* loadFont(TTF_Font*, char* str,char* rootPath, int taille);
-void drawMenu(GLuint*,int, int*,int*,int*, char*);
-void drawMapMenu (char* mapName);
+void drawMenu(int*,int*,int*, char*);
+void drawMapMenu ();
 
 /** 
   *Met à jour la texture affichant l'argent du joueur.
@@ -109,6 +112,7 @@ void updateMoneyTexture(Interface* interface, int money);
 void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range);
 
 //Fonctions internes
+int readDirectory(List* lstMapName);
 Button* createButton(Action action, Point3D position, float width, float height);
 GLuint createWaveMessage(unsigned char waveNumber);
 void drawButtonMenu();

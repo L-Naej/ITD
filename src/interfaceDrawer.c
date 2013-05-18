@@ -9,9 +9,12 @@
 #include <GL/glu.h>
 #endif
 #include <math.h>
+#include <dirent.h>
+#include <sys/types.h>
 #include "interfaceDrawer.h"
 #include "world.h"
 #include "graphics.h"
+#define MAX_LENGHT 30
 
 Button* createButton(Action action, Point3D position, float width, float height){
 	Button* button = (Button*) malloc(sizeof(Button));
@@ -71,17 +74,45 @@ void initMenuGraphics(){
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
 
 
-	MENU_TEXTURES_ID.nb_cartes = readDirectory(BUTTON_OF_MENU.tabMapName);
-
-	int j;
-
-	for (j=0;j<MENU_TEXTURES_ID.nb_cartes;j++){
-
-		SDL_Surface* text=loadFont(police,BUTTON_OF_MENU.tabMapName[j],font1,100);
-
-		MENU_TEXTURES_ID.MAPS[j] = makeTextureFromSurface (text);
-
+	//Création du menu de choix de carte
+	BUTTON_OF_MENU.lstMapName = createEmptyList();
+	BUTTON_OF_MENU.lstMapButton = createEmptyList();
+	BUTTON_OF_MENU.lstMapTextureIndex = createEmptyList();
+	BUTTON_OF_MENU.indexButtonClicked = 1;
+	BUTTON_OF_MENU.indexFirstButtonDisplayed = 1;
+	
+	readDirectory(BUTTON_OF_MENU.lstMapName);
+	char * ptrMapName = NULL;
+	goToHeadList(BUTTON_OF_MENU.lstMapName);
+	while( (ptrMapName = (char*) nextData(BUTTON_OF_MENU.lstMapName)) != NULL){
+		SDL_Surface* text=loadFont(police,ptrMapName,font1,100);
+		GLuint* texId = (GLuint*) malloc(sizeof(GLuint));
+		if(texId == NULL){
+			fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire.\n");
+			exit(EXIT_FAILURE);
+		}
+		*texId = makeTextureFromSurface (text);
+		insertBottomCell(BUTTON_OF_MENU.lstMapTextureIndex, texId);
+		
 	}
+	
+	//Dessin des boutons de choix de carte
+	int i;
+	float xText=270.;
+	float yTextInit=110.;
+	float yTextCurrent = yTextInit;
+	float zText = 0.0;
+	int nbButtons = BUTTON_OF_MENU.lstMapName->size;
+	for (i=0; i<nbButtons;i++){
+
+		/* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+		yTextCurrent = yTextInit - (70.* (i % NB_MAP_DISPLAYED));
+		if(i > NB_MAP_DISPLAYED -1) zText = -2.0;
+		Point3D mapPosition = PointXYZ(xText,yTextCurrent, zText);
+		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,100,60));
+		
+	}
+	
 	Point3D aidePosition = PointXYZ(-150.,100.,0.);
 	Button* aideButton = createButton(AIDE_MENU,aidePosition,120,120);
 	free(BUTTON_OF_MENU.regles);
@@ -102,27 +133,6 @@ void initMenuGraphics(){
 	free(BUTTON_OF_MENU.close_rules);
 	BUTTON_OF_MENU.close_rules=closeButton;
 	
-	//Dessin des boutons de choix de carte
-	int i;
-	float xText=270.;
-	float yText=110.;
-
-
-	Button* tabMap[MENU_TEXTURES_ID.nb_cartes];
-
-
-	for (i=0; i<MENU_TEXTURES_ID.nb_cartes;i++){
-
-		/* _________________ Dessin du sous-menu pour choisir la carte_______________*/
-		Point3D mapPosition = PointXYZ(xText,yText,0.);
-		tabMap[i] = createButton(MAP_MENU,mapPosition,100,60);
-		
-		BUTTON_OF_MENU.carte[i]=tabMap[i];
-		ButtonOfMenu.indexTexture[i] = MENU_TEXTURES_ID.MAPS[i]  ;
-
-		yText-=70.;
-	}
-	
 	TTF_CloseFont(police);
 
 }
@@ -140,7 +150,7 @@ void drawButtonMenu(){
     glEnd();
 }
 
-void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
+void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -235,11 +245,9 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 		glColor3ub(255,255,255);
 		drawButton(BUTTON_OF_MENU.close_rules);
 
-	}
-
+		}
 		if (*menuOpen == 1){
-
-			drawMapMenu(mapName);
+			drawMapMenu();
 
 		}
 
@@ -261,21 +269,19 @@ void drawMenu( GLuint* cartes,int nb_cartes,  int* menuOpen,int* aideOpen,int* p
 
 }
 
-void drawMapMenu (char* mapName){
+void drawMapMenu (){
 
-		int i;
-	
-
-		for (i=0; i<MENU_TEXTURES_ID.nb_cartes;i++){
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
 
-
-		if (strcmp(BUTTON_OF_MENU.tabMapName[i],mapName)==0)
+	Button* curButton = NULL;
+	goToHeadList(BUTTON_OF_MENU.lstMapButton);
+	while( (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+		if( BUTTON_OF_MENU.lstMapButton->position == BUTTON_OF_MENU.indexButtonClicked)
 			glColor3ub(0,204,204);
 		else
 			glColor3ub(255,255,255);
 
-		drawButton(BUTTON_OF_MENU.carte[i]);
+		drawButton(curButton);
 	}
 
 }	
@@ -620,7 +626,9 @@ void drawButton(const Button* button){
 	break;
 	case PLAY_MENU : textureId = MENU_TEXTURES_ID.PLAY_BUTTON;
 	break;
-	case MAP_MENU : textureId = MENU_TEXTURES_ID ;
+	case MAP_MENU :
+		goToPosition(BUTTON_OF_MENU.lstMapTextureIndex, BUTTON_OF_MENU.lstMapButton->position);
+		textureId = *((GLuint*)currentData(BUTTON_OF_MENU.lstMapTextureIndex));
 	break;
 	case CLOSE_RULES_MENU : textureId = MENU_TEXTURES_ID.RULES_CLOSE;
 	break;
@@ -631,9 +639,8 @@ void drawButton(const Button* button){
 	}
 
 	glPushMatrix();
-	glTranslatef(button->position.x , button->position.y , 0.0);
+	glTranslatef(button->position.x , button->position.y , button->position.z);
 	glScalef(button->width, button->height,1.);
-
 	drawTexturedQuad(textureId);
 	glPopMatrix();
 }
@@ -789,6 +796,43 @@ void createLooseMessage(){
 	SDL_FreeSurface(sMessage);
 	TTF_CloseFont(police);
 	TTF_Quit();
+}
+
+int readDirectory(List* lstMapName){
+	if(lstMapName == NULL) return 0;
+	char dataPath[] = "data/";
+	DIR* dataRep = opendir(dataPath);
+	if (dataRep ==NULL){
+		perror("");
+		exit(1);
+	}
+
+	struct dirent* fichierLu =NULL;
+	
+	char* ptrMap = NULL;
+	while((fichierLu = readdir(dataRep))!=NULL){
+		if (fichierLu->d_name[0] != '.'){
+
+			if (strlen(fichierLu->d_name)>  MAX_LENGHT)
+				fprintf(stderr, "Erreur : le nom du fichier %s dépasse 30 caractères\n", fichierLu->d_name);
+			else{
+				ptrMap=(char*)malloc(sizeof(char)*strlen(fichierLu->d_name));
+				if(ptrMap == NULL) {
+					fprintf(stderr, "Erreur fatale, impossible d'allouer la mémoire pour stocker le nom des cartes.\n");
+					exit(EXIT_FAILURE);
+				}
+				strcpy(ptrMap,fichierLu->d_name);
+				insertBottomCell(lstMapName, ptrMap);
+			}
+		}
+	}
+
+	int nb_cartes = lstMapName->size;
+
+	if (closedir(dataRep)!=0){
+		printf("erreur dans la fermeture du repertoire\n");
+	}
+	return nb_cartes;
 }
 
 

@@ -6,7 +6,5 @@
 
 typedef enum{false=0, true=1}bool;
 
-int readDirectory(char* map[]);
-
 
 #endif

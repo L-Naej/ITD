@@ -31,6 +31,10 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 					case SDLK_ESCAPE : 
 					askedForQuit = true;
 					break;
+					case SDLK_DOWN : scrollMenu(0);
+					break;
+					case SDLK_UP : scrollMenu(1);
+					break;
 					default : break;
 				}
 			break;
@@ -41,6 +45,42 @@ bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpe
 		}
 	}
 	return askedForQuit;
+}
+
+//0 = vers le bas, 1 = vers le haut
+void scrollMenu(int direction){
+	int oldPosition = BUTTON_OF_MENU.indexFirstButtonDisplayed;
+	int i = oldPosition;
+	int newPosition;
+	
+	//Sécurité
+	if(direction == 0 && (oldPosition + NB_MAP_DISPLAYED) > BUTTON_OF_MENU.lstMapButton->size) return;
+	if(direction == 1 && (oldPosition - NB_MAP_DISPLAYED) < 1) return;
+	
+	Button* curButton = NULL;
+	if(oldPosition == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+	else goToPosition(BUTTON_OF_MENU.lstMapButton, oldPosition-1);
+	while( i < (oldPosition + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+		curButton->position.z = -2.0;
+		i++;
+	}
+	if(direction == 1){
+		newPosition = oldPosition - NB_MAP_DISPLAYED;
+		goToPosition(BUTTON_OF_MENU.lstMapButton, newPosition);
+	}
+	else if(direction == 0){
+		newPosition = BUTTON_OF_MENU.lstMapButton->position + 1;
+	}
+	
+	i = newPosition;
+	printf("new pos : %d\n", newPosition);
+	BUTTON_OF_MENU.indexFirstButtonDisplayed = newPosition;
+	if(newPosition == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+	while( i < (newPosition + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+		curButton->position.z = 0.0;
+		i++;
+	}
+	BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.indexFirstButtonDisplayed;
 }
 
 //Variables globales pour la gestion de la caméra
@@ -280,6 +320,7 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface){
 
 bool isMouseOnButton(Button* button, Uint16 x, Uint16 y){
 	if(button == NULL) return false;
+	if(button->position.z < 0.0) return false;
 	bool inside = false;
 	Point3D oglMouse = sdlToOpenGL(PointXYZ(x,y,0.0));
 	inside = oglMouse.x >= button->position.x - button->width / 2.0 && oglMouse.x <= button->position.x + button->width / 2.0;
@@ -310,18 +351,22 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName){
 
 			Point3D clicOGL = sdlToOpenGL(PointXYZ(x,y,0));
-			printf ("position du clic x : %f y:%f\n",clicOGL.x,clicOGL.y);
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
 			}
-			int i;
-			for (i=0;i<MENU_TEXTURES_ID.nb_cartes;i++){
-				if(BUTTON_OF_MENU.carte[i]!=NULL){
-					if (isMouseOnButton(BUTTON_OF_MENU.carte[i],x, y) ==true){
-						strcpy(mapName, BUTTON_OF_MENU.tabMapName[i]);
-						printf("Position du bouton %s: x entre %f et %f; y entre %f et %f\n",BUTTON_OF_MENU.tabMapName[i],(BUTTON_OF_MENU.carte[i]->position.x)-((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.x)+((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.y)-((BUTTON_OF_MENU.carte[i]->height)/2.),(BUTTON_OF_MENU.carte[i]->position.y)+((BUTTON_OF_MENU.carte[i]->height)/2.));
-						break;
-					}
+			
+			Button* curButton = NULL;
+			if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+			goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
+			int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
+			while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+
+				if (isMouseOnButton(curButton,x, y) ==true){
+					goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.lstMapButton->position);
+					strcpy(mapName, (char*)currentData(BUTTON_OF_MENU.lstMapName));
+					BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
+					//printf("Position du bouton %s: x entre %f et %f; y entre %f et %f\n",BUTTON_OF_MENU.tabMapName[i],(BUTTON_OF_MENU.carte[i]->position.x)-((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.x)+((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.y)-((BUTTON_OF_MENU.carte[i]->height)/2.),(BUTTON_OF_MENU.carte[i]->position.y)+((BUTTON_OF_MENU.carte[i]->height)/2.));
+					break;
 				}
 			}
 
