@@ -50,7 +50,7 @@ int main(int argc,  char* argv[]) {
 	world.map.pathNodeList = NULL;
 	Interface interface;
 	interface.lstButtons = NULL;
-	char mapName[30]= "Not chosen";
+	char* mapName= NULL;
 /*-------------- GESTION DU MENU --------------------*/
 do{
 	bool play = false;
@@ -65,10 +65,15 @@ do{
 	List* lstMaps = createEmptyList();
 	readDirectory(lstMaps);
 	/* selection d'une carte en ligne de commande*/
-	if (argc >= 2 && argv[1] && strcmp(mapName, "Not chosen") == 0){
+	if (argc >= 2 && argv[1] && mapName == NULL){
 		char* curMap = NULL;
 		while( (curMap = (char*) nextData(lstMaps)) != NULL){
 			if (strcmp(argv[1],curMap)==0){
+				mapName = (char*) malloc(strlen(argv[1])*sizeof(char));
+				if(mapName == NULL){
+					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire.\n");
+					exit(EXIT_FAILURE);
+				}
 				strcpy(mapName,argv[1]);
 				play = true;
 				break;	
@@ -94,7 +99,7 @@ do{
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		askedForQuit = handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen);
+		askedForQuit = handleMenuActions(&mapName,&playIsPush, &menuOpen,&aideOpen);
 
 		if(playIsPush == 2) play = true;
 		

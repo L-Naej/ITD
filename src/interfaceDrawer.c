@@ -252,7 +252,7 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 		}
 
 		if (*playIsPush == 1){
-			if (strcmp(mapName,"Not chosen")==0){
+			if (mapName == NULL){
 				/*dessin de la bulle */
 				glPushMatrix();
 		
