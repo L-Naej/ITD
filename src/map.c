@@ -252,7 +252,9 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	fscanf(file,"%d\n",&size);
 
 	//Chargement de l'image pour connaître les dimensions
-	loadPpmMap(map);
+	if(! loadPpmMap(map) ){
+		return false;
+	}
 
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	nbItemsLus = fscanf(file,"%f %f\n",&(node1->x),&(node1->y));

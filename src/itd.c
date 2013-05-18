@@ -51,22 +51,15 @@ int main(int argc,  char* argv[]) {
 	Interface interface;
 	interface.lstButtons = NULL;
 	char* mapName= NULL;
-	initMenuGraphics();
-/*-------------- GESTION DU MENU --------------------*/
-do{
+	BUTTON_OF_MENU.lstMapName = NULL;
+	BUTTON_OF_MENU.lstMapButton = NULL;
+	BUTTON_OF_MENU.lstMapTextureIndex = NULL;
 	bool play = false;
-
-
-
-	/* chargement des polices */
-	int playIsPush = 0;
-	int menuOpen = 0;
-	int aideOpen = 0;
-
+	
 	List* lstMaps = createEmptyList();
 	readDirectory(lstMaps);
 	/* selection d'une carte en ligne de commande*/
-	if (argc >= 2 && argv[1] && mapName == NULL){
+	if (argc >= 2 && argv[1]){
 		char* curMap = NULL;
 		while( (curMap = (char*) nextData(lstMaps)) != NULL){
 			if (strcmp(argv[1],curMap)==0){
@@ -84,6 +77,19 @@ do{
 		if(! play) fprintf(stderr, "Erreur le nom donné en paramètre ne correspond à aucun fichier map\n");
 		
 	}
+	freeListComplete(lstMaps);
+	
+/*-------------- GESTION DU MENU --------------------*/
+do{
+
+	interface.lstButtons = NULL;
+
+	/* chargement des polices */
+	int playIsPush = 0;
+	int menuOpen = 0;
+	int aideOpen = 0;
+	initMenuGraphics();
+
 
 	/* ouverture du répertoire data */
 
@@ -162,8 +168,12 @@ do{
 		/* Boucle traitant les evenements */
 		askedForQuit = handleGameActions(&world, &interface, &gameFinished);
 	}
+	play = false;
+	mapName = NULL;
+	
 	cleanWorld(&world);
 	cleanInterface(&interface);
+	
 }while(! askedForQuit);
 	/* Liberation des ressources */ 
 	cleanExit(&world, &interface);

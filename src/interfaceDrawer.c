@@ -75,6 +75,10 @@ void initMenuGraphics(){
 
 
 	//Création du menu de choix de carte
+	if(BUTTON_OF_MENU.lstMapName != NULL) freeListComplete(BUTTON_OF_MENU.lstMapName);
+	if(BUTTON_OF_MENU.lstMapButton != NULL) freeListComplete(BUTTON_OF_MENU.lstMapButton);
+	if(BUTTON_OF_MENU.lstMapTextureIndex != NULL) freeListComplete(BUTTON_OF_MENU.lstMapTextureIndex);
+	
 	BUTTON_OF_MENU.lstMapName = createEmptyList();
 	BUTTON_OF_MENU.lstMapButton = createEmptyList();
 	BUTTON_OF_MENU.lstMapTextureIndex = createEmptyList();
