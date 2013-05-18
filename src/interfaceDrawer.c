@@ -84,12 +84,17 @@ void initMenuGraphics(){
 	readDirectory(BUTTON_OF_MENU.lstMapName);
 	char* ptrMapName;
 	char displayedName[MAX_LENGHT];
+	int i = 0;
+	float xText=0.;
+	float yTextInit=140.;
+	float yTextCurrent = yTextInit;
+	float zText = 0.0;
 	goToHeadList(BUTTON_OF_MENU.lstMapName);
 	while( (ptrMapName = (char*) nextData(BUTTON_OF_MENU.lstMapName)) != NULL){
 		strcpy(displayedName, ptrMapName);
-		int i = 0;
-		for(i = 0; displayedName[i] != '.';i++);
-		displayedName[i] = 0;
+		int j = 0;
+		for(j = 0; displayedName[j] != '.';j++);
+		displayedName[j] = 0;
 		
 		SDL_Surface* text=loadFont(police,displayedName,font1,100);
 		GLuint* texId = (GLuint*) malloc(sizeof(GLuint));
@@ -100,23 +105,17 @@ void initMenuGraphics(){
 		*texId = makeTextureFromSurface (text);
 		insertBottomCell(BUTTON_OF_MENU.lstMapTextureIndex, texId);
 		
-	}
-	
-	//Dessin des boutons de choix de carte
-	int i;
-	float xText=0.;
-	float yTextInit=140.;
-	float yTextCurrent = yTextInit;
-	float zText = 0.0;
-	int nbButtons = BUTTON_OF_MENU.lstMapName->size;
-	for (i=0; i<nbButtons;i++){
-
-		/* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+		//Création du bouton associé
 		yTextCurrent = yTextInit - (70.* (i % NB_MAP_DISPLAYED));
 		if(i > NB_MAP_DISPLAYED -1) zText = -2.0;
 		Point3D mapPosition = PointXYZ(xText,yTextCurrent, zText);
-		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,120,60));
-		
+		int width = text->w;
+		if( width > 600){
+			width = 600;
+		}
+		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,width,text->h));
+		SDL_FreeSurface(text);
+		i++;
 	}
 	
 	Point3D aidePosition = PointXYZ(-150.,100.,0.);
@@ -256,7 +255,7 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 			drawMapMenu();
 
 		}
-
+		
 		if (*playIsPush == 1){
 			if (mapName == NULL){
 				/*dessin de la bulle */
@@ -281,6 +280,7 @@ void drawMapMenu (){
 
 	glPushMatrix();
 	glLoadIdentity();
+	glColor3ub(255,255,255);
 	glBegin(GL_LINE_LOOP);
 	glVertex2f(-300., 200.);
 	glVertex2f(300., 200.);
