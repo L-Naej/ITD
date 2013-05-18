@@ -20,7 +20,7 @@ static const Uint32 END_GAME_DURATION = 3000;
  * est dans le menu d'accueil.
  * Renvoie true si le joueur a demandé à quitter le programme.
  */	
-bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen);
+bool handleMenuActions(char** mapName,int* playIsPush, int* menuOpen,int* aideOpen);
 
 /**
  * Gère les actions clavier et souris du joueur lorsqu'il
@@ -39,7 +39,7 @@ bool isMouseOnInterface(Uint16 x, Uint16 y, Interface* interface);
 bool isMouseOnButton(Button* button, Uint16 x, Uint16 y);
 bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y);
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char* mapName);
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char** mapName);
 
 
 #endif

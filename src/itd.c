@@ -50,7 +50,8 @@ int main(int argc,  char* argv[]) {
 	world.map.pathNodeList = NULL;
 	Interface interface;
 	interface.lstButtons = NULL;
-	char mapName[30]= "Not chosen";
+	char* mapName= NULL;
+	initMenuGraphics();
 /*-------------- GESTION DU MENU --------------------*/
 do{
 	bool play = false;
@@ -65,10 +66,15 @@ do{
 	List* lstMaps = createEmptyList();
 	readDirectory(lstMaps);
 	/* selection d'une carte en ligne de commande*/
-	if (argc >= 2 && argv[1] && strcmp(mapName, "Not chosen") == 0){
+	if (argc >= 2 && argv[1] && mapName == NULL){
 		char* curMap = NULL;
 		while( (curMap = (char*) nextData(lstMaps)) != NULL){
 			if (strcmp(argv[1],curMap)==0){
+				mapName = (char*) malloc(strlen(argv[1])*sizeof(char));
+				if(mapName == NULL){
+					fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire.\n");
+					exit(EXIT_FAILURE);
+				}
 				strcpy(mapName,argv[1]);
 				play = true;
 				break;	
@@ -81,7 +87,6 @@ do{
 
 	/* ouverture du répertoire data */
 
-	initMenuGraphics();
 	while(!play && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -94,7 +99,7 @@ do{
 
 		/* Renvoie une chaine de caractère contenant le nom
 		du fichier ITD choisi par l'utilisateur ou NULL si rien n'a encore été choisi */
-		askedForQuit = handleMenuActions(mapName,&playIsPush, &menuOpen,&aideOpen);
+		askedForQuit = handleMenuActions(&mapName,&playIsPush, &menuOpen,&aideOpen);
 
 		if(playIsPush == 2) play = true;
 		
@@ -112,7 +117,7 @@ do{
 	bool gameFinished = false;
 	//Surtout à appeler APRES avoir initialisé la SDL
 	char mapPath[50] = "data/";
-	strcat(mapPath, mapName);
+	
 	
 	float width = .15;//10% de largeur
 	float height = 1.; //Toute la hauteur
@@ -120,8 +125,10 @@ do{
 	float positionY = .0; //A 100% de la hauter
 	
 	if(!askedForQuit){
+		strcat(mapPath, mapName);
 		world = initWorld(mapPath);
-		initGameGraphics(world.map.image);
+		initGameGraphics();
+		GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(world.map.image);
 
 		//Initialisation interface
 		interface = initGameInterface(width, height, positionX, positionY);

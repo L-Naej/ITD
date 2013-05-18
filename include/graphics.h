@@ -75,7 +75,7 @@ static const unsigned int BIT_PER_PIXEL = 32;
  * sont liés. Les stocke dans la variable globale 
  * GAME_TEXTURES_ID.
  */
-void initGameGraphics(SDL_Surface* map);
+void initGameGraphics();
 
 
 /**

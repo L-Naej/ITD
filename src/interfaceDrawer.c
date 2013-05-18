@@ -78,7 +78,7 @@ void initMenuGraphics(){
 	BUTTON_OF_MENU.lstMapName = createEmptyList();
 	BUTTON_OF_MENU.lstMapButton = createEmptyList();
 	BUTTON_OF_MENU.lstMapTextureIndex = createEmptyList();
-	BUTTON_OF_MENU.indexButtonClicked = 1;
+	BUTTON_OF_MENU.indexButtonClicked = -1;
 	BUTTON_OF_MENU.indexFirstButtonDisplayed = 1;
 	
 	readDirectory(BUTTON_OF_MENU.lstMapName);
@@ -252,7 +252,7 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 		}
 
 		if (*playIsPush == 1){
-			if (strcmp(mapName,"Not chosen")==0){
+			if (mapName == NULL){
 				/*dessin de la bulle */
 				glPushMatrix();
 		

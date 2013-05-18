@@ -59,13 +59,25 @@ void drawMonster(const Monster* monster){
 	glScalef(MONSTER_WIDTH_PX,MONSTER_WIDTH_PX,1.0);
 	drawTexturedQuad(monsterTexture);
 	glPopMatrix();
-	glColor3ub(255,0,0);
+	
 	//Dessin de la vie
-	float barSize = monster->life / ((float)monster->maxLife) * (MONSTER_WIDTH_PX / 1.2);
+	float fullBarSize = (MONSTER_WIDTH_PX / 1.2);
+	float barSize = monster->life / ((float)monster->maxLife) * fullBarSize;
 	float decalY = - (MONSTER_WIDTH_PX / 1.2 - barSize) / 2.0;
-	glTranslatef(MONSTER_WIDTH_PX / 2.0 , decalY, 0.);
-	glScalef(2.0, barSize, 1.);
+	glPushMatrix();
+	glTranslatef(MONSTER_WIDTH_PX / 2.0 + 10 , 0., 0.);
+	
+	glScalef(4.0, fullBarSize, 1.);
+	glColor3ub(255,0,0);
 	drawQuad();
+	glPopMatrix();
+	
+	glPushMatrix();
+	glTranslatef(MONSTER_WIDTH_PX / 2.0 + 10 , decalY, 0.);
+	glColor3ub(0,255,0);
+	glScalef(4.0, barSize, 1.);
+	drawQuad();
+	glPopMatrix();
 	glPopMatrix();
 }
 

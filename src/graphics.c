@@ -3,12 +3,7 @@
 #include <math.h>
 #define CIRCLE_PRECISION 100
 
-//TODO
-void initGameGraphics(SDL_Surface* map){
-	if(map == NULL){
-		fprintf(stderr, "Erreur : les graphismes du jeu ne peuvent être initialisés avant le chargement de la map.\n");
-		exit(-1);
-	}
+void initGameGraphics(){
 	GLuint tab[] = {GAME_TEXTURES_ID.BLUE_OCTOPUS_ID, 
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID,  
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID, 
@@ -49,7 +44,7 @@ void initGameGraphics(SDL_Surface* map){
 	GAME_TEXTURES_ID.INFO_PANEL_ID = 0;
 	GAME_TEXTURES_ID.WIN_MESSAGE_ID = 0;
 		
-	GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(map);
+	GAME_TEXTURES_ID.MAP_ID = 0;
 }
 
 GLuint makeTextureFromFile(const char* imagePath){
