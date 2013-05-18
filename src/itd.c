@@ -117,7 +117,7 @@ do{
 	bool gameFinished = false;
 	//Surtout à appeler APRES avoir initialisé la SDL
 	char mapPath[50] = "data/";
-	strcat(mapPath, mapName);
+	
 	
 	float width = .15;//10% de largeur
 	float height = 1.; //Toute la hauteur
@@ -125,6 +125,7 @@ do{
 	float positionY = .0; //A 100% de la hauter
 	
 	if(!askedForQuit){
+		strcat(mapPath, mapName);
 		world = initWorld(mapPath);
 		initGameGraphics(world.map.image);
 
