@@ -99,7 +99,10 @@ bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished)
 	if(world->gameLoosed || world->gameWinned){
 		if(startEndGameTime == 0) startEndGameTime = SDL_GetTicks();
 		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
-		if (elapsedTime > END_GAME_DURATION) *gameIsFinished = true;
+		if (elapsedTime > END_GAME_DURATION){ 
+			*gameIsFinished = true;
+			startEndGameTime = 0;
+		}
 		else{
 			*gameIsFinished = false;
 		}

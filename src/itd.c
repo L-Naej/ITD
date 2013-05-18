@@ -51,6 +51,7 @@ int main(int argc,  char* argv[]) {
 	Interface interface;
 	interface.lstButtons = NULL;
 	char* mapName= NULL;
+	initMenuGraphics();
 /*-------------- GESTION DU MENU --------------------*/
 do{
 	bool play = false;
@@ -86,7 +87,6 @@ do{
 
 	/* ouverture du répertoire data */
 
-	initMenuGraphics();
 	while(!play && askedForQuit == false) {
 		/* Récupération du temps au début de la boucle */
 		Uint32 startTime = SDL_GetTicks();
@@ -127,7 +127,8 @@ do{
 	if(!askedForQuit){
 		strcat(mapPath, mapName);
 		world = initWorld(mapPath);
-		initGameGraphics(world.map.image);
+		initGameGraphics();
+		GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(world.map.image);
 
 		//Initialisation interface
 		interface = initGameInterface(width, height, positionX, positionY);
