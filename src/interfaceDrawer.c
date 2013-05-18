@@ -82,10 +82,16 @@ void initMenuGraphics(){
 	BUTTON_OF_MENU.indexFirstButtonDisplayed = 1;
 	
 	readDirectory(BUTTON_OF_MENU.lstMapName);
-	char * ptrMapName = NULL;
+	char* ptrMapName;
+	char displayedName[MAX_LENGHT];
 	goToHeadList(BUTTON_OF_MENU.lstMapName);
 	while( (ptrMapName = (char*) nextData(BUTTON_OF_MENU.lstMapName)) != NULL){
-		SDL_Surface* text=loadFont(police,ptrMapName,font1,100);
+		strcpy(displayedName, ptrMapName);
+		int i = 0;
+		for(i = 0; displayedName[i] != '.';i++);
+		displayedName[i] = 0;
+		
+		SDL_Surface* text=loadFont(police,displayedName,font1,100);
 		GLuint* texId = (GLuint*) malloc(sizeof(GLuint));
 		if(texId == NULL){
 			fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire.\n");
@@ -98,8 +104,8 @@ void initMenuGraphics(){
 	
 	//Dessin des boutons de choix de carte
 	int i;
-	float xText=270.;
-	float yTextInit=110.;
+	float xText=0.;
+	float yTextInit=140.;
 	float yTextCurrent = yTextInit;
 	float zText = 0.0;
 	int nbButtons = BUTTON_OF_MENU.lstMapName->size;
@@ -109,7 +115,7 @@ void initMenuGraphics(){
 		yTextCurrent = yTextInit - (70.* (i % NB_MAP_DISPLAYED));
 		if(i > NB_MAP_DISPLAYED -1) zText = -2.0;
 		Point3D mapPosition = PointXYZ(xText,yTextCurrent, zText);
-		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,100,60));
+		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,120,60));
 		
 	}
 	
@@ -272,6 +278,20 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 void drawMapMenu (){
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+
+	glPushMatrix();
+	glLoadIdentity();
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(-300., 200.);
+	glVertex2f(300., 200.);
+	glVertex2f(300., -260.);
+	glVertex2f(-300., -260.);
+	glEnd();
+	glTranslatef(0., -30., 0.);
+	glScalef(590., 450., 1.);
+	glColor3ub(0,0,0);
+	drawQuad();
+	glPopMatrix();
 
 	Button* curButton = NULL;
 	goToHeadList(BUTTON_OF_MENU.lstMapButton);
