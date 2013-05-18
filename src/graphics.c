@@ -36,7 +36,7 @@ void initGameGraphics(SDL_Surface* map){
 	GAME_TEXTURES_ID.ROCKET_TOWER_ID = makeTextureFromFile("images/rocket.png");
 	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/mitraillette.png");
 	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/hybrid.png");
-	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
+	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/exit.png");
 	GAME_TEXTURES_ID.HYBRID_BUTTON_ID = makeTextureFromFile("images/hybrid_button.png");
 	GAME_TEXTURES_ID.LASER_BUTTON_ID = makeTextureFromFile("images/laser_button.png");
 	GAME_TEXTURES_ID.GUN_BUTTON_ID = makeTextureFromFile("images/mitraillette_button.png");
