@@ -90,6 +90,7 @@ Interface initGameInterface(float width, float height, float positionX, float po
 void initMenuGraphics();
 
 void cleanInterface(Interface* interface);
+void clearMenuTextures();
 
 /**
  * Dessine l'interface pointée par interface.

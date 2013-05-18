@@ -30,8 +30,29 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	return button;
 }
 
-void initMenuGraphics(){
+void clearMenuTextures(){
+	GLuint tabTextures[] = {
+	MENU_TEXTURES_ID.PLAY_LEGEND,
+	MENU_TEXTURES_ID.AIDE_BUTTON, 
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
+	MENU_TEXTURES_ID.PLAY_BUTTON, 
+	MENU_TEXTURES_ID.RULES,
+	MENU_TEXTURES_ID.RULES_CLOSE,
+	MENU_TEXTURES_ID.BIENVENUE,
+	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND,
+	MENU_TEXTURES_ID.AIDE_LEGEND,
+	MENU_TEXTURES_ID.BULLE};
+	glDeleteTextures(10,tabTextures);
+	
+	GLuint* curTex = NULL;
+	goToHeadList(BUTTON_OF_MENU.lstMapTextureIndex);
+	while( (curTex = (GLuint*) nextData(BUTTON_OF_MENU.lstMapTextureIndex)) != NULL){
+		glDeleteTextures(1, curTex);
+	}
+}
 
+void initMenuGraphics(){
+	clearMenuTextures();
 	char font1[] = "font/Champagne.ttf";
 	char font2[] = "font/lighthouse.ttf";
 
@@ -40,35 +61,28 @@ void initMenuGraphics(){
 
 	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
 	MENU_TEXTURES_ID.BIENVENUE = makeTextureFromSurface (bienvenue_surface);
+	SDL_FreeSurface(bienvenue_surface);
 
 	char choix[18]="Choisir une carte";
 	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
 	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND =  makeTextureFromSurface (choix_surface);
-
+	SDL_FreeSurface(choix_surface);
+	
 	char aide[16]="Lire les regles";
 	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
 	MENU_TEXTURES_ID.AIDE_LEGEND=makeTextureFromSurface (aide_surface);
-
+	SDL_FreeSurface(aide_surface);
+	
 	char playLegend[7]="Play !";
 	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
 
-	GLuint tabTextures[] = {
-	MENU_TEXTURES_ID.PLAY_LEGEND,
-	MENU_TEXTURES_ID.AIDE_BUTTON, 
-	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
-	MENU_TEXTURES_ID.PLAY_BUTTON, 
-	MENU_TEXTURES_ID.CASE_VIDE, 
-	MENU_TEXTURES_ID.RULES,
-	MENU_TEXTURES_ID.RULES_CLOSE,
-	MENU_TEXTURES_ID.BULLE};
-	glDeleteTextures(8,tabTextures);
 	
 	
 	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
+	SDL_FreeSurface(play_surface);
 	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
 	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
 	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
-	MENU_TEXTURES_ID.CASE_VIDE = makeTextureFromFile("images/casevide.png");
 	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
 	MENU_TEXTURES_ID.RULES_CLOSE = makeTextureFromFile("images/close.png");
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");

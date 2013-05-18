@@ -187,7 +187,14 @@ void cleanExit(World* world, Interface* interface){
 	free(BUTTON_OF_MENU.regles);
 	free(BUTTON_OF_MENU.choix_carte);
 	free(BUTTON_OF_MENU.jouer);
-	free(BUTTON_OF_MENU.close_rules);	
+	free(BUTTON_OF_MENU.close_rules);
+	//Vidage VRAM
+	clearMenuTextures();
+	clearGameGraphics();
+	
+	freeListComplete(BUTTON_OF_MENU.lstMapButton);
+	freeListComplete(BUTTON_OF_MENU.lstMapName);
+	freeListComplete(BUTTON_OF_MENU.lstMapTextureIndex);
 	TTF_Quit();	
 	SDL_Quit();
 }
