@@ -175,11 +175,11 @@ bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* int
 	return askedForQuit;
 }
 
-//TODO
 bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
+	
 	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
@@ -209,6 +209,13 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
+		/*
+		Point3D mouse = sdlToOpenGL(PointXYZ(e->button.x, e->button.y,0.));
+		mouse.x -= world->cameraPosition.x;
+		mouse.y -= world->cameraPosition.y;
+		mouse = openGLToItd(world->map.width, world->map.height,mouse);
+		printf("%.0f %.0f\n", mouse.x, mouse.y);
+		*/
 		if(e->button.button == SDL_BUTTON_RIGHT){
 			suppressTower(world, e->button.x, e->button.y);
 			return false;
