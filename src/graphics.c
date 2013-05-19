@@ -370,7 +370,7 @@ int setVideoMode(int w, int h) {
 	return EXIT_SUCCESS;
 }
 
-int initWindow(){
+int initWindow(int width, int height){
 	/* Initialisation de la SDL */
 	if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
 	fprintf(stderr, "Impossible d'initialiser la SDL.\n");
@@ -378,7 +378,7 @@ int initWindow(){
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(EXIT_FAILURE == setVideoMode(1024, 768)) {
+	if(EXIT_FAILURE == setVideoMode(width, height)) {
 		fprintf(stderr, "Impossible d'ouvrir la fenetre.\n");
 		return EXIT_FAILURE;
 	}

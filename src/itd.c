@@ -30,8 +30,18 @@
  */
 
 int main(int argc,  char* argv[]) {
+	int width = 1024, height = 768;
+	if(argc == 5 && strcmp(argv[2], "-r") == 0 ){
+		width = atoi(argv[3]);
+		height = atoi(argv[4]);
+	}
+	else if(argc == 4 && strcmp(argv[1], "-r") == 0 ){
+		width = atoi(argv[2]);
+		height = atoi(argv[3]);	
+	}
+	
 	/*Initialisation SDL, OpenGL etc */
-	if( initWindow() == EXIT_FAILURE){
+	if( initWindow(width, height) == EXIT_FAILURE){
 		perror("Impossible d'initialiser la fenêtre SDL, le programme va fermer.\n");
 		exit(-1);
 	}
@@ -59,7 +69,7 @@ int main(int argc,  char* argv[]) {
 	List* lstMaps = createEmptyList();
 	readDirectory(lstMaps);
 	/* selection d'une carte en ligne de commande*/
-	if (argc >= 2 && argv[1]){
+	if (argc >= 2 && strcmp(argv[1], "-r") != 0){
 		char* curMap = NULL;
 		while( (curMap = (char*) nextData(lstMaps)) != NULL){
 			if (strcmp(argv[1],curMap)==0){

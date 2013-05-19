@@ -104,7 +104,7 @@ void initGameGraphics();
  * programme ITD. Créé le contexte 
  * OpenGL.
  */
-int initWindow();
+int initWindow(int width, int height);
 
 /**
  * Renvoie le Point3D fourni en paramètre en coordonnées
