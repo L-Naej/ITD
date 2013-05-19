@@ -197,7 +197,7 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 		glPushMatrix();
 		glColor3ub(0,204,204);
 		glScalef(150,40,1);
-		glTranslatef(0.6,0,0);
+		glTranslatef(0.9,0,0);
 		drawTexturedQuad(MENU_TEXTURES_ID.MAP_CHOICE_LEGEND);
 		glPopMatrix();
 	
