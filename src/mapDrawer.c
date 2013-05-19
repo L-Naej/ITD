@@ -46,8 +46,7 @@ void drawMonster(const Monster* monster){
 	Vector3D direction = Normalize(monster->direction);
 	float factorX = DotProduct(direction, ITD_X_AXIS);
 	float factorY = DotProduct(direction, ITD_Y_AXIS);
-	float epsilon = 0.2;
-	
+	float epsilon = 0.4;
 	switch(monster->type){
 		case BLUE_OCTOPUS :
 			if (factorY <= -1. + epsilon && fabs(factorX) < epsilon){
@@ -59,15 +58,16 @@ void drawMonster(const Monster* monster){
 			else if (factorX < -1. + epsilon && fabs(factorY) < epsilon){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_GAUCHE;
 			}
-			else if (factorX >= 1.- epsilon && fabs(factorY) < epsilon){
+			else if (fabs(factorX) >= 1.- epsilon && fabs(factorY) < epsilon){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DROITE;
 			}
-			else if (fabs(factorY)- 0.5 < epsilon && factorX-0.5<epsilon){
+			else if ( fabs(factorX + 0.5)<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_GAUCHE;
 			}
-			else if (fabs(factorY)- 0.5 && -factorX-0.5<epsilon){
+			else if (-factorX-0.5<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_DROITE;
 			}
+			else monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
 		break;
 		case ORANGE_OCTOPUS : 			
 			if (factorY <= -1. + epsilon && fabs(factorX) < epsilon){
@@ -82,12 +82,13 @@ void drawMonster(const Monster* monster){
 			else if (factorX >= 1.- epsilon && fabs(factorY) < epsilon){
 				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DROITE;
 			}
-			else if (fabs(factorY)- 0.5 < epsilon && factorX-0.5<epsilon){
+			else if (fabs(factorX+0.5)<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_GAUCHE;
 			}
-			else if (fabs(factorY)- 0.5 && -factorX-0.5<epsilon){
+			else if (-factorX-0.5<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_DROITE;
 			}
+			else monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;
 		break;
 		case GREEN_OCTOPUS : 
 			if (factorY <= -1. + epsilon && fabs(factorX) < epsilon){
@@ -102,12 +103,13 @@ void drawMonster(const Monster* monster){
 			else if (factorX >= 1.- epsilon && fabs(factorY) < epsilon){
 				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DROITE;
 			}
-			else if (fabs(factorY)- 0.5 < epsilon && factorX-0.5<epsilon){
+			else if (fabs(factorX+0.5)<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_GAUCHE;
 			}
-			else if (fabs(factorY)- 0.5 && -factorX-0.5<epsilon){
+			else if (-factorX-0.5<epsilon){
 				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_DROITE;
 			}
+			else monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
 		break;
 		default : return;
 		break;
