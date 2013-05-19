@@ -63,10 +63,13 @@ typedef struct menu_text{
 	GLuint AIDE_LEGEND;
 	GLuint MAP_CHOICE_LEGEND;
 	GLuint PLAY_LEGEND;
+	GLuint PUSH_ENTER;
 	GLuint BIENVENUE;
 	GLuint RULES;
 	GLuint RULES_CLOSE;
 	GLuint BULLE;
+	GLuint FLECHES;
+
 }ITD_Menu_Textures;
 
 ITD_Menu_Textures MENU_TEXTURES_ID;

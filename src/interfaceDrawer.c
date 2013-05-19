@@ -75,11 +75,15 @@ void initMenuGraphics(){
 	
 	char playLegend[7]="Play !";
 	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
-
-	
-	
 	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
 	SDL_FreeSurface(play_surface);
+
+	char pushEnter[31]="Appuyer sur ENTER pour valider";
+	SDL_Surface* PushEnter_surface=loadFont(police,pushEnter,font1,100);
+	MENU_TEXTURES_ID.PUSH_ENTER = makeTextureFromSurface (PushEnter_surface);
+	SDL_FreeSurface(PushEnter_surface);
+
+	MENU_TEXTURES_ID.FLECHES = makeTextureFromFile("images/fleches.png");
 	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
 	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
 	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
@@ -175,43 +179,31 @@ void drawButtonMenu(){
 
 void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 
-
-		glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT);
     		glMatrixMode(GL_MODELVIEW); 
     		glLoadIdentity();
 
-
 /*______________Bienvenue____________________________________*/
-		
-		
+
 		glPushMatrix();
-		
 		glColor3ub(0,204,204);
 		glScalef(400,70,1);
 		glTranslatef(0,3.5,0);
 		drawTexturedQuad(MENU_TEXTURES_ID.BIENVENUE);
 		glPopMatrix();
 
-		
-
-
-
 /*______________Choix____________________________________*/
 
 		glPushMatrix();
-		
 		glColor3ub(0,204,204);
 		glScalef(150,40,1);
 		glTranslatef(0.6,0,0);
 		drawTexturedQuad(MENU_TEXTURES_ID.MAP_CHOICE_LEGEND);
 		glPopMatrix();
 	
-
-
-
 /*______________PLay !____________________________________*/
-		glPushMatrix();
 		
+		glPushMatrix();
 		glColor3ub(0,204,204);
 		glScalef(140,40,1);
 		glTranslatef(0,-5,0);
@@ -219,8 +211,8 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 		glPopMatrix();
 
 /*______________Règles____________________________________*/
-		glPushMatrix();
 		
+		glPushMatrix();
 		glColor3ub(0,204,204);
 		glScalef(150,40,1);
 		glTranslatef(-1,0.2,0);
@@ -231,42 +223,37 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 /* _________________ Dessin du bouton d'aide_______________*/
 		
 		glColor3ub(255,255,255);
-
 		drawButton(BUTTON_OF_MENU.regles);
 
 /* _________________ Dessin du bouton pour choisir la carte_______________*/
 
 		glColor3ub(255,255,255);
-
 		drawButton(BUTTON_OF_MENU.choix_carte);
 
 /* _________________ Dessin du bouton play_______________*/
 
 		glColor3ub(255,255,255);
-
 		drawButton(BUTTON_OF_MENU.jouer);
 		
 
 
 		if (*menuOpen == 1){
-
 			drawMapMenu(mapName);
-
 		}
 
 		if (*aideOpen == 1){
-		/*______________Règles____________________________________*/
-		glPushMatrix();
-		
-		glColor3ub(255,255,255);
-		glScalef(500,500,1);
-		glTranslatef(0,0,0);
-		drawTexturedQuad(MENU_TEXTURES_ID.RULES);
-		glPopMatrix();
+			
+			/*______________Règles____________________________________*/
+			glPushMatrix();
+			glColor3ub(255,255,255);
+			glScalef(500,500,1);
+			glTranslatef(0,0,0);
+			drawTexturedQuad(MENU_TEXTURES_ID.RULES);
+			glPopMatrix();
 
 
-		glColor3ub(255,255,255);
-		drawButton(BUTTON_OF_MENU.close_rules);
+			glColor3ub(255,255,255);
+			drawButton(BUTTON_OF_MENU.close_rules);
 
 		}
 		if (*menuOpen == 1){
@@ -296,20 +283,38 @@ void drawMapMenu (){
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
 
+	/* dessin du fond*/
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3ub(255,255,255);
 	glBegin(GL_LINE_LOOP);
 	glVertex2f(-300., 200.);
 	glVertex2f(300., 200.);
-	glVertex2f(300., -260.);
-	glVertex2f(-300., -260.);
+	glVertex2f(300., -225.);
+	glVertex2f(-300., -225.);
 	glEnd();
 	glTranslatef(0., -30., 0.);
-	glScalef(590., 450., 1.);
+	glScalef(590., 383., 1.);
 	glColor3ub(0,0,0);
 	drawQuad();
 	glPopMatrix();
+
+	/* dessin de la légende */
+	glPushMatrix();
+	glColor3ub(0,204,204);
+	glScalef(300,60,1);
+	glTranslatef(0.,-4.3,0);
+	drawTexturedQuad(MENU_TEXTURES_ID.PUSH_ENTER);
+	glPopMatrix();
+
+	/*dessin des flèches */
+	glPushMatrix();
+	glColor3ub(0,204,204);
+	glScalef(100,300,1);
+	glTranslatef(3.5,0,0);
+	drawTexturedQuad(MENU_TEXTURES_ID.FLECHES);
+	glPopMatrix();
+
 
 	Button* curButton = NULL;
 	goToHeadList(BUTTON_OF_MENU.lstMapButton);
