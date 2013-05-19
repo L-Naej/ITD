@@ -5,9 +5,27 @@
 
 void clearGameGraphics(){
 	GLuint tab[] = {
-	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID, 
-	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID,  
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID,
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DOS, 
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DROITE, 
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_GAUCHE, 
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_DROITE, 
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_GAUCHE, 
+ 
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID,
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DOS,  
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DROITE,  
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_GAUCHE,  
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_DROITE,  
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_GAUCHE,  
+  
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID, 
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DOS, 
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DROITE, 
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_GAUCHE, 
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_DROITE, 
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_GAUCHE, 
+
 	GAME_TEXTURES_ID.LASER_TOWER_ID, 
 	GAME_TEXTURES_ID.ROCKET_TOWER_ID, 
 	GAME_TEXTURES_ID.GUN_TOWER_ID, 
@@ -24,7 +42,7 @@ void clearGameGraphics(){
 	GAME_TEXTURES_ID.LASER_BUTTON_ID,
 	GAME_TEXTURES_ID.GUN_BUTTON_ID,
 	GAME_TEXTURES_ID.ROCKET_BUTTON_ID };
-	glDeleteTextures(19,tab);
+	glDeleteTextures(34,tab);
 }
 
 void initGameGraphics(){
@@ -32,13 +50,31 @@ void initGameGraphics(){
 	
 	
 	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID = makeTextureFromFile("images/monster1face.png");
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DOS = makeTextureFromFile("images/monster1dos.png");
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DROITE = makeTextureFromFile("images/monster1droite.png");
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_GAUCHE = makeTextureFromFile("images/monster1gauche.png");
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_DROITE = makeTextureFromFile("images/monster1demidroite.png");
+	GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_GAUCHE = makeTextureFromFile("images/monster1demigauche.png");
+
 	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID = makeTextureFromFile("images/monster2face.png");
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DOS = makeTextureFromFile("images/monster2dos.png");
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DROITE = makeTextureFromFile("images/monster2droite.png");
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_GAUCHE = makeTextureFromFile("images/monster2gauche.png");
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_DROITE = makeTextureFromFile("images/monster2demidroite.png");
+	GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_GAUCHE = makeTextureFromFile("images/monster2demigauche.png");
+
 	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID = makeTextureFromFile("images/monster3face.png");
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DOS = makeTextureFromFile("images/monster3dos.png");
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DROITE = makeTextureFromFile("images/monster3droite.png");
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_GAUCHE = makeTextureFromFile("images/monster3gauche.png");
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_DROITE = makeTextureFromFile("images/monster3demidroite.png");
+	GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_GAUCHE = makeTextureFromFile("images/monster3demigauche.png");
+
 	GAME_TEXTURES_ID.LASER_TOWER_ID = makeTextureFromFile("images/laser.png");
 	GAME_TEXTURES_ID.ROCKET_TOWER_ID = makeTextureFromFile("images/rocket.png");
 	GAME_TEXTURES_ID.GUN_TOWER_ID = makeTextureFromFile("images/mitraillette.png");
 	GAME_TEXTURES_ID.HYBRID_TOWER_ID = makeTextureFromFile("images/hybrid.png");
-	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/monstrehelp.png");
+	GAME_TEXTURES_ID.QUIT_GAME_ID = makeTextureFromFile("images/exit.png");
 	GAME_TEXTURES_ID.HYBRID_BUTTON_ID = makeTextureFromFile("images/hybrid_button.png");
 	GAME_TEXTURES_ID.LASER_BUTTON_ID = makeTextureFromFile("images/laser_button.png");
 	GAME_TEXTURES_ID.GUN_BUTTON_ID = makeTextureFromFile("images/mitraillette_button.png");

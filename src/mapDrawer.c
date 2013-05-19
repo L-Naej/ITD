@@ -41,12 +41,66 @@ void drawMonster(const Monster* monster){
 	if(monster == NULL) return;
 	GLuint monsterTexture = 0;
 	switch(monster->type){
-		case BLUE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+		case BLUE_OCTOPUS : 
+			if (monster->direction.y<1. && monster->direction.x==1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
+			}
+			if (monster->direction.y>1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DOS;
+			}
+			if (monster->direction.x<1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_GAUCHE;
+			}
+			if (monster->direction.x>1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DROITE;
+			}
+			if (monster->direction.y<1. && monster->direction.x<1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_GAUCHE;
+			}
+			if (monster->direction.y<1. && monster->direction.x>1.){
+				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_DROITE;
+			}	
 		break;
-		case ORANGE_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;
-		break;	
-		case GREEN_OCTOPUS : monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
-		break;	
+		case ORANGE_OCTOPUS : 			
+		if (monster->direction.y<1. && monster->direction.x==1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID;
+			}
+			if (monster->direction.y>1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DOS;
+			}
+			if (monster->direction.x<1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_GAUCHE;
+			}
+			if (monster->direction.x>1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DROITE;
+			}
+			if (monster->direction.y<1. && monster->direction.x<1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_GAUCHE;
+			}
+			if (monster->direction.y<1. && monster->direction.x>1.){
+				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_DROITE;
+			}	
+		break;
+		case GREEN_OCTOPUS : 
+				if (monster->direction.y<1. && monster->direction.x==1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
+			}
+			if (monster->direction.y>1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DOS;
+			}
+			if (monster->direction.x<1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_GAUCHE;
+			}
+			if (monster->direction.x>1. && monster->direction.y==1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DROITE;
+			}
+			if (monster->direction.y<1. && monster->direction.x<1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_GAUCHE;
+			}
+			if (monster->direction.y<1. && monster->direction.x>1.){
+				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_DROITE;
+			}	
+		break;
 		default : return;
 		break;
 	}
