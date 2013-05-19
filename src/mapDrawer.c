@@ -41,7 +41,7 @@ void drawMonster(const Monster* monster){
 	if(monster == NULL) return;
 	GLuint monsterTexture = 0;
 	switch(monster->type){
-		case BLUE_OCTOPUS : 
+		case BLUE_OCTOPUS :
 			if (monster->direction.y<1. && monster->direction.x==1.){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID;
 			}
@@ -59,7 +59,7 @@ void drawMonster(const Monster* monster){
 			}
 			if (monster->direction.y<1. && monster->direction.x>1.){
 				monsterTexture = GAME_TEXTURES_ID.BLUE_OCTOPUS_ID_DEMI_DROITE;
-			}	
+			}
 		break;
 		case ORANGE_OCTOPUS : 			
 		if (monster->direction.y<1. && monster->direction.x==1.){
@@ -79,10 +79,10 @@ void drawMonster(const Monster* monster){
 			}
 			if (monster->direction.y<1. && monster->direction.x>1.){
 				monsterTexture = GAME_TEXTURES_ID.ORANGE_OCTOPUS_ID_DEMI_DROITE;
-			}	
+			}
 		break;
 		case GREEN_OCTOPUS : 
-				if (monster->direction.y<1. && monster->direction.x==1.){
+			if (monster->direction.y<1. && monster->direction.x==1.){
 				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID;
 			}
 			if (monster->direction.y>1.){
@@ -99,7 +99,7 @@ void drawMonster(const Monster* monster){
 			}
 			if (monster->direction.y<1. && monster->direction.x>1.){
 				monsterTexture = GAME_TEXTURES_ID.GREEN_OCTOPUS_ID_DEMI_DROITE;
-			}	
+			}
 		break;
 		default : return;
 		break;
