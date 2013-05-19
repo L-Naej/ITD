@@ -252,7 +252,9 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 	fscanf(file,"%d\n",&size);
 
 	//Chargement de l'image pour connaître les dimensions
-	loadPpmMap(map);
+	if(! loadPpmMap(map) ){
+		return false;
+	}
 
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	nbItemsLus = fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
@@ -635,11 +637,11 @@ bool loadPpmMap(Map* map){
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
-			if(colorPixel.red == 223 && colorPixel.green == 11 && colorPixel.blue == 216) {			
+			if(colorPixel.red == 179 && colorPixel.green == 74 && colorPixel.blue == 155) {			
 				
-				colorPixel.red = map->pathColor.red;
-				colorPixel.green = map->pathColor.green;
-				colorPixel.blue = map->pathColor.blue;	
+				colorPixel.red = map->constructAreaColor.red;
+				colorPixel.green = map->constructAreaColor.green;
+				colorPixel.blue = map->constructAreaColor.blue;	
 
 				map->tabXYConstruct[i][j] = true;
 				

@@ -1,13 +1,15 @@
 @ITD 1
-carte map1.ppm
-chemin 255 0 255
+carte moon.ppm
+chemin 30 30 30
 noeud 0 0 0
-construct 255 200 80
+construct 20 20 20
 in 0 200 0
 out 200 0 0
-5
-1 500
-400 200
-400 124
-345 599
-200 599
+7
+118 13
+119 392
+634 395
+627 483
+716 481
+710 250
+671 184

@@ -37,8 +37,11 @@ bool handleMenuActions(char** mapName,int* playIsPush, int* menuOpen,int* aideOp
 					case SDLK_UP : scrollMenu(1);
 						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
 						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
+<<<<<<< HEAD
+=======
 					break;
 					case SDLK_RETURN : if(*menuOpen == 1) *menuOpen = 0;
+>>>>>>> master
 					break;
 					default : break;
 				}
@@ -365,6 +368,10 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 }
 
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char** mapName){
+<<<<<<< HEAD
+			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
+				*menuOpen = 1;
+=======
 			
 			if(*menuOpen){
 				*aideOpen = 0;
@@ -387,6 +394,7 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
 				*playIsPush = 0;
+>>>>>>> master
 				return;
 			}
 			
@@ -402,6 +410,26 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 			if (isMouseOnButton(BUTTON_OF_MENU.jouer,x, y) ){
 				*playIsPush =1;
 				return;
+<<<<<<< HEAD
+			}
+			
+			Button* curButton = NULL;
+			if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+			goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
+			int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
+			while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+				if (isMouseOnButton(curButton,x, y) ==true){
+					BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
+					goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
+					*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
+					break;
+				}
+				else{ BUTTON_OF_MENU.indexButtonClicked = -1; *mapName = NULL;}
 			}
 
+
+=======
+			}
+
+>>>>>>> master
 }

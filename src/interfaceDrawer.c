@@ -30,8 +30,29 @@ Button* createButton(Action action, Point3D position, float width, float height)
 	return button;
 }
 
-void initMenuGraphics(){
+void clearMenuTextures(){
+	GLuint tabTextures[] = {
+	MENU_TEXTURES_ID.PLAY_LEGEND,
+	MENU_TEXTURES_ID.AIDE_BUTTON, 
+	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
+	MENU_TEXTURES_ID.PLAY_BUTTON, 
+	MENU_TEXTURES_ID.RULES,
+	MENU_TEXTURES_ID.RULES_CLOSE,
+	MENU_TEXTURES_ID.BIENVENUE,
+	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND,
+	MENU_TEXTURES_ID.AIDE_LEGEND,
+	MENU_TEXTURES_ID.BULLE};
+	glDeleteTextures(10,tabTextures);
+	
+	GLuint* curTex = NULL;
+	goToHeadList(BUTTON_OF_MENU.lstMapTextureIndex);
+	while( (curTex = (GLuint*) nextData(BUTTON_OF_MENU.lstMapTextureIndex)) != NULL){
+		glDeleteTextures(1, curTex);
+	}
+}
 
+void initMenuGraphics(){
+	clearMenuTextures();
 	char font1[] = "font/Champagne.ttf";
 	char font2[] = "font/lighthouse.ttf";
 
@@ -40,41 +61,38 @@ void initMenuGraphics(){
 
 	SDL_Surface* bienvenue_surface=loadFont(police,bienvenue,font2,100);
 	MENU_TEXTURES_ID.BIENVENUE = makeTextureFromSurface (bienvenue_surface);
+	SDL_FreeSurface(bienvenue_surface);
 
 	char choix[18]="Choisir une carte";
 	SDL_Surface* choix_surface=loadFont(police,choix,font1,100);
 	MENU_TEXTURES_ID.MAP_CHOICE_LEGEND =  makeTextureFromSurface (choix_surface);
-
+	SDL_FreeSurface(choix_surface);
+	
 	char aide[16]="Lire les regles";
 	SDL_Surface* aide_surface=loadFont(police,aide,font1,100);
 	MENU_TEXTURES_ID.AIDE_LEGEND=makeTextureFromSurface (aide_surface);
-
+	SDL_FreeSurface(aide_surface);
+	
 	char playLegend[7]="Play !";
 	SDL_Surface* play_surface=loadFont(police,playLegend,font1,100);
 
-	GLuint tabTextures[] = {
-	MENU_TEXTURES_ID.PLAY_LEGEND,
-	MENU_TEXTURES_ID.AIDE_BUTTON, 
-	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON, 
-	MENU_TEXTURES_ID.PLAY_BUTTON, 
-	MENU_TEXTURES_ID.CASE_VIDE, 
-	MENU_TEXTURES_ID.RULES,
-	MENU_TEXTURES_ID.RULES_CLOSE,
-	MENU_TEXTURES_ID.BULLE};
-	glDeleteTextures(8,tabTextures);
 	
 	
 	MENU_TEXTURES_ID.PLAY_LEGEND = makeTextureFromSurface (play_surface);
+	SDL_FreeSurface(play_surface);
 	MENU_TEXTURES_ID.AIDE_BUTTON = makeTextureFromFile("images/monstrehelp.png");
 	MENU_TEXTURES_ID.MAP_CHOICE_BUTTON = makeTextureFromFile("images/monstrecarte.png");
 	MENU_TEXTURES_ID.PLAY_BUTTON = makeTextureFromFile("images/monstreplay.png");
-	MENU_TEXTURES_ID.CASE_VIDE = makeTextureFromFile("images/casevide.png");
 	MENU_TEXTURES_ID.RULES = makeTextureFromFile("images/regles.png");
 	MENU_TEXTURES_ID.RULES_CLOSE = makeTextureFromFile("images/close.png");
 	MENU_TEXTURES_ID.BULLE = makeTextureFromFile("images/bulle.png");
 
 
 	//Création du menu de choix de carte
+	if(BUTTON_OF_MENU.lstMapName != NULL) freeListComplete(BUTTON_OF_MENU.lstMapName);
+	if(BUTTON_OF_MENU.lstMapButton != NULL) freeListComplete(BUTTON_OF_MENU.lstMapButton);
+	if(BUTTON_OF_MENU.lstMapTextureIndex != NULL) freeListComplete(BUTTON_OF_MENU.lstMapTextureIndex);
+	
 	BUTTON_OF_MENU.lstMapName = createEmptyList();
 	BUTTON_OF_MENU.lstMapButton = createEmptyList();
 	BUTTON_OF_MENU.lstMapTextureIndex = createEmptyList();
@@ -82,10 +100,21 @@ void initMenuGraphics(){
 	BUTTON_OF_MENU.indexFirstButtonDisplayed = 1;
 	
 	readDirectory(BUTTON_OF_MENU.lstMapName);
-	char * ptrMapName = NULL;
+	char* ptrMapName;
+	char displayedName[MAX_LENGHT];
+	int i = 0;
+	float xText=0.;
+	float yTextInit=140.;
+	float yTextCurrent = yTextInit;
+	float zText = 0.0;
 	goToHeadList(BUTTON_OF_MENU.lstMapName);
 	while( (ptrMapName = (char*) nextData(BUTTON_OF_MENU.lstMapName)) != NULL){
-		SDL_Surface* text=loadFont(police,ptrMapName,font1,100);
+		strcpy(displayedName, ptrMapName);
+		int j = 0;
+		for(j = 0; displayedName[j] != '.';j++);
+		displayedName[j] = 0;
+		
+		SDL_Surface* text=loadFont(police,displayedName,font1,100);
 		GLuint* texId = (GLuint*) malloc(sizeof(GLuint));
 		if(texId == NULL){
 			fprintf(stderr, "Erreur fatale : impossible d'allouer la mémoire nécessaire.\n");
@@ -94,23 +123,17 @@ void initMenuGraphics(){
 		*texId = makeTextureFromSurface (text);
 		insertBottomCell(BUTTON_OF_MENU.lstMapTextureIndex, texId);
 		
-	}
-	
-	//Dessin des boutons de choix de carte
-	int i;
-	float xText=270.;
-	float yTextInit=110.;
-	float yTextCurrent = yTextInit;
-	float zText = 0.0;
-	int nbButtons = BUTTON_OF_MENU.lstMapName->size;
-	for (i=0; i<nbButtons;i++){
-
-		/* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+		//Création du bouton associé
 		yTextCurrent = yTextInit - (70.* (i % NB_MAP_DISPLAYED));
 		if(i > NB_MAP_DISPLAYED -1) zText = -2.0;
 		Point3D mapPosition = PointXYZ(xText,yTextCurrent, zText);
-		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,100,60));
-		
+		int width = text->w;
+		if( width > 600){
+			width = 600;
+		}
+		insertBottomCell(BUTTON_OF_MENU.lstMapButton, createButton(MAP_MENU,mapPosition,width,text->h));
+		SDL_FreeSurface(text);
+		i++;
 	}
 	
 	Point3D aidePosition = PointXYZ(-150.,100.,0.);
@@ -250,7 +273,7 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 			drawMapMenu();
 
 		}
-
+		
 		if (*playIsPush == 1){
 			if (mapName == NULL){
 				/*dessin de la bulle */
@@ -272,6 +295,21 @@ void drawMenu( int* menuOpen,int* aideOpen,int* playIsPush, char* mapName){
 void drawMapMenu (){
 
 /* _________________ Dessin du sous-menu pour choisir la carte_______________*/
+
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3ub(255,255,255);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(-300., 200.);
+	glVertex2f(300., 200.);
+	glVertex2f(300., -260.);
+	glVertex2f(-300., -260.);
+	glEnd();
+	glTranslatef(0., -30., 0.);
+	glScalef(590., 450., 1.);
+	glColor3ub(0,0,0);
+	drawQuad();
+	glPopMatrix();
 
 	Button* curButton = NULL;
 	goToHeadList(BUTTON_OF_MENU.lstMapButton);

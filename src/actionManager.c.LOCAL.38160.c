@@ -38,8 +38,6 @@ bool handleMenuActions(char** mapName,int* playIsPush, int* menuOpen,int* aideOp
 						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
 						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
 					break;
-					case SDLK_RETURN : if(*menuOpen == 1) *menuOpen = 0;
-					break;
 					default : break;
 				}
 			break;
@@ -78,6 +76,7 @@ void scrollMenu(int direction){
 	}
 	
 	i = newPosition;
+	printf("new pos : %d\n", newPosition);
 	BUTTON_OF_MENU.indexFirstButtonDisplayed = newPosition;
 	if(newPosition == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
 	while( i < (newPosition + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
@@ -130,9 +129,7 @@ bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished)
 		
 		else if (e.type == SDL_VIDEORESIZE){
 			setVideoMode(e.resize.w, e.resize.h);
-			initGameGraphics();
-			glDeleteTextures(1, &GAME_TEXTURES_ID.MAP_ID);
-			GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(world->map.image);
+			initGameGraphics(world->map.image);
 			*interface = initGameInterface(interface->relativeWidth, interface->relativeHeight, interface->relativePosX, interface->relativePosY);
 			world->cameraPosition.x = 0.0; world->cameraPosition.y = 0.0;
 		}
@@ -175,11 +172,11 @@ bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* int
 	return askedForQuit;
 }
 
+//TODO
 bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
-	
 	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
@@ -209,13 +206,6 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
-		/*
-		Point3D mouse = sdlToOpenGL(PointXYZ(e->button.x, e->button.y,0.));
-		mouse.x -= world->cameraPosition.x;
-		mouse.y -= world->cameraPosition.y;
-		mouse = openGLToItd(world->map.width, world->map.height,mouse);
-		printf("%.0f %.0f\n", mouse.x, mouse.y);
-		*/
 		if(e->button.button == SDL_BUTTON_RIGHT){
 			suppressTower(world, e->button.x, e->button.y);
 			return false;
@@ -365,28 +355,8 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 }
 
 void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char** mapName){
-			
-			if(*menuOpen){
-				*aideOpen = 0;
-				Button* curButton = NULL;
-				if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
-				goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
-				int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
-				while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
-					if (isMouseOnButton(curButton,x, y) ==true){
-						BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
-						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
-						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
-						break;
-					}
-					else{ BUTTON_OF_MENU.indexButtonClicked = -1; *mapName = NULL;}
-				}
-				return;
-			}
-			
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
-				*playIsPush = 0;
 				return;
 			}
 			
@@ -403,5 +373,20 @@ void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,in
 				*playIsPush =1;
 				return;
 			}
+			
+			Button* curButton = NULL;
+			if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+			goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
+			int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
+			while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+				if (isMouseOnButton(curButton,x, y) ==true){
+					BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
+					goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
+					*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
+					break;
+				}
+				else{ BUTTON_OF_MENU.indexButtonClicked = -1; *mapName = NULL;}
+			}
+
 
 }

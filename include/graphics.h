@@ -49,7 +49,6 @@ typedef struct menu_text{
 	GLuint RULES;
 	GLuint RULES_CLOSE;
 	GLuint BULLE;
-	GLuint CASE_VIDE;
 }ITD_Menu_Textures;
 
 ITD_Menu_Textures MENU_TEXTURES_ID;
@@ -68,6 +67,7 @@ float GL_Y_AXIS_MAX;
 /* Nombre de bits par pixel de la fenêtre */
 static const unsigned int BIT_PER_PIXEL = 32;
 
+void clearGameGraphics();
 
 /**
  * Charge les textures du jeu dans la carte

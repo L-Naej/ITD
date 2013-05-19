@@ -12,14 +12,15 @@
 #include "graphics.h"
 #include "interfaceDrawer.h"
 
-bool handleMenuActions(char** mapName,int* playIsPush, int* menuOpen,int* aideOpen){
+bool handleMenuActions(char* mapName,int* playIsPush, int* menuOpen,int* aideOpen){
 	SDL_Event e;
 	bool askedForQuit = false;
 	while(SDL_PollEvent(&e) && !askedForQuit) {
 		switch(e.type) {
 		 	case SDL_MOUSEBUTTONDOWN:
          			if (e.button.button==SDL_BUTTON_LEFT){
-					clicButton (e, playIsPush, e.button.x ,e.button.y, menuOpen,aideOpen, mapName);
+				clicButton (e, playIsPush, e.button.x ,e.button.y, menuOpen,aideOpen, mapName);
+					
 				}
 			break;
 			case SDL_QUIT : askedForQuit = true;
@@ -31,14 +32,8 @@ bool handleMenuActions(char** mapName,int* playIsPush, int* menuOpen,int* aideOp
 					askedForQuit = true;
 					break;
 					case SDLK_DOWN : scrollMenu(0);
-						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
-						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
 					break;
 					case SDLK_UP : scrollMenu(1);
-						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
-						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
-					break;
-					case SDLK_RETURN : if(*menuOpen == 1) *menuOpen = 0;
 					break;
 					default : break;
 				}
@@ -78,6 +73,7 @@ void scrollMenu(int direction){
 	}
 	
 	i = newPosition;
+	printf("new pos : %d\n", newPosition);
 	BUTTON_OF_MENU.indexFirstButtonDisplayed = newPosition;
 	if(newPosition == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
 	while( i < (newPosition + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
@@ -100,10 +96,7 @@ bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished)
 	if(world->gameLoosed || world->gameWinned){
 		if(startEndGameTime == 0) startEndGameTime = SDL_GetTicks();
 		Uint32 elapsedTime = SDL_GetTicks() - startEndGameTime;
-		if (elapsedTime > END_GAME_DURATION){ 
-			*gameIsFinished = true;
-			startEndGameTime = 0;
-		}
+		if (elapsedTime > END_GAME_DURATION) *gameIsFinished = true;
 		else{
 			*gameIsFinished = false;
 		}
@@ -130,9 +123,7 @@ bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished)
 		
 		else if (e.type == SDL_VIDEORESIZE){
 			setVideoMode(e.resize.w, e.resize.h);
-			initGameGraphics();
-			glDeleteTextures(1, &GAME_TEXTURES_ID.MAP_ID);
-			GAME_TEXTURES_ID.MAP_ID = makeTextureFromSurface(world->map.image);
+			initGameGraphics(world->map.image);
 			*interface = initGameInterface(interface->relativeWidth, interface->relativeHeight, interface->relativePosX, interface->relativePosY);
 			world->cameraPosition.x = 0.0; world->cameraPosition.y = 0.0;
 		}
@@ -175,11 +166,11 @@ bool handleGameKeyboard(const SDL_KeyboardEvent* e, World* world, Interface* int
 	return askedForQuit;
 }
 
+//TODO
 bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
-	
 	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
@@ -209,13 +200,6 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		}
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
-		/*
-		Point3D mouse = sdlToOpenGL(PointXYZ(e->button.x, e->button.y,0.));
-		mouse.x -= world->cameraPosition.x;
-		mouse.y -= world->cameraPosition.y;
-		mouse = openGLToItd(world->map.width, world->map.height,mouse);
-		printf("%.0f %.0f\n", mouse.x, mouse.y);
-		*/
 		if(e->button.button == SDL_BUTTON_RIGHT){
 			suppressTower(world, e->button.x, e->button.y);
 			return false;
@@ -364,44 +348,40 @@ bool isMouseOnTower(Tower* tower, Point3D cameraPosition, Uint16 x, Uint16 y){
 	return inside;
 }
 
-void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen, char** mapName){
-			
-			if(*menuOpen){
-				*aideOpen = 0;
-				Button* curButton = NULL;
-				if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
-				goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
-				int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
-				while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
-					if (isMouseOnButton(curButton,x, y) ==true){
-						BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
-						goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.indexButtonClicked);	
-						*mapName = (char*) currentData(BUTTON_OF_MENU.lstMapName);
-						break;
-					}
-					else{ BUTTON_OF_MENU.indexButtonClicked = -1; *mapName = NULL;}
-				}
-				return;
-			}
-			
+void clicButton (SDL_Event e,int* playIsPush, float x, float y, int* menuOpen,int* aideOpen,char* mapName){
+
+			Point3D clicOGL = sdlToOpenGL(PointXYZ(x,y,0));
 			if (isMouseOnButton(BUTTON_OF_MENU.choix_carte,x, y) ==true ){
 				*menuOpen = 1;
-				*playIsPush = 0;
-				return;
 			}
 			
+			Button* curButton = NULL;
+			if(BUTTON_OF_MENU.indexFirstButtonDisplayed == 1) goToHeadList(BUTTON_OF_MENU.lstMapButton);
+			goToPosition(BUTTON_OF_MENU.lstMapButton, BUTTON_OF_MENU.indexFirstButtonDisplayed - 1);
+			int i = BUTTON_OF_MENU.indexFirstButtonDisplayed;
+			while( i < (BUTTON_OF_MENU.indexFirstButtonDisplayed + NB_MAP_DISPLAYED) && (curButton = (Button*) nextData(BUTTON_OF_MENU.lstMapButton)) != NULL){
+
+				if (isMouseOnButton(curButton,x, y) ==true){
+					goToPosition(BUTTON_OF_MENU.lstMapName, BUTTON_OF_MENU.lstMapButton->position);
+					strcpy(mapName, (char*)currentData(BUTTON_OF_MENU.lstMapName));
+					BUTTON_OF_MENU.indexButtonClicked = BUTTON_OF_MENU.lstMapButton->position;
+					//printf("Position du bouton %s: x entre %f et %f; y entre %f et %f\n",BUTTON_OF_MENU.tabMapName[i],(BUTTON_OF_MENU.carte[i]->position.x)-((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.x)+((BUTTON_OF_MENU.carte[i]->width)/2.),(BUTTON_OF_MENU.carte[i]->position.y)-((BUTTON_OF_MENU.carte[i]->height)/2.),(BUTTON_OF_MENU.carte[i]->position.y)+((BUTTON_OF_MENU.carte[i]->height)/2.));
+					break;
+				}
+			}
+
 
 			if (isMouseOnButton(BUTTON_OF_MENU.regles,x, y) ==true){
 				*aideOpen =1;
-				return;
 			}
 			if (isMouseOnButton(BUTTON_OF_MENU.close_rules,x, y) ==true && *aideOpen==1 ){
 				*aideOpen =0;
-				return;
 			}
 			if (isMouseOnButton(BUTTON_OF_MENU.jouer,x, y) ){
 				*playIsPush =1;
-				return;
 			}
+
+				  
+	
 
 }
