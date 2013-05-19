@@ -15,6 +15,7 @@
 #define NB_MAX_MAPS 5
 
 typedef struct{
+	GLuint SKY_ID;
 	GLuint BLUE_OCTOPUS_ID;
 	GLuint BLUE_OCTOPUS_ID_DOS;
 	GLuint BLUE_OCTOPUS_ID_DROITE;

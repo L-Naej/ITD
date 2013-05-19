@@ -14,6 +14,7 @@ typedef struct{
 void drawWorld(World* world);
 
 //Fonctions internes
+void drawSky();
 void drawMap(const Map* map);
 void drawMonster(const Monster* monster);
 void drawTowers(World* world, List* towersList);

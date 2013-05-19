@@ -41,8 +41,9 @@ void clearGameGraphics(){
 	GAME_TEXTURES_ID.HYBRID_BUTTON_ID,
 	GAME_TEXTURES_ID.LASER_BUTTON_ID,
 	GAME_TEXTURES_ID.GUN_BUTTON_ID,
-	GAME_TEXTURES_ID.ROCKET_BUTTON_ID };
-	glDeleteTextures(34,tab);
+	GAME_TEXTURES_ID.ROCKET_BUTTON_ID,
+	GAME_TEXTURES_ID.SKY_ID };
+	glDeleteTextures(35,tab);
 }
 
 void initGameGraphics(){
@@ -80,6 +81,7 @@ void initGameGraphics(){
 	GAME_TEXTURES_ID.GUN_BUTTON_ID = makeTextureFromFile("images/mitraillette_button.png");
 	GAME_TEXTURES_ID.ROCKET_BUTTON_ID = makeTextureFromFile("images/rocket_button.png");
 	
+	GAME_TEXTURES_ID.SKY_ID = makeTextureFromFile("images/sky.png");
 	//Initialisées après par l'interace
 	GAME_TEXTURES_ID.MONEY_ID = 0;
 	GAME_TEXTURES_ID.WAVE_MESSAGE_ID = 0;

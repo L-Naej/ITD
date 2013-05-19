@@ -15,7 +15,14 @@ void drawWorld(World* world){
 	//Important car les textures sont multipliées par la couleur courante
 	glColor3ub(255,255,255);
 	glPushMatrix();
+	glScalef(WINDOW_WIDTH, WINDOW_HEIGHT, 1.);
+	drawTexturedQuad(GAME_TEXTURES_ID.SKY_ID);
+	glPopMatrix();
+	glPushMatrix();
+	
 	glTranslatef(world->cameraPosition.x, world->cameraPosition.y, world->cameraPosition.z);
+
+	
 	drawMap(&(world->map));
 	
 	drawPath(&(world->map));
@@ -32,7 +39,35 @@ void drawWorld(World* world){
 	
 }
 
-//TODO (rajouter le chemin etc)
+void drawSky(){
+	glBindTexture(GL_TEXTURE_2D, GAME_TEXTURES_ID.SKY_ID);
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+	
+	glPushMatrix();
+	glScalef(WINDOW_WIDTH, WINDOW_HEIGHT, 1.);
+	glBegin(GL_QUADS);
+	
+	//Bottom left
+	glTexCoord2f(0.0,1.0);
+	glVertex2f(-0.5,-0.5);
+	//Bottom right
+	glTexCoord2f(1.0,1.0);
+	glVertex2f(0.5,-0.5);
+
+	//Top right
+	glTexCoord2f(1.0,0.0);
+	glVertex2f(0.5,0.5);
+	//Top left
+	glTexCoord2f(0.0,0.0);
+	glVertex2f(-0.5, 0.5);
+
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glPopMatrix();
+	
+}
+
 void drawMap(const Map* map){
 	glPushMatrix();
 	glScalef(map->width,map->height,1.);
