@@ -110,7 +110,7 @@ void updateMoneyTexture(Interface* interface, int money);
  * Met à jour la texture affichant les informations sur 
  * une tour.
  */
-void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range);
+void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range, int cost);
 
 //Fonctions internes
 int readDirectory(List* lstMapName);

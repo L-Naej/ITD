@@ -543,6 +543,20 @@ void drawInterface(Interface* interface, World* world){
 	goToHeadList(interface->lstButtons);
 	Button* cur = NULL;
 	while( (cur = (Button*)nextData(interface->lstButtons) ) != NULL){
+		int towerCost;
+		switch(cur->action){
+		case PUT_GUN : towerCost = world->map.towerdatas->costM;
+		break;
+		case PUT_HYBRID : towerCost = world->map.towerdatas->costH;
+		break;
+		case PUT_LASER : towerCost = world->map.towerdatas->costL;
+		break;
+		case PUT_ROCKET : towerCost = world->map.towerdatas->costR;
+		break;
+		default : towerCost = 0;
+		}
+		if(world->money < towerCost) glColor3ub(255,0,0);
+		else glColor3ub(255,255,255);
 		drawButton(cur);
 	}
 	
@@ -710,20 +724,22 @@ void updateMoneyTexture(Interface* interface, int money){
 	TTF_Quit();	
 }
 
-void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range){
-	
-	char* phrases [3];
+void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range, int cost){
+	printf("patafouin\n");
+	char* phrases [4];
 	int phraseLength = 30;
-	int nbPhrases = 3, alignement = 0, i = 0;
+	int nbPhrases = 4, alignement = 0, i = 0;
 	phrases[0] = (char*) calloc(phraseLength,sizeof(char));
 	phrases[1] = (char*) calloc(phraseLength,sizeof(char));
 	phrases[2] = (char*) calloc(phraseLength,sizeof(char));
+	phrases[3] = (char*) calloc(phraseLength,sizeof(char));
 	sprintf(phrases[0], "Power:%4d", power);
 	sprintf(phrases[1], "Rate:%4d", rate);
 	sprintf(phrases[2], "Range:%4d", range);
+	sprintf(phrases[3], "Cost:%4d", cost);
 	
 	alignement = 1;
-	
+			printf("patafouin 2\n");
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
@@ -733,17 +749,18 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	police = TTF_OpenFont("font/Champagne.ttf", 35);
 	SDL_Color color = {255,255,255};
 	
-	SDL_Surface* surfaces[4];
+	SDL_Surface* surfaces[nbPhrases+1];
 	surfaces[0] = TTF_RenderText_Blended(police, name, color);
 
 	for(i = 0; i < nbPhrases; ++i){
 		surfaces[i+1] = TTF_RenderText_Blended(police, phrases[i], color);
 	}
+
 	int width, height;
 	glDeleteTextures(1, &(GAME_TEXTURES_ID.INFO_PANEL_ID));
-	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurfaces(surfaces, 4, alignement, &width, &height);
+	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurfaces(surfaces, nbPhrases+1, alignement, &width, &height);
 	
-	interface->infoHeight = height;
+	interface->infoHeight = height*0.8;
 	interface->infoWidth = width;
 	
 	//gestion basique de la taille du texte
@@ -756,7 +773,7 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	for(i = 0; i < 4; ++i){
 		SDL_FreeSurface(surfaces[i]);
 	}
-	
+
 	TTF_CloseFont(police);
 	TTF_Quit();	
 }

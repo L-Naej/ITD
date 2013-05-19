@@ -207,6 +207,7 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 			isMouseExtremBottom = false;
 			isMouseExtremTop = false;
 		}
+		
 	}
 	else if(e->type == SDL_MOUSEBUTTONDOWN){
 		/*
@@ -238,7 +239,7 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 					break;
 				}
 					
-				updateInfoTexture(interface, towerName, pointedTower->power, pointedTower->rate, pointedTower->range);
+				updateInfoTexture(interface, towerName, pointedTower->power, pointedTower->rate, pointedTower->range, pointedTower->cost);
 			}
 		}
 		else if(action == CLICK_ON_MAP){
@@ -275,7 +276,25 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 		else{
 			//Pour l'instant quand le jeu est en pause on ne peut que quitter (à modifier)
 			if(interface->currentAction != PAUSE_GAME){
-				interface->currentAction = action;
+				int towerCost;
+				switch(action){
+				case PUT_GUN : towerCost = world->map.towerdatas->costM;
+				updateInfoTexture(interface, "GUN", world->map.towerdatas->powerM,world->map.towerdatas->rateM, world->map.towerdatas->rangeM, towerCost);
+				break;
+				case PUT_HYBRID : towerCost = world->map.towerdatas->costH;
+				updateInfoTexture(interface, "HYBRID", world->map.towerdatas->powerH,world->map.towerdatas->rateH, world->map.towerdatas->rangeH, towerCost);
+				break;
+				case PUT_LASER : towerCost = world->map.towerdatas->costL;
+				updateInfoTexture(interface, "LASER", world->map.towerdatas->powerL,world->map.towerdatas->rateL, world->map.towerdatas->rangeL, towerCost);
+				break;
+				case PUT_ROCKET : towerCost = world->map.towerdatas->costR;
+				updateInfoTexture(interface, "ROCKET", world->map.towerdatas->powerR,world->map.towerdatas->rateR, world->map.towerdatas->rangeR, towerCost);
+				break;
+				default : towerCost = 0;
+				}
+				if( world->money > towerCost){
+					interface->currentAction = action;
+				}
 			}
 		}
 		
@@ -319,6 +338,19 @@ void suppressTower(World* world, Uint16 x, Uint16 y){
 	while( !towerDetected && (cur = (Tower*) nextData(world->towersList)) != NULL ){
 		towerDetected = isMouseOnTower(cur, world->cameraPosition, x, y);
 		if(towerDetected){
+			int towerCost;
+			switch(cur->type){
+				case GUN : towerCost = world->map.towerdatas->costM;
+				break;
+				case HYBRID : towerCost = world->map.towerdatas->costH;
+				break;
+				case LASER : towerCost = world->map.towerdatas->costL;
+				break;
+				case ROCKET : towerCost = world->map.towerdatas->costR;
+				break;
+				default : towerCost = 0;
+			}
+			world->money += towerCost;
 			freeCellByPosition(world->towersList, world->towersList->position);
 		}
 	}

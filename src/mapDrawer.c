@@ -1,11 +1,13 @@
 #include "mapDrawer.h"
 #include "graphics.h"
+#include <math.h>
 
 void drawWorld(World* world){
 	if(world == NULL) return;
 	int i = 0;
 	
 	glClear(GL_COLOR_BUFFER_BIT);
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glLineWidth(1.0);
@@ -27,6 +29,7 @@ void drawWorld(World* world){
 	
 	drawTowers(world, world->towersList);
 	glPopMatrix();
+	
 }
 
 //TODO (rajouter le chemin etc)
