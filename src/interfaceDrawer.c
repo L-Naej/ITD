@@ -725,7 +725,6 @@ void updateMoneyTexture(Interface* interface, int money){
 }
 
 void updateInfoTexture(Interface* interface, char* name, int power, int rate, int range, int cost){
-	printf("patafouin\n");
 	char* phrases [4];
 	int phraseLength = 30;
 	int nbPhrases = 4, alignement = 0, i = 0;
@@ -739,7 +738,7 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	sprintf(phrases[3], "Cost:%4d", cost);
 	
 	alignement = 1;
-			printf("patafouin 2\n");
+
 	//Création des textures affichant du texte
 	if(TTF_Init() == -1){
 		fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
@@ -761,7 +760,7 @@ void updateInfoTexture(Interface* interface, char* name, int power, int rate, in
 	GAME_TEXTURES_ID.INFO_PANEL_ID = makeTextureFromSurfaces(surfaces, nbPhrases+1, alignement, &width, &height);
 	
 	interface->infoHeight = height*0.8;
-	interface->infoWidth = width;
+	interface->infoWidth = width*0.8;
 	
 	//gestion basique de la taille du texte
 	if(interface->width > interface->height)

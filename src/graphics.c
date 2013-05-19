@@ -378,7 +378,7 @@ int initWindow(){
 	}
 
 	/* Ouverture d'une fenêtre et création d'un contexte OpenGL */
-	if(EXIT_FAILURE == setVideoMode(800, 600)) {
+	if(EXIT_FAILURE == setVideoMode(1024, 768)) {
 		fprintf(stderr, "Impossible d'ouvrir la fenetre.\n");
 		return EXIT_FAILURE;
 	}
