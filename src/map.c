@@ -637,7 +637,7 @@ bool loadPpmMap(Map* map){
 		for(j=0; j<map->image->h; j++) {
 			initColorPixel = recupColorPixel(map->image, i, j);
 			SDL_GetRGB(initColorPixel, map->image->format, &(colorPixel.red), &(colorPixel.green),&(colorPixel.blue));
-			if(colorPixel.red == 179 && colorPixel.green == 74 && colorPixel.blue == 155) {			
+			if(colorPixel.red == 179 && colorPixel.green == 73 && colorPixel.blue == 155) {			
 				
 				colorPixel.red = map->constructAreaColor.red;
 				colorPixel.green = map->constructAreaColor.green;
