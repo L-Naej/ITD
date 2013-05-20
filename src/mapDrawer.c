@@ -38,35 +38,6 @@ void drawWorld(World* world){
 	
 }
 
-void drawSky(){
-	glBindTexture(GL_TEXTURE_2D, GAME_TEXTURES_ID.SKY_ID);
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-	
-	glPushMatrix();
-	glScalef(WINDOW_WIDTH, WINDOW_HEIGHT, 1.);
-	glBegin(GL_QUADS);
-	
-	//Bottom left
-	glTexCoord2f(0.0,1.0);
-	glVertex2f(-0.5,-0.5);
-	//Bottom right
-	glTexCoord2f(1.0,1.0);
-	glVertex2f(0.5,-0.5);
-
-	//Top right
-	glTexCoord2f(1.0,0.0);
-	glVertex2f(0.5,0.5);
-	//Top left
-	glTexCoord2f(0.0,0.0);
-	glVertex2f(-0.5, 0.5);
-
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glPopMatrix();
-	
-}
-
 void drawMap(const Map* map){
 	glPushMatrix();
 	glScalef(map->width,map->height,1.);
@@ -215,7 +186,7 @@ void drawTowers(World* world, List* towersList){
 		//Enregistrement des nouveaux missiles
 		Point3D* curTarget = NULL;
 		goToHeadList(cur->whereIShoot);
-		while( (curTarget = (Point3D*) nextData(cur->whereIShoot)) != NULL){
+		while( (curTarget = (Point3D*) nextData(cur->whereIShoot)) != NULL && !world->isBetweenWaves){
 			Missile* newMissile = createMissile(cur->position, *curTarget, SDL_GetTicks());
 			newMissile->color = missileColor;
 			insertBottomCell(lstMissiles, newMissile);
@@ -226,7 +197,7 @@ void drawTowers(World* world, List* towersList){
 	Missile* curMissile = NULL;
 	while( (curMissile = (Missile*)nextData(lstMissiles)) != NULL){
 		//Si le temps de vie du missile est dépassé on le détruit
-		if((SDL_GetTicks() - curMissile->startTime) > MISSILE_TIME_TO_LIVE_MS || world->isBetweenWaves){
+		if((SDL_GetTicks() - curMissile->startTime) > MISSILE_TIME_TO_LIVE_MS){
 			freeCellByPosition(lstMissiles, lstMissiles->position);
 		}
 		else{

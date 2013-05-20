@@ -195,6 +195,13 @@ bool doTurn(World* world){
 	
 	//Phase d'attente entre deux vague de monstres ? On ne fait rien
 	if(world->isBetweenWaves){
+		Tower* cur = NULL;
+		goToHeadList(world->towersList);
+		while ( (cur = (Tower*) nextData(world->towersList)) != NULL){
+			freeListComplete(cur->whereIShoot);
+			cur->whereIShoot = NULL;
+		}
+		
 		world->nbTurnsWaiting++;
 		if(world->nbTurnsWaiting >= NB_TURNS_BETWEEN_WAVES){
 			startNewMonsterWave(world);

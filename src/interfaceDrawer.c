@@ -637,7 +637,7 @@ void drawInterface(Interface* interface, World* world){
 			glPushMatrix();
 			glLoadIdentity();
 			glColor3ub(255,255,255);
-			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 10.0, 1.0);
+			glScalef(WINDOW_WIDTH / 2.5, WINDOW_HEIGHT / 15.0, 1.0);
 			drawTexturedQuad(GAME_TEXTURES_ID.WAVE_MESSAGE_ID);
 			glPopMatrix();
 		}
@@ -787,7 +787,7 @@ GLuint createWaveMessage(unsigned char waveNumber){
 		exit(EXIT_FAILURE);
 	}
 	TTF_Font* police = NULL;
-	police = TTF_OpenFont("font/Champagne.ttf", 35);
+	police = TTF_OpenFont("font/Champagne.ttf", 60);
 	SDL_Color color; color.r = 255;
 	SDL_Surface* sMessage = TTF_RenderText_Blended(police, message, color);
 	GLuint textureId = makeTextureFromSurface(sMessage);

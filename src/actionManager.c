@@ -307,7 +307,7 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 				break;
 				default : towerCost = 0;
 				}
-				if( world->money > towerCost){
+				if( world->money >= towerCost){
 					interface->currentAction = action;
 				}
 			}
