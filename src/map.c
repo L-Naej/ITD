@@ -256,6 +256,8 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		return false;
 	}
 
+	
+
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	nbItemsLus = fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
 	if(nbItemsLus < 2){
@@ -293,8 +295,13 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		insertBottomCell(map->pathNodeList,(void*)node);
 		j++;
 	}
+	if (!feof(file)){
+				fprintf(stderr,"Il y a trop de coordonnées par rapport au nombres de noeuds annoncé \n");
+				return 0;
 
-	
+	}
+			
+
 	transformCoordToOpenGL(map);
 
 	return 1;
