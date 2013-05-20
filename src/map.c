@@ -295,11 +295,9 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		insertBottomCell(map->pathNodeList,(void*)node);
 		j++;
 	}
-	if (!feof(file)){
-				fprintf(stderr,"Il y a trop de coordonnées par rapport au nombres de noeuds annoncé \n");
-				return 0;
 
-	}
+
+	
 			
 
 	transformCoordToOpenGL(map);
@@ -344,6 +342,10 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	if (strcmp(versionMap,"@ITD 1")==0){
 
 		if (loadITD1(map,file,keyword)==1){
+				if (!feof(file)){
+					fprintf(stderr,"Il y a trop de coordonnées par rapport au nombres de noeuds annoncé \n");
+					return 0;
+				}	
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
@@ -361,7 +363,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	/*          données des tours ROCKETS         */
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerR")!= 0){
-			printf("mot-clé'powerR' incorrect (%s à la place)\n", keyword);
+			printf("mot-clé'powerR' incorrect ou nombres de coordonnées de noeuds incorrect\n", keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
