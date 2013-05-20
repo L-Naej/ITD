@@ -256,6 +256,8 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		return false;
 	}
 
+	
+
 	Point3D* node1 = (Point3D*)malloc (sizeof(Point3D)); 
 	nbItemsLus = fscanf(file,"%f %f\n",&(node1->x),&(node1->y));
 	if(nbItemsLus < 2){
@@ -294,7 +296,10 @@ int loadITD1 (Map* map, FILE* file, char* keyword){
 		j++;
 	}
 
+
 	
+			
+
 	transformCoordToOpenGL(map);
 
 	return 1;
@@ -337,6 +342,10 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	if (strcmp(versionMap,"@ITD 1")==0){
 
 		if (loadITD1(map,file,keyword)==1){
+				if (!feof(file)){
+					fprintf(stderr,"Il y a trop de coordonnées par rapport au nombres de noeuds annoncé \n");
+					return 0;
+				}	
 			/* On vide  le buffer et on ferme le fichier*/
 			fflush(file);
 			fclose(file);
@@ -354,7 +363,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	/*          données des tours ROCKETS         */
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerR")!= 0){
-			printf("mot-clé'powerR' incorrect (%s à la place)\n", keyword);
+			fprintf(stderr, "Map %s : mot-clé'powerR' incorrect ou nombres de coordonnées de noeuds incorrect (trouvé '%s')\n",map->name, keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
@@ -365,7 +374,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateR")!= 0){
-			printf("mot-clé'rateR' incorrect (%s à la place)\n", keyword);;
+			fprintf(stderr,"Map %s : mot-clé'rateR' incorrect (%s à la place)\n", map->name, keyword);;
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
@@ -376,7 +385,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeR")!= 0){
-			printf("mot-clé'rangeR' incorrect (%s à la place)\n", keyword);
+			fprintf(stderr, "Map %s : mot-clé'rangeR' incorrect (%s à la place)\n", map->name, keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
