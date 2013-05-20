@@ -159,7 +159,8 @@ do{
 		 géré par la fonction. La plupart du temps plusieurs tours de jeu sont
 		 joués d'affilé. */
 		worldNewStep(&world);
-		 
+		
+
 		drawWorld(&world);
 		drawInterface(&interface, &world);
 		/* Calcul du temps écoulé, si temps < 10 ms, on ne passe pas 

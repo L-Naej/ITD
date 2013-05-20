@@ -302,6 +302,9 @@ int towerShoots(Tower* tower, Monster* monsters){
 				default : lifeLosed = tower->power;
 				break;
 			}
+			if (lifeLosed < 0){
+			 lifeLosed = 0;
+			}
 			monsters[i].life -= lifeLosed;
 			//Argent gagné si monstre tué
 			if(monsters[i].life <= 0){

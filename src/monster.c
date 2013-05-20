@@ -59,7 +59,7 @@ Monster createOrangeOctopus(unsigned char wave){
 	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 5*wave;
+	monster.gunResistance = 3*wave;
 	monster.hybridResistance = wave + 5;
 	monster.money = 10*wave;
 	monster.speed = 3;
@@ -79,7 +79,7 @@ Monster createGreenOctopus(unsigned char wave){
 	monster.life = monster.maxLife;
 	monster.rocketResistance = wave;
 	monster.laserResistance = wave;
-	monster.gunResistance = 10*wave;
+	monster.gunResistance = 4*wave;
 	monster.hybridResistance = wave + 10;
 	monster.money = 15*wave;
 	monster.speed = 1;
