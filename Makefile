@@ -1,7 +1,7 @@
 # $(BIN) est la nom du binaire genere
 BIN = bin/itd
 # FLAG
-FLAGS = -g -Wall 
+FLAGS = -g -03 -Wall 
 #Répertoire d'include des librairies
 INCLUDES = include
 # Répertoire des librairies

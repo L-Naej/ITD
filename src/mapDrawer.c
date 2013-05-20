@@ -21,7 +21,6 @@ void drawWorld(World* world){
 	glPushMatrix();
 	
 	glTranslatef(world->cameraPosition.x, world->cameraPosition.y, world->cameraPosition.z);
-
 	
 	drawMap(&(world->map));
 	

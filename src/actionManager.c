@@ -140,6 +140,21 @@ bool handleGameActions(World* world, Interface* interface, bool* gameIsFinished)
 	}
 	//Gestion caméra
 	if(mouseInWindow){
+		float distanceBeforeBlock = 20.;
+		int x, y;
+		SDL_GetMouseState(&x,&y);
+		Point3D oglPoint = sdlToOpenGL(PointXYZ(x, y,0.));
+		oglPoint.x -= world->cameraPosition.x;
+		oglPoint.y -= world->cameraPosition.y;
+		Point3D itdPoint = openGLToItd(world->map.width, world->map.height,oglPoint);
+		if( itdPoint.x < 0 - distanceBeforeBlock * world->map.width / 100. || itdPoint.x > world->map.width + distanceBeforeBlock * world->map.width / 100.
+			|| itdPoint.y < 0 - distanceBeforeBlock* world->map.height / 100. || itdPoint.y > world->map.height + distanceBeforeBlock * world->map.height / 100.){
+
+			isMouseExtremRight = false;
+			isMouseExtremLeft = false;
+			isMouseExtremTop = false;
+			isMouseExtremBottom = false;
+		}
 		if(isMouseExtremBottom) world->cameraPosition.y += 2;
 		else if(isMouseExtremTop) world->cameraPosition.y -= 2;
 		if(isMouseExtremLeft) world->cameraPosition.x += 2;
@@ -179,10 +194,10 @@ bool handleGameMouse(const SDL_Event* e, World* world, Interface* interface){
 	if(e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP)
 		return false;
 	if(world == NULL || interface == NULL) return false;
-	
 	float spaceForCapture = 5.;//%age de fenetre capturé comme étant un déplacement caméra
 	//Déplacement de la caméra si on est à une extrémité de la fenêtre
 	if(e->type == SDL_MOUSEMOTION && SDL_GetTicks() > 2000){
+			
 		if(fabs((int)e->motion.x - (int)WINDOW_WIDTH) < spaceForCapture* WINDOW_WIDTH / 100.0){
 			isMouseExtremRight = true;
 			isMouseExtremLeft = false;
