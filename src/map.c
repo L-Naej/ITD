@@ -363,7 +363,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 	/*          données des tours ROCKETS         */
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"powerR")!= 0){
-			printf("mot-clé'powerR' incorrect ou nombres de coordonnées de noeuds incorrect\n", keyword);
+			fprintf(stderr, "Map %s : mot-clé'powerR' incorrect ou nombres de coordonnées de noeuds incorrect (trouvé '%s')\n",map->name, keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
@@ -374,7 +374,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rateR")!= 0){
-			printf("mot-clé'rateR' incorrect (%s à la place)\n", keyword);;
+			fprintf(stderr,"Map %s : mot-clé'rateR' incorrect (%s à la place)\n", map->name, keyword);;
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
@@ -385,7 +385,7 @@ bool loadMap(Map* map, const char* pathToItdFile){
 
 		fscanf(file,"%s \n",keyword);
 		if (strcmp(keyword,"rangeR")!= 0){
-			printf("mot-clé'rangeR' incorrect (%s à la place)\n", keyword);
+			fprintf(stderr, "Map %s : mot-clé'rangeR' incorrect (%s à la place)\n", map->name, keyword);
 			return false;
 		} 
 		memset (keyword,0,sizeof(keyword));
